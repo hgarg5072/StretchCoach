@@ -1,0 +1,1 @@
+-keep class com.stretchcoach.data.StretchDatabase_Impl { *; }
