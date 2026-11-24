@@ -112,6 +112,7 @@ fun PlayerArtworkCard(
     onTransitionFinished: (() -> Unit)? = null,
     slideDirection: Int = 1,
     swipeOffsetX: Float = 0f,
+    isWidePose: Boolean = false,
     atmosphereOverlay: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
@@ -134,17 +135,22 @@ fun PlayerArtworkCard(
     }
     val hasImage = customFile != null || artworkRes != null || isPlayingTransition
 
-    // Subtle breathing pulse animation while running (PREPARING or HOLDING)
-    val infiniteTransition = rememberInfiniteTransition(label = "player_artwork_pulse")
-    val scale by infiniteTransition.animateFloat(
-        initialValue = 1.0f,
-        targetValue = if (hasImage && (state == PlayerState.PREPARING || state == PlayerState.HOLDING)) 1.03f else 1.0f,
-        animationSpec = infiniteRepeatable(
-            animation = tween(durationMillis = 3200, easing = FastOutSlowInEasing),
-            repeatMode = RepeatMode.Reverse
-        ),
-        label = "scale_anim"
-    )
+    // Subtle breathing pulse animation ONLY when rendering a static image/empty sanctuary (zero waste during MP4 playback)
+    val shouldPulse = effectiveVideoPath == null && (state == PlayerState.PREPARING || state == PlayerState.HOLDING)
+    val scale = if (shouldPulse) {
+        val infiniteTransition = rememberInfiniteTransition(label = "player_artwork_pulse")
+        infiniteTransition.animateFloat(
+            initialValue = 1.0f,
+            targetValue = 1.03f,
+            animationSpec = infiniteRepeatable(
+                animation = tween(durationMillis = 4000, easing = FastOutSlowInEasing),
+                repeatMode = RepeatMode.Reverse
+            ),
+            label = "scale_anim"
+        ).value
+    } else {
+        1.0f
+    }
 
     // Continuous 60fps linear progress animation locked 1:1 to each timer tick
     // (never finishes early during PREPARING TTS intro; completes at 100% exactly when 1 -> 0)
@@ -283,7 +289,8 @@ fun PlayerArtworkCard(
                         .fillMaxWidth()
                         .align(Alignment.Center)
                         .offset(y = (-14).dp)
-                        .aspectRatio(1.18f)
+                        // Wide supine/prone poses lock to unclipped 16:9 so head & feet are never sliced off
+                        .aspectRatio(if (isWidePose || !hasImage) (16f / 9f) else 1.18f)
                 } else if (fillAvailableHeight) {
                     // Landscape full-screen: lock to 16:9 matching height so standing poses never chop the head on ultra-wide screens
                     Modifier
@@ -346,6 +353,31 @@ fun PlayerArtworkCard(
                                         modifier = Modifier.fillMaxSize()
                                     )
                                 }
+                            } else {
+                                // Living Empty Sanctuary Stage for custom stretches without a dedicated video
+                                Image(
+                                    painter = painterResource(id = com.example.R.drawable.img_stretch_empty_studio_sanctuary),
+                                    contentDescription = "Empty Studio Ghibli Sanctuary",
+                                    modifier = Modifier.fillMaxSize(),
+                                    contentScale = ContentScale.Crop
+                                )
+                                // Gentle centered 4s inhale / 4s exhale meditative breathing halo over the empty mat
+                                Box(
+                                    modifier = Modifier
+                                        .align(Alignment.Center)
+                                        .size(116.dp)
+                                        .scale(scale * 1.06f)
+                                        .clip(CircleShape)
+                                        .background(
+                                            Brush.radialGradient(
+                                                colors = listOf(
+                                                    Color(0x38FFF8EB),
+                                                    Color(0x145EEAD4),
+                                                    Color.Transparent
+                                                )
+                                            )
+                                        )
+                                )
                             }
 
                             // Soft feather top/bottom edges in Portrait so the stage melts into the studio wall & wood floor
@@ -674,30 +706,35 @@ fun PlayerArtworkCard(
                 }
                 }
 
-                // Full-Screen Zen Mode Top-Left Stretch Name Pill (shown ONLY when chrome is hidden)
+                // Full-Screen Zen Mode Top-Center Stretch Name Pill ONLY (hides bottom scrim, timer ring, progress bar & controls)
                 androidx.compose.animation.AnimatedVisibility(
                     visible = !showChrome && currentStretch != null,
                     enter = fadeIn(tween(200)),
                     exit = fadeOut(tween(180)),
                     modifier = Modifier
-                        .align(Alignment.TopStart)
-                        .padding(start = 16.dp, top = 14.dp, end = 16.dp)
+                        .align(Alignment.TopCenter)
+                        .padding(horizontal = 20.dp, vertical = 14.dp)
                 ) {
                     if (currentStretch != null) {
+                        val zenLabel = if (!currentStretch.indianName.isNullOrBlank()) {
+                            "${currentStretch.name} • ${currentStretch.indianName}"
+                        } else {
+                            currentStretch.name
+                        }
                         Box(
                             modifier = Modifier
-                                .clip(RoundedCornerShape(14.dp))
+                                .clip(RoundedCornerShape(16.dp))
                                 .background(Color(0xCC1C1917))
                                 .border(
                                     width = 0.75.dp,
                                     color = Color(0x52FFF8EB),
-                                    shape = RoundedCornerShape(14.dp)
+                                    shape = RoundedCornerShape(16.dp)
                                 )
-                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                                .padding(horizontal = 14.dp, vertical = 7.dp)
                                 .testTag("zen_stretch_name_pill")
                         ) {
                             Text(
-                                text = currentStretch.name,
+                                text = zenLabel,
                                 style = MaterialTheme.typography.titleSmall.copy(
                                     fontWeight = FontWeight.Bold,
                                     letterSpacing = (-0.2).sp
@@ -710,35 +747,28 @@ fun PlayerArtworkCard(
                     }
                 }
 
-                // Bottom overlay: Stretch name + cues (hidden in Zen mode — name moves to top-left pill) + Countdown Clock (always visible)
-                Column(
+                // Bottom overlay: Stretch name + cues + Countdown Clock + Progress Bar (hides cleanly in Zen mode)
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = showChrome,
+                    enter = fadeIn(tween(220)),
+                    exit = fadeOut(tween(200)),
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
+                ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .background(
-                            if (showChrome) {
-                                Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        Color.Black.copy(alpha = 0.50f),
-                                        Color.Black.copy(alpha = 0.86f)
-                                    )
+                            Brush.verticalGradient(
+                                colors = listOf(
+                                    Color.Transparent,
+                                    Color.Black.copy(alpha = 0.50f),
+                                    Color.Black.copy(alpha = 0.86f)
                                 )
-                            } else {
-                                Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color.Transparent,
-                                        Color.Black.copy(alpha = 0.20f)
-                                    )
-                                )
-                            }
+                            )
                         )
-                        .padding(
-                            start = 16.dp,
-                            end = 16.dp,
-                            top = if (showChrome) 22.dp else 10.dp,
-                            bottom = 12.dp
-                        )
+                        .padding(start = 16.dp, end = 16.dp, top = 22.dp, bottom = 12.dp)
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
@@ -824,6 +854,7 @@ fun PlayerArtworkCard(
                             drawStopIndicator = {}
                         )
                     }
+                }
                 }
             }
         } else {

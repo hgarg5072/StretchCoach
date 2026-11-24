@@ -24,7 +24,7 @@ class PoseManifestUnitTest {
     @Test
     fun manifestLoads117PosesAnd12Transitions() {
         PoseManifestRepository.ensureLoaded(context)
-        assertEquals(117, PoseManifestRepository.totalLoadedPoses())
+        assertEquals(122, PoseManifestRepository.totalLoadedPoses())
         assertEquals(12, PoseManifestRepository.totalLoadedTransitions())
     }
 
@@ -79,22 +79,23 @@ class PoseManifestUnitTest {
     }
 
     @Test
-    fun subahSubahRoutineHas52StepsAndUnmappedPosesStayNull() {
+    fun subahSubahRoutineHas52StepsAndAllResolveVerifiedVideos() {
         val subah = AppDatabase.createDefaultStretchesForRoutine(7L)
         assertEquals(52, subah.size)
         assertEquals("Ardha Pavanmuktasana (Left)", subah.first().name)
         assertEquals("Standing Side Lat Reach (Left)", subah.last().name)
-        // Missing videos stay unmapped (empty studio background + overlays, never a fake fallback)
-        assertEquals(null, com.example.data.ArtworkMapper.getDrawableForStretch("World's Greatest Stretch (Left)"))
-        assertEquals(null, com.example.data.ArtworkMapper.getDrawableForStretch("Spine Alignment"))
-        assertEquals(null, com.example.data.ArtworkMapper.getDrawableForStretch("Scapula Stretch (Left)"))
-        // Verified existing aliases resolve cleanly
+        // All 5 Batch 5 poses + existing verified aliases now resolve cleanly
+        assertTrue(com.example.data.ArtworkMapper.getDrawableForStretch("World's Greatest Stretch (Left)") != null)
+        assertTrue(com.example.data.ArtworkMapper.getDrawableForStretch("Ardha Pavanmuktasana Diagonal (Left)") != null)
+        assertTrue(com.example.data.ArtworkMapper.getDrawableForStretch("Parvatasana (Seated Mountain)") != null)
+        assertTrue(com.example.data.ArtworkMapper.getDrawableForStretch("Spine Alignment") != null)
+        assertTrue(com.example.data.ArtworkMapper.getDrawableForStretch("Scapula Stretch (Left)") != null)
         assertTrue(com.example.data.ArtworkMapper.getDrawableForStretch("Bhujangasana") != null)
         assertTrue(com.example.data.ArtworkMapper.getDrawableForStretch("Towel Hamstring Stretch (Left)") != null)
     }
 
     @Test
-    fun overlayAnchorsAndAll15StudioOverlaysAreBundled() {
+    fun overlayAnchorsAndAll12StudioOverlaysAreBundled() {
         PoseManifestRepository.ensureLoaded(context)
         val catCow = PoseManifestRepository.getPoseMetaByStem(context, "img_stretch_b1_cat_cow_flow")
         assertTrue(catCow != null)
@@ -115,10 +116,7 @@ class PoseManifestUnitTest {
             "overlay_ghibli_tea_set_chromakey.mp4",
             "overlay_ghibli_candle_warmer_chromakey.mp4",
             "overlay_ghibli_washi_lantern_chromakey.mp4",
-            "overlay_ghibli_wind_chime_chromakey.mp4",
-            "overlay_aroma_diffuser_mist_chromakey.mp4",
-            "overlay_incense_holder_smoke_chromakey.mp4",
-            "overlay_leaves_sway_corner_chromakey.mp4"
+            "overlay_ghibli_wind_chime_chromakey.mp4"
         )
         expected.forEach { file ->
             assertTrue("Missing bundled overlay asset: $file", overlays.contains(file))

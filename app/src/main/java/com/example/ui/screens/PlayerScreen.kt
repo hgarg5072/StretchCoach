@@ -77,7 +77,7 @@ fun PlayerScreen(
     customTrackTitle: String = "",
     onCycleAmbientSoundscape: () -> Unit = {},
     studioLightingMode: StudioLightingMode = StudioLightingMode.AUTO,
-    studioAromaProp: StudioAromaProp = StudioAromaProp.DIFFUSER,
+    studioAromaProp: StudioAromaProp = StudioAromaProp.AUTO_GHIBLI,
     companionDogEnabled: Boolean = true,
     swayingLeavesEnabled: Boolean = true,
     sunbeamsEnabled: Boolean = true,
@@ -190,6 +190,8 @@ fun PlayerScreen(
             }
         }
         val isRestorativePose = currentPoseMeta?.isRestorativeOrPranayama == true
+        val isWidePose = currentPoseMeta?.postureHub == com.example.data.PostureHub.SUPINE ||
+            currentPoseMeta?.postureHub == com.example.data.PostureHub.PRONE
         val poseAnchors = currentPoseMeta?.overlayAnchors ?: com.example.data.PoseOverlayAnchors()
 
         // Hide studio overlays briefly during stretch slide animations or active horizontal swipe gestures
@@ -237,6 +239,7 @@ fun PlayerScreen(
                 onTransitionFinished = onTransitionClipFinished,
                 slideDirection = slideDirection,
                 swipeOffsetX = swipeOffsetX,
+                isWidePose = isWidePose,
                 atmosphereOverlay = {
                     StudioAtmosphereOverlay(
                         playerState = playerState.state,
@@ -250,6 +253,8 @@ fun PlayerScreen(
                         sunbeamsEnabled = sunbeamsEnabled,
                         poseAnchors = poseAnchors,
                         stretchIndex = playerState.currentStretchIndex,
+                        totalStretches = effectiveTotalCount,
+                        isWidePose = isWidePose,
                         overlayAlpha = overlayAlpha,
                         modifier = Modifier.fillMaxSize()
                     )

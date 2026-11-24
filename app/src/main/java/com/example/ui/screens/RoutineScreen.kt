@@ -124,7 +124,7 @@ fun RoutineScreen(
                 RoutineSummaryCard(
                     routine = activeRoutine,
                     stretches = localStretches,
-                    isCloudSynced = false,
+                    isCloudSynced = currentUser != null,
                     onStartRoutine = { onStartRoutine(0) },
                     onOpenLibrary = { showLibraryDialog = true },
                     onAddCustomStretch = {
@@ -476,15 +476,6 @@ fun RoutineScreen(
                             modifier = Modifier.fillMaxWidth()
                         ) {
                             Text("Rename Routine")
-                        }
-                        TextButton(
-                            onClick = {
-                                longPressedRoutine = null
-                                routineToPublish = routine
-                            },
-                            modifier = Modifier.fillMaxWidth()
-                        ) {
-                            Text("Share to Community")
                         }
                         TextButton(
                             onClick = {

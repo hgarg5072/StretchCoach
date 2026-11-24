@@ -395,8 +395,8 @@ private fun StudioSettingsTab(
         )
         HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f))
         SettingToggleRow(
-            title = "Window Foliage",
-            subtitle = "Gentle swaying corner leaves",
+            title = "Glass Furin Wind Chime",
+            subtitle = "Gentle swaying Studio Ghibli glass chime by the window",
             checked = settings.swayingLeavesEnabled,
             enabled = true,
             onCheckedChange = onToggleSwayingLeaves,

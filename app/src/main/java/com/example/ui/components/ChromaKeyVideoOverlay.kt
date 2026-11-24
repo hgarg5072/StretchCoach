@@ -449,12 +449,17 @@ private class GlChromaKeyRenderer {
                     alpha = 1.0 - smoothstep(0.08, 0.24, greenExcess);
                     rgb.g = min(rgb.g, maxRB * 1.04 + 0.03);
                 } else if (uKeyMode == 1) {
-                    // Pure blue screen (#0000FF / #0088FF) for dog & corner leaves overlays
+                    // Pure blue screen (#0000FF / #0088FF) for dog, Ghibli props & wind chime
                     float maxRG = max(rgb.r, rgb.g);
                     float blueExcess = rgb.b - maxRG;
                     alpha = 1.0 - smoothstep(0.06, 0.20, blueExcess);
-                    // Suppress blue fringe/halo along fur and leaf edges
-                    rgb.b = min(rgb.b, maxRG * 1.02 + 0.02);
+                    // Suppress blue/violet fringe on fur, glass, and rising wispy steam
+                    rgb.b = min(rgb.b, maxRG);
+                    if (blueExcess > 0.03 && maxRG > 0.25) {
+                        float lum = mix(maxRG, (rgb.r + rgb.g) * 0.5, 0.5);
+                        vec3 warmSteam = vec3(lum * 1.04, lum * 1.02, lum * 0.98);
+                        rgb = mix(rgb, warmSteam, clamp((1.0 - alpha) * 1.3, 0.0, 0.85));
+                    }
                 } else {
                     // Screen/additive blend on black (#000000) for sunbeams & dust motes
                     float lum = max(rgb.r, max(rgb.g, rgb.b));

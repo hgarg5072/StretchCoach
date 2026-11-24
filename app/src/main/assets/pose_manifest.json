@@ -1,6 +1,6 @@
 {
   "version": "1.0",
-  "total_poses": 117,
+  "total_poses": 122,
   "posture_hubs": [
     "STANDING",
     "KNEELING",
@@ -4073,6 +4073,161 @@
           "top_pct": 0.0,
           "width_pct": 12.0,
           "visible": true
+        }
+      }
+    },
+    {
+      "id": "img_stretch_b5_worlds_greatest_stretch",
+      "display_name": "World's Greatest Stretch",
+      "video_file": "img_stretch_b5_worlds_greatest_stretch.mp4",
+      "image_file": "img_stretch_b5_worlds_greatest_stretch.jpg",
+      "posture_hub": "KNEELING",
+      "category": "mobility",
+      "is_unilateral": true,
+      "recommended_dog_state": "overlay_dog_idle_rest",
+      "room_layout": "standard_center",
+      "overlay_anchors": {
+        "dog": {
+          "visible": true,
+          "left_pct": 4.0,
+          "bottom_pct": 4.0,
+          "width_pct": 14.0
+        },
+        "floor_prop": {
+          "visible": true,
+          "right_pct": 3.0,
+          "bottom_pct": 4.0,
+          "width_pct": 13.0
+        },
+        "wind_chime": {
+          "visible": true,
+          "left_pct": 2.0,
+          "top_pct": 0.0,
+          "width_pct": 11.0
+        }
+      }
+    },
+    {
+      "id": "img_stretch_b5_ardha_pavanmuktasana_diagonal",
+      "display_name": "Ardha Pavanmuktasana Diagonal",
+      "video_file": "img_stretch_b5_ardha_pavanmuktasana_diagonal.mp4",
+      "image_file": "img_stretch_b5_ardha_pavanmuktasana_diagonal.jpg",
+      "posture_hub": "SUPINE",
+      "category": "restorative",
+      "is_unilateral": true,
+      "recommended_dog_state": "overlay_dog_nap_curled",
+      "room_layout": "standard_center",
+      "overlay_anchors": {
+        "dog": {
+          "visible": true,
+          "left_pct": 2.0,
+          "bottom_pct": 2.0,
+          "width_pct": 12.0
+        },
+        "floor_prop": {
+          "visible": true,
+          "right_pct": 2.0,
+          "bottom_pct": 2.0,
+          "width_pct": 11.0
+        },
+        "wind_chime": {
+          "visible": true,
+          "left_pct": 2.0,
+          "top_pct": 0.0,
+          "width_pct": 10.0
+        }
+      }
+    },
+    {
+      "id": "img_stretch_b5_parvatasana_seated_mountain",
+      "display_name": "Parvatasana (Seated Mountain)",
+      "video_file": "img_stretch_b5_parvatasana_seated_mountain.mp4",
+      "image_file": "img_stretch_b5_parvatasana_seated_mountain.jpg",
+      "posture_hub": "SEATED",
+      "category": "mobility",
+      "is_unilateral": false,
+      "recommended_dog_state": "overlay_dog_idle_rest",
+      "room_layout": "standard_center",
+      "overlay_anchors": {
+        "dog": {
+          "visible": true,
+          "left_pct": 5.0,
+          "bottom_pct": 4.0,
+          "width_pct": 15.0
+        },
+        "floor_prop": {
+          "visible": true,
+          "right_pct": 4.0,
+          "bottom_pct": 4.0,
+          "width_pct": 14.0
+        },
+        "wind_chime": {
+          "visible": true,
+          "left_pct": 2.0,
+          "top_pct": 0.0,
+          "width_pct": 11.0
+        }
+      }
+    },
+    {
+      "id": "img_stretch_b5_spine_alignment",
+      "display_name": "Spine Alignment (Flowing Arm Wave)",
+      "video_file": "img_stretch_b5_spine_alignment.mp4",
+      "image_file": "img_stretch_b5_spine_alignment.jpg",
+      "posture_hub": "SEATED",
+      "category": "mobility",
+      "is_unilateral": false,
+      "recommended_dog_state": "overlay_dog_idle_rest",
+      "room_layout": "standard_center",
+      "overlay_anchors": {
+        "dog": {
+          "visible": true,
+          "left_pct": 5.0,
+          "bottom_pct": 4.0,
+          "width_pct": 15.0
+        },
+        "floor_prop": {
+          "visible": true,
+          "right_pct": 4.0,
+          "bottom_pct": 4.0,
+          "width_pct": 14.0
+        },
+        "wind_chime": {
+          "visible": true,
+          "left_pct": 2.0,
+          "top_pct": 0.0,
+          "width_pct": 11.0
+        }
+      }
+    },
+    {
+      "id": "img_stretch_b5_scapula_stretch",
+      "display_name": "Scapula Diagonal Forward-Fold Stretch",
+      "video_file": "img_stretch_b5_scapula_stretch.mp4",
+      "image_file": "img_stretch_b5_scapula_stretch.jpg",
+      "posture_hub": "SEATED",
+      "category": "mobility",
+      "is_unilateral": true,
+      "recommended_dog_state": "overlay_dog_idle_rest",
+      "room_layout": "standard_center",
+      "overlay_anchors": {
+        "dog": {
+          "visible": true,
+          "left_pct": 3.0,
+          "bottom_pct": 4.0,
+          "width_pct": 14.0
+        },
+        "floor_prop": {
+          "visible": true,
+          "right_pct": 4.0,
+          "bottom_pct": 4.0,
+          "width_pct": 14.0
+        },
+        "wind_chime": {
+          "visible": true,
+          "left_pct": 2.0,
+          "top_pct": 0.0,
+          "width_pct": 11.0
         }
       }
     }
