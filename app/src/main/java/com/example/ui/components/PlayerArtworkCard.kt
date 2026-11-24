@@ -264,8 +264,8 @@ fun PlayerArtworkCard(
                     Modifier
                         .fillMaxWidth()
                         .align(Alignment.Center)
-                        .offset(y = (-24).dp)
-                        .aspectRatio(16f / 9f)
+                        .offset(y = (-14).dp)
+                        .aspectRatio(1.18f)
                 } else {
                     Modifier.fillMaxSize()
                 }

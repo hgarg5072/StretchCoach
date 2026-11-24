@@ -69,7 +69,7 @@ fun StudioAtmosphereOverlay(
     ) {
         val stageWidth = maxWidth
         val isPortrait = maxHeight > maxWidth
-        val portraitStageHeight = stageWidth * (9f / 16f)
+        val portraitStageHeight = stageWidth / 1.18f
 
         // --- LAYER 1: Persistent Studio Overlays ---
 
@@ -78,8 +78,8 @@ fun StudioAtmosphereOverlay(
             val leavesModifier = if (isPortrait) {
                 Modifier
                     .align(Alignment.CenterStart)
-                    .offset(x = (-8).dp, y = -(portraitStageHeight * 0.40f) - 24.dp)
-                    .width((stageWidth * 0.30f).coerceIn(96.dp, 136.dp))
+                    .offset(x = (-8).dp, y = -(portraitStageHeight * 0.42f) - 14.dp)
+                    .width((stageWidth * 0.34f).coerceIn(108.dp, 152.dp))
                     .aspectRatio(16f / 9f)
             } else {
                 Modifier
@@ -103,8 +103,8 @@ fun StudioAtmosphereOverlay(
             val aromaModifier = if (isPortrait) {
                 Modifier
                     .align(Alignment.CenterEnd)
-                    .offset(x = (-10).dp, y = (portraitStageHeight * 0.24f) - 24.dp)
-                    .width((stageWidth * 0.16f).coerceIn(54.dp, 72.dp))
+                    .offset(x = (-8).dp, y = (portraitStageHeight * 0.24f) - 14.dp)
+                    .width((stageWidth * 0.19f).coerceIn(64.dp, 84.dp))
                     .aspectRatio(1f)
             } else {
                 Modifier
@@ -128,8 +128,8 @@ fun StudioAtmosphereOverlay(
             val dogModifier = if (isPortrait) {
                 Modifier
                     .align(Alignment.CenterStart)
-                    .offset(x = 8.dp, y = (portraitStageHeight * 0.42f) - 24.dp)
-                    .width((stageWidth * 0.23f).coerceIn(78.dp, 98.dp))
+                    .offset(x = 8.dp, y = (portraitStageHeight * 0.41f) - 14.dp)
+                    .width((stageWidth * 0.27f).coerceIn(92.dp, 118.dp))
                     .aspectRatio(1f)
             } else {
                 Modifier
@@ -192,8 +192,8 @@ fun StudioAtmosphereOverlay(
                 Modifier
                     .fillMaxWidth()
                     .align(Alignment.Center)
-                    .offset(y = (-24).dp)
-                    .aspectRatio(16f / 9f)
+                    .offset(y = (-14).dp)
+                    .aspectRatio(1.18f)
             } else {
                 Modifier.fillMaxSize()
             }
