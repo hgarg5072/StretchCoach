@@ -4,9 +4,14 @@ import android.app.Activity
 import android.content.res.Configuration
 import android.view.WindowManager
 import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.expandHorizontally
+import androidx.compose.animation.expandVertically
 import androidx.compose.animation.fadeIn
 import androidx.compose.animation.fadeOut
+import androidx.compose.animation.shrinkHorizontally
+import androidx.compose.animation.shrinkVertically
 import androidx.compose.animation.slideInHorizontally
 import androidx.compose.animation.slideOutHorizontally
 import androidx.compose.animation.togetherWith
@@ -26,6 +31,7 @@ import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -92,6 +98,7 @@ fun PlayerScreen(
     // Track swipe/button direction so transitions visibly slide forward (+1) or backward (-1)
     var slideDirection by remember { mutableIntStateOf(1) }
     var swipeOffsetX by remember { mutableFloatStateOf(0f) }
+    var showChrome by remember { mutableStateOf(true) }
     val swipeThresholdPx = with(LocalDensity.current) { 72.dp.toPx() }
 
     val handleSkipNext = {
@@ -155,6 +162,8 @@ fun PlayerScreen(
                     onCycleAmbientSoundscape = onCycleAmbientSoundscape,
                     onNavigateBack = onNavigateBack,
                     onOpenSettings = onOpenSettings,
+                    showChrome = showChrome,
+                    onToggleChrome = { showChrome = !showChrome },
                     modifier = Modifier
                         .fillMaxSize()
                         .graphicsLayer {
@@ -177,22 +186,28 @@ fun PlayerScreen(
                         .weight(1f)
                         .fillMaxHeight()
                 )
-                PlayerControlsRow(
-                    state = playerState.state,
-                    hasStretches = enabledStretches.isNotEmpty(),
-                    onPlay = onPlay,
-                    onPause = onPause,
-                    onResume = onResume,
-                    onSkipNext = handleSkipNext,
-                    onSkipPrevious = handleSkipPrevious,
-                    onRestart = onRestart,
-                    onStop = onStop,
-                    onOpenSettings = onOpenSettings,
-                    vertical = true
-                )
+                AnimatedVisibility(
+                    visible = showChrome,
+                    enter = fadeIn(tween(220)) + expandHorizontally(tween(240)),
+                    exit = fadeOut(tween(200)) + shrinkHorizontally(tween(220))
+                ) {
+                    PlayerControlsRow(
+                        state = playerState.state,
+                        hasStretches = enabledStretches.isNotEmpty(),
+                        onPlay = onPlay,
+                        onPause = onPause,
+                        onResume = onResume,
+                        onSkipNext = handleSkipNext,
+                        onSkipPrevious = handleSkipPrevious,
+                        onRestart = onRestart,
+                        onStop = onStop,
+                        onOpenSettings = onOpenSettings,
+                        vertical = true
+                    )
+                }
             }
         } else {
-            // Portrait: Maximized full-screen video stage + pinned bottom controls (zero bottom nav waste)
+            // Portrait: Maximized full-screen video stage + collapsible bottom controls
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -202,21 +217,28 @@ fun PlayerScreen(
             ) {
                 heroArtwork(Modifier.weight(1f))
 
-                Spacer(modifier = Modifier.height(6.dp))
-
-                PlayerControlsRow(
-                    state = playerState.state,
-                    hasStretches = enabledStretches.isNotEmpty(),
-                    onPlay = onPlay,
-                    onPause = onPause,
-                    onResume = onResume,
-                    onSkipNext = handleSkipNext,
-                    onSkipPrevious = handleSkipPrevious,
-                    onRestart = onRestart,
-                    onStop = onStop,
-                    onOpenSettings = onOpenSettings,
-                    vertical = false
-                )
+                AnimatedVisibility(
+                    visible = showChrome,
+                    enter = fadeIn(tween(220)) + expandVertically(tween(240)),
+                    exit = fadeOut(tween(200)) + shrinkVertically(tween(220))
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Spacer(modifier = Modifier.height(6.dp))
+                        PlayerControlsRow(
+                            state = playerState.state,
+                            hasStretches = enabledStretches.isNotEmpty(),
+                            onPlay = onPlay,
+                            onPause = onPause,
+                            onResume = onResume,
+                            onSkipNext = handleSkipNext,
+                            onSkipPrevious = handleSkipPrevious,
+                            onRestart = onRestart,
+                            onStop = onStop,
+                            onOpenSettings = onOpenSettings,
+                            vertical = false
+                        )
+                    }
+                }
             }
         }
     }

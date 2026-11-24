@@ -1,17 +1,22 @@
 package com.example.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.RepeatMode
 import androidx.compose.animation.core.animateFloat
-import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.infiniteRepeatable
 import androidx.compose.animation.core.rememberInfiniteTransition
 import androidx.compose.animation.core.tween
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.basicMarquee
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -40,6 +45,7 @@ import androidx.compose.material3.LinearProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -84,6 +90,8 @@ fun PlayerArtworkCard(
     onCycleAmbientSoundscape: (() -> Unit)? = null,
     onNavigateBack: (() -> Unit)? = null,
     onOpenSettings: (() -> Unit)? = null,
+    showChrome: Boolean = true,
+    onToggleChrome: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -111,11 +119,41 @@ fun PlayerArtworkCard(
         label = "scale_anim"
     )
 
-    val animatedProgress by animateFloatAsState(
-        targetValue = progress.coerceIn(0f, 1f),
-        animationSpec = tween(durationMillis = 350),
-        label = "timer_progress_anim"
-    )
+    // Continuous 60fps linear progress animation (zero 1-second stutter/jerkiness)
+    val smoothProgress = remember { Animatable(progress.coerceIn(0f, 1f)) }
+    LaunchedEffect(state, currentIndex, totalSegmentSeconds) {
+        when (state) {
+            PlayerState.PREPARING, PlayerState.HOLDING -> {
+                if (totalSegmentSeconds > 0 && remainingSeconds > 0) {
+                    val startFrac = ((totalSegmentSeconds - remainingSeconds).toFloat() / totalSegmentSeconds)
+                        .coerceIn(0f, 1f)
+                    // If resuming from pause in the same segment, keep current sub-second progress
+                    if (kotlin.math.abs(smoothProgress.value - startFrac) > (1.5f / totalSegmentSeconds.coerceAtLeast(1))) {
+                        smoothProgress.snapTo(startFrac)
+                    }
+                    smoothProgress.animateTo(
+                        targetValue = 1f,
+                        animationSpec = tween(
+                            durationMillis = (remainingSeconds * 1000).coerceAtLeast(1),
+                            easing = LinearEasing
+                        )
+                    )
+                } else {
+                    smoothProgress.snapTo(0f)
+                }
+            }
+            PlayerState.PAUSED -> {
+                smoothProgress.stop()
+            }
+            PlayerState.COMPLETE -> {
+                smoothProgress.snapTo(1f)
+            }
+            PlayerState.IDLE -> {
+                smoothProgress.snapTo(0f)
+            }
+        }
+    }
+    val animatedProgress = smoothProgress.value
 
     val stepText = if (totalCount > 0 && state != PlayerState.IDLE && state != PlayerState.COMPLETE) {
         "STEP ${currentIndex + 1} OF $totalCount"
@@ -179,6 +217,17 @@ fun PlayerArtworkCard(
                         MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
                         RoundedCornerShape(24.dp)
                     )
+                    .then(
+                        if (onToggleChrome != null) {
+                            Modifier.clickable(
+                                interactionSource = remember { MutableInteractionSource() },
+                                indication = null,
+                                onClick = onToggleChrome
+                            )
+                        } else {
+                            Modifier
+                        }
+                    )
             ) {
                 if (customFile != null) {
                     AsyncImage(
@@ -207,11 +256,18 @@ fun PlayerArtworkCard(
                     }
                 }
 
-                // Top overlay scrim: Step badge + Phase badge + Next Up pill
-                Column(
+                // Top overlay scrim: Step badge + Phase badge + Next Up + Music pill (hides cleanly in Zen mode)
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = showChrome,
+                    enter = fadeIn(tween(220)),
+                    exit = fadeOut(tween(220)),
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.TopCenter)
+                ) {
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
                         .background(
                             Brush.verticalGradient(
                                 colors = listOf(
@@ -398,20 +454,30 @@ fun PlayerArtworkCard(
                         }
                     }
                 }
+                }
 
-                // Bottom overlay: Stretch name + cues on left, translucent Clock ring on right
+                // Bottom overlay: Stretch name + cues (hidden in Zen mode) + Countdown Clock (always visible)
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
                         .align(Alignment.BottomCenter)
                         .background(
-                            Brush.verticalGradient(
-                                colors = listOf(
-                                    Color.Transparent,
-                                    Color.Black.copy(alpha = 0.45f),
-                                    Color.Black.copy(alpha = 0.82f)
+                            if (showChrome) {
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.45f),
+                                        Color.Black.copy(alpha = 0.82f)
+                                    )
                                 )
-                            )
+                            } else {
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color.Transparent,
+                                        Color.Black.copy(alpha = 0.28f)
+                                    )
+                                )
+                            }
                         )
                         .padding(start = 16.dp, end = 16.dp, top = 22.dp, bottom = 14.dp)
                 ) {
@@ -420,42 +486,50 @@ fun PlayerArtworkCard(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Column(modifier = Modifier.weight(1f)) {
-                            if (currentStretch != null) {
-                                Text(
-                                    text = currentStretch.name,
-                                    style = MaterialTheme.typography.titleLarge.copy(
-                                        fontWeight = FontWeight.Bold,
-                                        letterSpacing = (-0.3).sp
-                                    ),
-                                    color = Color.White,
-                                    maxLines = 1,
-                                    modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE)
-                                )
-                                val cueText = when {
-                                    state == PlayerState.PREPARING && currentStretch.effectivePrepCue.isNotBlank() ->
-                                        currentStretch.effectivePrepCue
-                                    state == PlayerState.HOLDING && currentStretch.effectiveHoldCue.isNotBlank() ->
-                                        currentStretch.effectiveHoldCue
-                                    !currentStretch.notes.isNullOrBlank() -> currentStretch.notes
-                                    else -> ""
+                        Box(modifier = Modifier.weight(1f)) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = showChrome,
+                                enter = fadeIn(tween(220)),
+                                exit = fadeOut(tween(220))
+                            ) {
+                                Column {
+                                    if (currentStretch != null) {
+                                        Text(
+                                            text = currentStretch.name,
+                                            style = MaterialTheme.typography.titleLarge.copy(
+                                                fontWeight = FontWeight.Bold,
+                                                letterSpacing = (-0.3).sp
+                                            ),
+                                            color = Color.White,
+                                            maxLines = 1,
+                                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE)
+                                        )
+                                        val cueText = when {
+                                            state == PlayerState.PREPARING && currentStretch.effectivePrepCue.isNotBlank() ->
+                                                currentStretch.effectivePrepCue
+                                            state == PlayerState.HOLDING && currentStretch.effectiveHoldCue.isNotBlank() ->
+                                                currentStretch.effectiveHoldCue
+                                            !currentStretch.notes.isNullOrBlank() -> currentStretch.notes
+                                            else -> ""
+                                        }
+                                        if (cueText.isNotBlank()) {
+                                            Spacer(modifier = Modifier.height(3.dp))
+                                            Text(
+                                                text = cueText,
+                                                style = MaterialTheme.typography.bodySmall,
+                                                color = Color.White.copy(alpha = 0.88f),
+                                                maxLines = 2,
+                                                overflow = TextOverflow.Ellipsis
+                                            )
+                                        }
+                                    } else {
+                                        Text(
+                                            text = "Ready to stretch",
+                                            style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                            color = Color.White
+                                        )
+                                    }
                                 }
-                                if (cueText.isNotBlank()) {
-                                    Spacer(modifier = Modifier.height(3.dp))
-                                    Text(
-                                        text = cueText,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = Color.White.copy(alpha = 0.88f),
-                                        maxLines = 2,
-                                        overflow = TextOverflow.Ellipsis
-                                    )
-                                }
-                            } else {
-                                Text(
-                                    text = "Ready to stretch",
-                                    style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                    color = Color.White
-                                )
                             }
                         }
 
