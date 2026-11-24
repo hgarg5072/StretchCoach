@@ -212,68 +212,50 @@ fun PlayerScreen(
         )
 
         val heroArtwork: @Composable (Modifier) -> Unit = { heroMod ->
-            Box(modifier = heroMod) {
-                AnimatedContent(
-                    targetState = stretchSlideKey,
-                    transitionSpec = {
-                        val dir = if (targetState.first >= initialState.first && slideDirection >= 0) 1 else -1
-                        (slideInHorizontally(animationSpec = tween(280)) { width -> dir * (width / 2) } +
-                            fadeIn(animationSpec = tween(240))) togetherWith
-                            (slideOutHorizontally(animationSpec = tween(240)) { width -> -dir * (width / 2) } +
-                                fadeOut(animationSpec = tween(200)))
-                    },
-                    label = "player_stretch_transition",
-                    modifier = Modifier.fillMaxSize()
-                ) { _ ->
-                    PlayerArtworkCard(
-                        currentStretch = currentStretch,
-                        state = playerState.state,
-                        currentIndex = playerState.currentStretchIndex,
-                        totalCount = effectiveTotalCount,
-                        nextStretch = nextStretch,
-                        remainingSeconds = playerState.remainingSeconds,
-                        totalSegmentSeconds = playerState.totalSegmentSeconds,
-                        progress = playerState.progress,
-                        fillAvailableHeight = true,
-                        ambientSoundscape = ambientSoundscape,
-                        customTrackTitle = customTrackTitle,
-                        onCycleAmbientSoundscape = onCycleAmbientSoundscape,
-                        onNavigateBack = onNavigateBack,
-                        onOpenSettings = onOpenSettings,
-                        onToggleOrientation = toggleOrientation,
-                        showLandscapeHint = showLandscapeHint && !isLandscape,
-                        onDismissLandscapeHint = { showLandscapeHint = false },
-                        showChrome = showChrome,
-                        onToggleChrome = { showChrome = !showChrome },
-                        activeTransitionVideoPath = playerState.activeTransitionVideoPath,
-                        activeTransitionCue = playerState.activeTransitionCue,
-                        onTransitionFinished = onTransitionClipFinished,
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .graphicsLayer {
-                                translationX = swipeOffsetX * 0.35f
-                            }
+            PlayerArtworkCard(
+                currentStretch = currentStretch,
+                state = playerState.state,
+                currentIndex = playerState.currentStretchIndex,
+                totalCount = effectiveTotalCount,
+                nextStretch = nextStretch,
+                remainingSeconds = playerState.remainingSeconds,
+                totalSegmentSeconds = playerState.totalSegmentSeconds,
+                progress = playerState.progress,
+                fillAvailableHeight = true,
+                ambientSoundscape = ambientSoundscape,
+                customTrackTitle = customTrackTitle,
+                onCycleAmbientSoundscape = onCycleAmbientSoundscape,
+                onNavigateBack = onNavigateBack,
+                onOpenSettings = onOpenSettings,
+                onToggleOrientation = toggleOrientation,
+                showLandscapeHint = showLandscapeHint && !isLandscape,
+                onDismissLandscapeHint = { showLandscapeHint = false },
+                showChrome = showChrome,
+                onToggleChrome = { showChrome = !showChrome },
+                activeTransitionVideoPath = playerState.activeTransitionVideoPath,
+                activeTransitionCue = playerState.activeTransitionCue,
+                onTransitionFinished = onTransitionClipFinished,
+                slideDirection = slideDirection,
+                swipeOffsetX = swipeOffsetX,
+                atmosphereOverlay = {
+                    StudioAtmosphereOverlay(
+                        playerState = playerState.state,
+                        isTransitioning = playerState.state == PlayerState.PREPARING &&
+                            !playerState.activeTransitionVideoPath.isNullOrBlank(),
+                        isRestorativePose = isRestorativePose,
+                        lightingMode = studioLightingMode,
+                        aromaProp = studioAromaProp,
+                        dogEnabled = companionDogEnabled,
+                        leavesEnabled = swayingLeavesEnabled,
+                        sunbeamsEnabled = sunbeamsEnabled,
+                        poseAnchors = poseAnchors,
+                        stretchIndex = playerState.currentStretchIndex,
+                        overlayAlpha = overlayAlpha,
+                        modifier = Modifier.fillMaxSize()
                     )
-                }
-
-                // Persistent Studio Overlays (Dog, Back-Right Diffuser/Incense, Corner Leaves, Lighting, Sunbeams)
-                // Fades out cleanly during horizontal swipe / next-stretch slide movement
-                StudioAtmosphereOverlay(
-                    playerState = playerState.state,
-                    isTransitioning = playerState.state == PlayerState.PREPARING &&
-                        !playerState.activeTransitionVideoPath.isNullOrBlank(),
-                    isRestorativePose = isRestorativePose,
-                    lightingMode = studioLightingMode,
-                    aromaProp = studioAromaProp,
-                    dogEnabled = companionDogEnabled,
-                    leavesEnabled = swayingLeavesEnabled,
-                    sunbeamsEnabled = sunbeamsEnabled,
-                    poseAnchors = poseAnchors,
-                    stretchIndex = playerState.currentStretchIndex,
-                    overlayAlpha = overlayAlpha,
-                    modifier = Modifier.fillMaxSize()
-                )
-            }
+                },
+                modifier = heroMod
+            )
         }
 
         if (isLandscape) {

@@ -105,7 +105,6 @@ fun StudioAtmosphereOverlay(
     BoxWithConstraints(
         modifier = modifier
             .fillMaxSize()
-            .padding(horizontal = 12.dp, vertical = 4.dp)
             .clip(RoundedCornerShape(24.dp))
     ) {
         val stageWidth = maxWidth

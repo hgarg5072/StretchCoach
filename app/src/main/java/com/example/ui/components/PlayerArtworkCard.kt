@@ -1,7 +1,11 @@
 package com.example.ui.components
 
 import android.content.res.Configuration
+import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInHorizontally
+import androidx.compose.animation.slideOutHorizontally
+import androidx.compose.animation.togetherWith
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
 import androidx.compose.animation.core.LinearEasing
@@ -59,6 +63,7 @@ import androidx.compose.ui.draw.scale
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
@@ -103,6 +108,9 @@ fun PlayerArtworkCard(
     activeTransitionVideoPath: String? = null,
     activeTransitionCue: String? = null,
     onTransitionFinished: (() -> Unit)? = null,
+    slideDirection: Int = 1,
+    swipeOffsetX: Float = 0f,
+    atmosphereOverlay: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -275,68 +283,92 @@ fun PlayerArtworkCard(
                     Modifier.fillMaxSize()
                 }
 
-                Box(modifier = mediaStageModifier) {
-                    if (customFile != null) {
-                        AsyncImage(
-                            model = customFile,
-                            contentDescription = currentStretch?.name ?: "Stretch demonstration",
-                            modifier = Modifier
-                                .fillMaxSize()
-                                .scale(scale),
-                            contentScale = ContentScale.Crop
-                        )
-                    } else if (artworkRes != null || effectiveVideoPath != null) {
-                        if (artworkRes != null) {
-                            Image(
-                                painter = painterResource(id = artworkRes),
-                                contentDescription = currentStretch?.name ?: "Stretch demonstration",
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .scale(
-                                        scaleX = (if (effectiveVideoPath == null) scale else 1f) * (if (mirrorLeftSide) -1f else 1f),
-                                        scaleY = if (effectiveVideoPath == null) scale else 1f
-                                    ),
-                                contentScale = ContentScale.Crop
-                            )
+                // LAYER 0: Sliding Base Stretch Video / Image (AnimatedContent wraps ONLY L0 so L1-L3 never reload)
+                AnimatedContent(
+                    targetState = Pair(currentIndex, currentStretch?.id),
+                    transitionSpec = {
+                        val dir = if (targetState.first >= initialState.first && slideDirection >= 0) 1 else -1
+                        (slideInHorizontally(animationSpec = tween(260)) { width -> dir * (width / 2) } +
+                            fadeIn(animationSpec = tween(220))) togetherWith
+                            (slideOutHorizontally(animationSpec = tween(220)) { width -> -dir * (width / 2) } +
+                                fadeOut(animationSpec = tween(180)))
+                    },
+                    label = "player_l0_slide",
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .graphicsLayer {
+                            translationX = swipeOffsetX * 0.35f
                         }
-                        if (effectiveVideoPath != null) {
-                            LoopingStretchVideo(
-                                assetPath = effectiveVideoPath,
-                                isPlaying = state != PlayerState.PAUSED,
-                                isLooping = !isPlayingTransition,
-                                mirrorHorizontal = mirrorLeftSide,
-                                onCompleted = if (isPlayingTransition) onTransitionFinished else null,
-                                modifier = Modifier.fillMaxSize()
-                            )
-                        }
-                    }
+                ) { _ ->
+                    Box(modifier = Modifier.fillMaxSize()) {
+                        Box(modifier = mediaStageModifier) {
+                            if (customFile != null) {
+                                AsyncImage(
+                                    model = customFile,
+                                    contentDescription = currentStretch?.name ?: "Stretch demonstration",
+                                    modifier = Modifier
+                                        .fillMaxSize()
+                                        .scale(scale),
+                                    contentScale = ContentScale.Crop
+                                )
+                            } else if (artworkRes != null || effectiveVideoPath != null) {
+                                if (artworkRes != null) {
+                                    Image(
+                                        painter = painterResource(id = artworkRes),
+                                        contentDescription = currentStretch?.name ?: "Stretch demonstration",
+                                        modifier = Modifier
+                                            .fillMaxSize()
+                                            .scale(
+                                                scaleX = (if (effectiveVideoPath == null) scale else 1f) * (if (mirrorLeftSide) -1f else 1f),
+                                                scaleY = if (effectiveVideoPath == null) scale else 1f
+                                            ),
+                                        contentScale = ContentScale.Crop
+                                    )
+                                }
+                                if (effectiveVideoPath != null) {
+                                    LoopingStretchVideo(
+                                        assetPath = effectiveVideoPath,
+                                        isPlaying = state != PlayerState.PAUSED,
+                                        isLooping = !isPlayingTransition,
+                                        mirrorHorizontal = mirrorLeftSide,
+                                        onCompleted = if (isPlayingTransition) onTransitionFinished else null,
+                                        modifier = Modifier.fillMaxSize()
+                                    )
+                                }
+                            }
 
-                    // Soft feather top/bottom edges in Portrait so the 16:9 stage melts into the studio wall & wood floor
-                    if (isPortraitTall) {
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(18.dp)
-                                .align(Alignment.TopCenter)
-                                .background(
-                                    Brush.verticalGradient(
-                                        colors = listOf(Color(0xFFEBE2D1), Color.Transparent)
-                                    )
+                            // Soft feather top/bottom edges in Portrait so the stage melts into the studio wall & wood floor
+                            if (isPortraitTall) {
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(18.dp)
+                                        .align(Alignment.TopCenter)
+                                        .background(
+                                            Brush.verticalGradient(
+                                                colors = listOf(Color(0xFFEBE2D1), Color.Transparent)
+                                            )
+                                        )
                                 )
-                        )
-                        Box(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .height(20.dp)
-                                .align(Alignment.BottomCenter)
-                                .background(
-                                    Brush.verticalGradient(
-                                        colors = listOf(Color.Transparent, Color(0xFFDCC8AB))
-                                    )
+                                Box(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(20.dp)
+                                        .align(Alignment.BottomCenter)
+                                        .background(
+                                            Brush.verticalGradient(
+                                                colors = listOf(Color.Transparent, Color(0xFFDCC8AB))
+                                            )
+                                        )
                                 )
-                        )
+                            }
+                        }
                     }
                 }
+
+                // LAYERS 1-3: Persistent Studio Overlays (Dog, Candle Warmer/Diffuser, Leaves, Lighting, Air Motes)
+                // Mounted strictly BELOW Layer 4 HUD so stretch name, timer, and buttons are ALWAYS on top!
+                atmosphereOverlay?.invoke()
 
                 // Top overlay scrim: Step badge + Phase badge + Next Up + Music pill (hides cleanly in Zen mode)
                 androidx.compose.animation.AnimatedVisibility(
@@ -662,23 +694,25 @@ fun PlayerArtworkCard(
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Box(modifier = Modifier.weight(1f)) {
-                            androidx.compose.animation.AnimatedVisibility(
-                                visible = showChrome,
-                                enter = fadeIn(tween(220)),
-                                exit = fadeOut(tween(220))
-                            ) {
-                                Column {
-                                    if (currentStretch != null) {
-                                        Text(
-                                            text = currentStretch.name,
-                                            style = MaterialTheme.typography.titleLarge.copy(
-                                                fontWeight = FontWeight.Bold,
-                                                letterSpacing = (-0.3).sp
-                                            ),
-                                            color = Color.White,
-                                            maxLines = 1,
-                                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE)
-                                        )
+                            Column {
+                                if (currentStretch != null) {
+                                    // Current stretch name stays visible even in full-screen Zen mode (above dog & diffuser)
+                                    Text(
+                                        text = currentStretch.name,
+                                        style = MaterialTheme.typography.titleLarge.copy(
+                                            fontWeight = FontWeight.Bold,
+                                            letterSpacing = (-0.3).sp
+                                        ),
+                                        color = Color.White,
+                                        maxLines = 1,
+                                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE)
+                                    )
+                                    // Coaching cue text hides cleanly in full-screen Zen mode
+                                    androidx.compose.animation.AnimatedVisibility(
+                                        visible = showChrome,
+                                        enter = fadeIn(tween(220)),
+                                        exit = fadeOut(tween(220))
+                                    ) {
                                         val cueText = when {
                                             isPlayingTransition && !activeTransitionCue.isNullOrBlank() ->
                                                 activeTransitionCue
@@ -690,16 +724,22 @@ fun PlayerArtworkCard(
                                             else -> ""
                                         }
                                         if (cueText.isNotBlank()) {
-                                            Spacer(modifier = Modifier.height(3.dp))
                                             Text(
                                                 text = cueText,
                                                 style = MaterialTheme.typography.bodySmall,
                                                 color = Color.White.copy(alpha = 0.88f),
                                                 maxLines = 2,
-                                                overflow = TextOverflow.Ellipsis
+                                                overflow = TextOverflow.Ellipsis,
+                                                modifier = Modifier.padding(top = 3.dp)
                                             )
                                         }
-                                    } else {
+                                    }
+                                } else {
+                                    androidx.compose.animation.AnimatedVisibility(
+                                        visible = showChrome,
+                                        enter = fadeIn(tween(220)),
+                                        exit = fadeOut(tween(220))
+                                    ) {
                                         Text(
                                             text = "Ready to stretch",
                                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
