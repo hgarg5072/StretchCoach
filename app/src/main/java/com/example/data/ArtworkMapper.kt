@@ -43,7 +43,35 @@ object ArtworkMapper {
 
         // #84 Tadasana (Mountain Pose Alignment)
         "tadasana (mountain pose alignment)" to R.drawable.img_stretch_standing,
-        "tadasana_mountain_alignment" to R.drawable.img_stretch_standing
+        "tadasana_mountain_alignment" to R.drawable.img_stretch_standing,
+        // Subah Subah routine verified aliases (existing 117 Studio Ghibli videos)
+        "ardha pavanmuktasana (left)" to R.drawable.img_stretch_b1_single_knee_to_chest,
+        "ardha pavanmuktasana (right)" to R.drawable.img_stretch_b1_single_knee_to_chest,
+        "pavanmuktasana" to R.drawable.img_stretch_b4_pavanamuktasana_wind_relieving,
+        "towel hamstring stretch (left)" to R.drawable.img_stretch_b3_supta_padangusthasana,
+        "towel hamstring stretch (right)" to R.drawable.img_stretch_b3_supta_padangusthasana,
+        "nutraj lower back stretch (left)" to R.drawable.img_stretch_b1_reclining_spinal_twist,
+        "nutraj lower back stretch (right)" to R.drawable.img_stretch_b1_reclining_spinal_twist,
+        "hip flexor (left)" to R.drawable.img_stretch_b2_hip_flexor_lunge,
+        "hip flexor (right)" to R.drawable.img_stretch_b2_hip_flexor_lunge,
+        "bhujangasana" to R.drawable.img_stretch_b3_bhujangasana_cobra,
+        "pancake stretch" to R.drawable.img_stretch_b4_upavistha_konasana_wide_angle,
+        "camel stretch" to R.drawable.img_stretch_b3_ustrasana_camel,
+        "child's pose with lat reach (left)" to R.drawable.img_stretch_b1_child_pose_lat_reach,
+        "child's pose with lat reach (right)" to R.drawable.img_stretch_b1_child_pose_lat_reach,
+        "shoulder stretches" to R.drawable.img_stretch_b1_cross_body_shoulder,
+        "overhead triceps & lat reach (left)" to R.drawable.img_stretch_b1_overhead_triceps_lat,
+        "overhead triceps & lat reach (right)" to R.drawable.img_stretch_b1_overhead_triceps_lat,
+        "neck 0 degree (left)" to R.drawable.img_stretch_b1_neck_side,
+        "neck 0 degree (right)" to R.drawable.img_stretch_b1_neck_side,
+        "neck 45 degree (left)" to R.drawable.img_stretch_b1_chin_tuck_levator,
+        "neck 45 degree (right)" to R.drawable.img_stretch_b1_chin_tuck_levator,
+        "neck 90 degree (left)" to R.drawable.img_stretch_b1_scm_neck_turn,
+        "neck 90 degree (right)" to R.drawable.img_stretch_b1_scm_neck_turn,
+        "standing side-bend arc (left)" to R.drawable.img_stretch_b1_standing_side_arc,
+        "standing side-bend arc (right)" to R.drawable.img_stretch_b1_standing_side_arc,
+        "standing side lat reach (left)" to R.drawable.img_stretch_b1_standing_side_reach_lat,
+        "standing side lat reach (right)" to R.drawable.img_stretch_b1_standing_side_reach_lat
     )
 
     @DrawableRes

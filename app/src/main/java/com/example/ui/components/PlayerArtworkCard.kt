@@ -236,7 +236,7 @@ fun PlayerArtworkCard(
         ),
         elevation = CardDefaults.cardElevation(defaultElevation = 2.dp)
     ) {
-        if (hasImage) {
+        if (hasImage || fillAvailableHeight) {
             val containerModifier = if (fillAvailableHeight) {
                 Modifier.fillMaxSize()
             } else {
