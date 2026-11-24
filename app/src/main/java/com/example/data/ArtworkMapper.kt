@@ -95,6 +95,15 @@ object ArtworkMapper {
         val stem = runCatching { context.resources.getResourceEntryName(drawableRes) }.getOrNull()
             ?: return null
         val available = availableVideoFiles(context)
+        val lower = name.lowercase()
+        // Prefer dedicated directional video (e.g. img_stretch_b1_child_pose_lat_reach_left.mp4 / _right.mp4) when bundled
+        if (lower.contains("left")) {
+            val leftFile = "${stem}_left.mp4"
+            if (leftFile in available) return "$VIDEO_ASSETS_DIR/$leftFile"
+        } else if (lower.contains("right")) {
+            val rightFile = "${stem}_right.mp4"
+            if (rightFile in available) return "$VIDEO_ASSETS_DIR/$rightFile"
+        }
         val fileName = "$stem.mp4"
         return if (fileName in available) "$VIDEO_ASSETS_DIR/$fileName" else null
     }

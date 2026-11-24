@@ -207,6 +207,9 @@ object PoseManifestRepository {
         val lower = stretchName.lowercase()
         val mentionsLeft = Regex("\\bleft\\b").containsMatchIn(lower) && !Regex("\\bright\\b").containsMatchIn(lower)
         if (!mentionsLeft) return false
+        // If a dedicated `_left.mp4` video is bundled (e.g. Child's Pose Lat Reach Left), do not double-mirror it
+        val videoPath = ArtworkMapper.getVideoAssetPathForStretch(context, stretchName, category)
+        if (videoPath != null && videoPath.endsWith("_left.mp4")) return false
         val meta = getPoseMetaForStretch(context, stretchName, category)
         return meta?.isUnilateral ?: true
     }

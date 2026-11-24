@@ -84,6 +84,26 @@ class StretchRepository(
                         if (stretches.isNotEmpty()) {
                             stretchDao.insertAll(stretches)
                         }
+                    } else if (defaultRoutine.id == 7L) {
+                        // Sync Steps 24 & 25 of "Subah Subah" from Reclining -> Seated Spinal Twist on existing installs
+                        val currentStretches = stretchDao.getStretchesForRoutineSync(existing.id)
+                        val defaultsByLibId = AppDatabase.createDefaultStretchesForRoutine(7L).associateBy { it.libraryId }
+                        currentStretches.forEach { entity ->
+                            if ((entity.libraryId == "subah_subah_24" || entity.libraryId == "subah_subah_25") &&
+                                entity.name.startsWith("Reclining Spinal Twist", ignoreCase = true)
+                            ) {
+                                defaultsByLibId[entity.libraryId]?.let { updated ->
+                                    stretchDao.updateStretch(
+                                        entity.copy(
+                                            name = updated.name,
+                                            prepCue = updated.prepCue,
+                                            holdCue = updated.holdCue,
+                                            notes = updated.notes
+                                        )
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }

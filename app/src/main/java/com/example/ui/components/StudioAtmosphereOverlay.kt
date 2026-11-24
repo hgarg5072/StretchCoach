@@ -142,38 +142,37 @@ fun StudioAtmosphereOverlay(
             )
         }
 
-        // --- LAYER 1B: Studio Floor Prop (Candle Warmer / Diffuser / Tea / Lantern / Incense) ---
-        // Anchored strictly to `videoRect` and pulled closer inward onto the wooden studio floor
+        // --- LAYER 1B: Studio Floor Prop (Candle Warmer / Lantern / Diffuser / Tea / Incense) ---
+        // Tucked into the outer bottom-right floor corner of videoRect so wide supine poses never overlap the person
         if (resolvedPropSpec != null && poseAnchors.floorProp.visible) {
             val propAnchor = poseAnchors.floorProp
             val propOnLeftWall = propAnchor.leftPct != null && propAnchor.rightPct == null
 
             val targetPropWidth: Dp = if (isPortrait) {
-                (stageWidth * 0.20f).coerceIn(66.dp, 88.dp)
+                (stageWidth * 0.19f).coerceIn(60.dp, 82.dp)
             } else {
-                (videoWidth * 0.16f).coerceIn(72.dp, 108.dp)
+                (videoWidth * 0.135f).coerceIn(58.dp, 88.dp)
             }
             val animPropWidth by animateDpAsState(targetPropWidth, tween(320), label = "prop_w")
 
             val targetPropX: Dp = if (propOnLeftWall) {
-                val leftFrac = (propAnchor.leftPct ?: 20f).coerceAtLeast(20f) / 100f
+                val leftFrac = (propAnchor.leftPct ?: 18f) / 100f
                 videoLeft + (videoWidth * leftFrac)
             } else {
                 val rightMargin = if (isPortrait) {
-                    10.dp // Keeps incense/candle/diffuser cleanly on the wooden floor outside the yoga mat in Portrait
+                    8.dp
                 } else {
-                    (videoWidth * 0.105f).coerceIn(58.dp, 92.dp)
+                    (videoWidth * 0.025f).coerceIn(12.dp, 26.dp)
                 }
-                (videoLeft + videoWidth - animPropWidth - rightMargin).coerceAtLeast(videoLeft + 8.dp)
+                (videoLeft + videoWidth - animPropWidth - rightMargin).coerceAtLeast(videoLeft + 6.dp)
             }
             val animPropX by animateDpAsState(targetPropX, tween(320), label = "prop_x")
 
             val targetPropY: Dp = if (isPortrait) {
-                // Grounded on the lower wooden studio floor right below the mat edge (matching dog's floor plane)
-                (portraitStageHeight * 0.43f) - 14.dp
+                (portraitStageHeight * 0.44f) - 14.dp
             } else {
-                // Grounded on the wooden studio floor just above the circular timer ring
-                if (propOnLeftWall) (stageHeight * 0.24f) else 48.dp
+                // Keep tucked neatly above the bottom-right timer ring, away from supine heads
+                if (propOnLeftWall) (stageHeight * 0.24f) else 56.dp
             }
             val animPropY by animateDpAsState(targetPropY, tween(320), label = "prop_y")
 
@@ -191,33 +190,33 @@ fun StudioAtmosphereOverlay(
             )
         }
 
-        // --- LAYER 1C: Companion Dog grounded on wooden studio floor (larger & anchored to videoRect) ---
+        // --- LAYER 1C: Companion Dog tucked cleanly into the outer bottom-left corner of videoRect ---
         if (dogEnabled && poseAnchors.dog.visible) {
             val targetDogWidth: Dp = if (isPortrait) {
-                (stageWidth * 0.29f).coerceIn(100.dp, 128.dp)
+                (stageWidth * 0.25f).coerceIn(86.dp, 112.dp)
             } else {
-                (videoWidth * 0.21f).coerceIn(88.dp, 134.dp)
+                (videoWidth * 0.165f).coerceIn(72.dp, 108.dp)
             }
             val animDogWidth by animateDpAsState(targetDogWidth, tween(320), label = "dog_w")
 
             val dogLeftDp = if (isPortrait) {
-                (stageWidth * 0.07f).coerceIn(24.dp, 42.dp)
+                8.dp
             } else {
-                videoLeft + (videoWidth * 0.065f).coerceIn(34.dp, 58.dp)
+                videoLeft + (videoWidth * 0.018f).coerceIn(8.dp, 20.dp)
             }
             val animDogX by animateDpAsState(dogLeftDp, tween(320), label = "dog_x")
 
             val dogModifier = if (isPortrait) {
                 Modifier
                     .align(Alignment.CenterStart)
-                    .offset(x = animDogX, y = (portraitStageHeight * 0.42f) - 14.dp)
+                    .offset(x = animDogX, y = (portraitStageHeight * 0.44f) - 14.dp)
                     .width(animDogWidth)
                     .aspectRatio(1f)
             } else {
                 Modifier
                     .align(Alignment.BottomStart)
                     .offset(x = animDogX)
-                    .padding(bottom = 44.dp)
+                    .padding(bottom = 18.dp)
                     .width(animDogWidth)
                     .aspectRatio(1f)
             }

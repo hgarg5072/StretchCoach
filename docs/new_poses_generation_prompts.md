@@ -85,6 +85,27 @@ Use this file to generate the **5 missing poses** from your 52-step routine in t
 
 ---
 
+### 6. Single-Arm Wall Pectoral Opener (Right Arm on Wall — auto-mirrors for Left)
+- **Routine Step:** 50 (`Doorway / Wall Pectoral Opener`)
+- **Reference Style:** Standing side-on beside a wall with one forearm/arm pressed back against the wall at ~90° and turning the chest gently away from the wall to deeply open the pectoral muscle and anterior shoulder.
+- **Image Filename:** `img_stretch_b5_wall_pectoral_opener.jpg`
+- **Video Filename:** `img_stretch_b5_wall_pectoral_opener.mp4`
+- **Posture Hub:** `STANDING` | **Unilateral (`is_unilateral`):** `true`
+- **Image Prompt:**
+  > *[Global Style Anchor]* She is standing sideways next to the right studio wall on the wooden floor: her right forearm and palm are pressed flat vertically against the wall with elbow bent at 90 degrees at shoulder height, while she gently steps her feet slightly forward and rotates her chest and torso open away from the wall toward the center of the studio, left arm relaxed by her side, calm expression.
+- **Video Motion Prompt:**
+  > *Slow, steady 4-second seamless loop: subtle deep chest-opening breath as her torso gently rotates a fraction further away from the wall on the exhale to lengthen the right pectoral and front shoulder, softening slightly on the inhale. Camera completely static, seamless loop.*
+
+---
+
+### 7. Empty Yoga Studio Background (Fallback Stage for Custom / Upcoming Poses)
+- **Usage:** Rendered as the serene room backdrop behind the companion dog, candle warmer/lantern, corner leaves, and dust motes whenever a stretch doesn't have a dedicated pose video yet.
+- **Image Filename:** `img_studio_empty_bg.jpg` *(image only, no video needed)*
+- **Image Prompt:**
+  > *Studio Ghibli-inspired hand-painted watercolor and fine ink illustration of an **empty** warm sunlit Japanese-style yoga studio (NO person, NO dog, NO text). Soft cream plaster walls, wooden-framed window on the left with gentle morning sunbeams, small potted plant on the windowsill, potted terracotta Monstera plant on the left wooden floor, small wooden shelf with ceramic vessels on the back wall, wooden door frame on the far right, warm oak plank flooring, and an empty flat woven beige yoga mat centered on the floor. Exact 16:9 widescreen match to the existing studio background.*
+
+---
+
 ## Confirmation: Shoulder Stretches (`00:31 – 00:47` in Recording)
 
 I reviewed all 4 shoulder stretches you demonstrated at `00:31–00:47` against your existing 117 verified poses:
