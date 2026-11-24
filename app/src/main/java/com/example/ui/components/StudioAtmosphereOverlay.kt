@@ -152,21 +152,26 @@ fun StudioAtmosphereOverlay(
             val animPropWidth by animateDpAsState(targetPropWidth, tween(450), label = "prop_w")
 
             val targetPropX: Dp = if (propOnLeftWall) {
-                val leftFrac = (propAnchor.leftPct ?: 18f) / 100f
+                val leftFrac = (propAnchor.leftPct ?: 20f).coerceAtLeast(20f) / 100f
                 stageWidth * leftFrac
             } else {
-                val rightFrac = (propAnchor.rightPct ?: 2.5f) / 100f
-                (stageWidth - animPropWidth - (stageWidth * rightFrac)).coerceAtLeast(8.dp)
+                // Pull inward from the right wall so Candle Warmer / Diffuser sits squarely on the wooden floor
+                val rightMargin = if (isPortrait) {
+                    (stageWidth * 0.08f).coerceIn(26.dp, 42.dp)
+                } else {
+                    (stageWidth * 0.085f).coerceIn(48.dp, 84.dp)
+                }
+                (stageWidth - animPropWidth - rightMargin).coerceAtLeast(8.dp)
             }
-            val animPropX by animateDpAsState(targetPropX, tween(450), label = "prop_x")
+            val animPropX by animateDpAsState(targetPropX, tween(350), label = "prop_x")
 
             val targetPropY: Dp = if (isPortrait) {
-                (portraitStageHeight * 0.25f) - 14.dp
+                (portraitStageHeight * 0.29f) - 14.dp
             } else {
-                // Keep prop nicely above the circular timer ring on the bottom-right wooden floor
-                if (propOnLeftWall) (stageHeight * 0.22f) else 26.dp
+                // Grounded on the wooden studio floor just above the circular timer ring
+                if (propOnLeftWall) (stageHeight * 0.24f) else 44.dp
             }
-            val animPropY by animateDpAsState(targetPropY, tween(450), label = "prop_y")
+            val animPropY by animateDpAsState(targetPropY, tween(350), label = "prop_y")
 
             ChromaKeyVideoOverlay(
                 assetPath = resolvedPropSpec.first,

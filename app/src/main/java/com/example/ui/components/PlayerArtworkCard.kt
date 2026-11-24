@@ -232,21 +232,15 @@ fun PlayerArtworkCard(
             Box(
                 modifier = containerModifier
                     .clip(RoundedCornerShape(24.dp))
-                    .then(
-                        if (isPortraitTall) {
-                            Modifier.background(
-                                Brush.verticalGradient(
-                                    colors = listOf(
-                                        Color(0xFFE7DEC9), // Warm sunlit Ghibli studio wall
-                                        Color(0xFFEBE2D1),
-                                        Color(0xFFDCC8AB), // Warm wooden studio floor
-                                        Color(0xFFC9AE8B)
-                                    )
-                                )
+                    .background(
+                        Brush.verticalGradient(
+                            colors = listOf(
+                                Color(0xFFE7DEC9), // Warm sunlit Ghibli studio wall
+                                Color(0xFFEBE2D1),
+                                Color(0xFFDCC8AB), // Warm wooden studio floor
+                                Color(0xFFC9AE8B)
                             )
-                        } else {
-                            Modifier
-                        }
+                        )
                     )
                     .border(
                         1.dp,
@@ -271,6 +265,12 @@ fun PlayerArtworkCard(
                         .align(Alignment.Center)
                         .offset(y = (-14).dp)
                         .aspectRatio(1.18f)
+                } else if (fillAvailableHeight) {
+                    // Landscape full-screen: lock to 16:9 matching height so standing poses never chop the head on ultra-wide screens
+                    Modifier
+                        .fillMaxSize()
+                        .align(Alignment.Center)
+                        .aspectRatio(16f / 9f, matchHeightConstraintsFirst = true)
                 } else {
                     Modifier.fillMaxSize()
                 }
