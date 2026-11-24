@@ -144,25 +144,34 @@ fun PlayerArtworkCard(
         label = "scale_anim"
     )
 
-    // Continuous 60fps linear progress animation (zero 1-second stutter/jerkiness)
+    // Continuous 60fps linear progress animation locked 1:1 to each timer tick
+    // (never finishes early during PREPARING TTS intro; completes at 100% exactly when 1 -> 0)
     val smoothProgress = remember { Animatable(progress.coerceIn(0f, 1f)) }
-    LaunchedEffect(state, currentIndex, totalSegmentSeconds) {
+    LaunchedEffect(state, currentIndex, remainingSeconds, totalSegmentSeconds) {
         when (state) {
             PlayerState.PREPARING, PlayerState.HOLDING -> {
-                if (totalSegmentSeconds > 0 && remainingSeconds > 0) {
-                    val startFrac = ((totalSegmentSeconds - remainingSeconds).toFloat() / totalSegmentSeconds)
-                        .coerceIn(0f, 1f)
-                    // If resuming from pause in the same segment, keep current sub-second progress
-                    if (kotlin.math.abs(smoothProgress.value - startFrac) > (1.5f / totalSegmentSeconds.coerceAtLeast(1))) {
-                        smoothProgress.snapTo(startFrac)
-                    }
-                    smoothProgress.animateTo(
-                        targetValue = 1f,
-                        animationSpec = tween(
-                            durationMillis = (remainingSeconds * 1000).coerceAtLeast(1),
-                            easing = LinearEasing
+                if (totalSegmentSeconds > 0) {
+                    if (remainingSeconds <= 0) {
+                        smoothProgress.snapTo(1f)
+                    } else if (state == PlayerState.PREPARING && remainingSeconds == totalSegmentSeconds) {
+                        // Hold at 0% while TTS intro speaks before the actual countdown begins
+                        smoothProgress.snapTo(0f)
+                    } else {
+                        val elapsed = (totalSegmentSeconds - remainingSeconds).coerceIn(0, totalSegmentSeconds)
+                        val startFrac = (elapsed.toFloat() / totalSegmentSeconds).coerceIn(0f, 1f)
+                        val nextFrac = ((elapsed + 1).toFloat() / totalSegmentSeconds).coerceIn(0f, 1f)
+                        // Snap only if we jumped to a different stretch/segment; otherwise continue seamlessly
+                        if (kotlin.math.abs(smoothProgress.value - startFrac) > (1.5f / totalSegmentSeconds.coerceAtLeast(1))) {
+                            smoothProgress.snapTo(startFrac)
+                        }
+                        smoothProgress.animateTo(
+                            targetValue = nextFrac,
+                            animationSpec = tween(
+                                durationMillis = 1000,
+                                easing = LinearEasing
+                            )
                         )
-                    )
+                    }
                 } else {
                     smoothProgress.snapTo(0f)
                 }
