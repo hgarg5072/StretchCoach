@@ -20,3 +20,11 @@ View your app in AI Studio: https://ai.studio/apps/e03c86f2-0daa-415a-81b3-6bcb9
 5. Remove this line from the app's `build.gradle.kts` file: `signingConfig = signingConfigs.getByName("debugConfig")`
 6. Run the app on an emulator or physical device
 7. If you have already published your app in AI Studio, please [request upload key reset](https://support.google.com/googleplay/android-developer/answer/9842756#zippy=%2Crequest-an-upload-key-reset) in Google Play Console.
+
+## Reference Videos & Asset Specs
+
+- **Recorded Custom Stretches Reference (`Spine Alignment`, `Scapula Stretch`, `Shoulder Stretches`):** https://drive.google.com/file/d/1irYd7QxWxeF4v57BCdu8PrWBySD2bwQ1/view
+- **52-Step Routine Walkthrough Recording:** https://drive.google.com/file/d/1Csj_XEKOpQIu9Vn3yLiD1N_xXKCJnNpC/view
+- **Shared Studio Assets & APK Folder:** https://drive.google.com/drive/folders/1K8UG0yUtaxtDtEzZj4VGnCrVHo4nXhe-
+- **Batch 5 Image & Video Generation Spec:** [`docs/new_poses_generation_prompts.md`](docs/new_poses_generation_prompts.md)
+- **52-Step Routine Analysis:** [`docs/whatsapp_routine_analysis.md`](docs/whatsapp_routine_analysis.md)
