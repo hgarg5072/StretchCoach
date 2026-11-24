@@ -60,8 +60,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.scale
+import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shadow
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
@@ -672,7 +674,7 @@ fun PlayerArtworkCard(
                 }
                 }
 
-                // Bottom overlay: Stretch name + cues (hidden in Zen mode) + Countdown Clock (always visible)
+                // Bottom overlay: Stretch name (always visible; shifts down into frosted espresso pill in Zen mode) + Countdown Clock
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -682,40 +684,66 @@ fun PlayerArtworkCard(
                                 Brush.verticalGradient(
                                     colors = listOf(
                                         Color.Transparent,
-                                        Color.Black.copy(alpha = 0.45f),
-                                        Color.Black.copy(alpha = 0.82f)
+                                        Color.Black.copy(alpha = 0.50f),
+                                        Color.Black.copy(alpha = 0.86f)
                                     )
                                 )
                             } else {
                                 Brush.verticalGradient(
                                     colors = listOf(
                                         Color.Transparent,
-                                        Color.Black.copy(alpha = 0.28f)
+                                        Color.Black.copy(alpha = 0.24f)
                                     )
                                 )
                             }
                         )
-                        .padding(start = 16.dp, end = 16.dp, top = 22.dp, bottom = 14.dp)
+                        .padding(
+                            start = 16.dp,
+                            end = 16.dp,
+                            top = if (showChrome) 22.dp else 10.dp,
+                            bottom = 12.dp
+                        )
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = Alignment.CenterVertically,
+                        verticalAlignment = if (showChrome) Alignment.CenterVertically else Alignment.Bottom,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Box(modifier = Modifier.weight(1f)) {
                             Column {
                                 if (currentStretch != null) {
-                                    // Current stretch name stays visible even in full-screen Zen mode (above dog & diffuser)
-                                    Text(
-                                        text = currentStretch.name,
-                                        style = MaterialTheme.typography.titleLarge.copy(
-                                            fontWeight = FontWeight.Bold,
-                                            letterSpacing = (-0.3).sp
-                                        ),
-                                        color = Color.White,
-                                        maxLines = 1,
-                                        modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE)
-                                    )
+                                    // High-contrast warm ivory title; in full-screen Zen mode shifts to bottom inside a warm espresso pill
+                                    Box(
+                                        modifier = if (!showChrome) {
+                                            Modifier
+                                                .clip(RoundedCornerShape(14.dp))
+                                                .background(Color(0xC41C1917))
+                                                .border(
+                                                    width = 0.75.dp,
+                                                    color = Color(0x48FFF8EB),
+                                                    shape = RoundedCornerShape(14.dp)
+                                                )
+                                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                                        } else {
+                                            Modifier
+                                        }
+                                    ) {
+                                        Text(
+                                            text = currentStretch.name,
+                                            style = (if (showChrome) MaterialTheme.typography.titleLarge else MaterialTheme.typography.titleMedium).copy(
+                                                fontWeight = FontWeight.Bold,
+                                                letterSpacing = (-0.25).sp,
+                                                shadow = Shadow(
+                                                    color = Color.Black.copy(alpha = 0.65f),
+                                                    offset = Offset(0f, 2f),
+                                                    blurRadius = 6f
+                                                )
+                                            ),
+                                            color = Color(0xFFFFFBF2),
+                                            maxLines = 1,
+                                            modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE)
+                                        )
+                                    }
                                     // Coaching cue text hides cleanly in full-screen Zen mode
                                     androidx.compose.animation.AnimatedVisibility(
                                         visible = showChrome,
@@ -736,7 +764,7 @@ fun PlayerArtworkCard(
                                             Text(
                                                 text = cueText,
                                                 style = MaterialTheme.typography.bodySmall,
-                                                color = Color.White.copy(alpha = 0.88f),
+                                                color = Color(0xFFF5EFE6).copy(alpha = 0.92f),
                                                 maxLines = 2,
                                                 overflow = TextOverflow.Ellipsis,
                                                 modifier = Modifier.padding(top = 3.dp)
@@ -752,7 +780,7 @@ fun PlayerArtworkCard(
                                         Text(
                                             text = "Ready to stretch",
                                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                                            color = Color.White
+                                            color = Color(0xFFFFFBF2)
                                         )
                                     }
                                 }
