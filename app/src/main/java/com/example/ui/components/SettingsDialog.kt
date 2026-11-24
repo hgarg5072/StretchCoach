@@ -392,7 +392,7 @@ fun SettingsDialog(
                     }
 
                     Text(
-                        text = "Background Aroma Prop",
+                        text = "Studio Floor Prop (Auto syncs Tea / Candle / Lantern)",
                         style = MaterialTheme.typography.labelMedium,
                         color = MaterialTheme.colorScheme.onSurfaceVariant
                     )
@@ -432,16 +432,16 @@ fun SettingsDialog(
                         tag = "toggle_companion_dog"
                     )
                     SettingToggleRow(
-                        title = "Swaying Corner Leaves",
-                        subtitle = "Subtle Ghibli studio foliage in top-left corner",
+                        title = "Window Wind Chime & Leaves",
+                        subtitle = "Ghibli glass furin chime & foliage in Day/Sunset",
                         checked = settings.swayingLeavesEnabled,
                         enabled = true,
                         onCheckedChange = onToggleSwayingLeaves,
                         tag = "toggle_swaying_leaves"
                     )
                     SettingToggleRow(
-                        title = "Sunbeams & Dust Motes",
-                        subtitle = "Soft glowing light rays floating across studio",
+                        title = "Dust Motes & Night Fireflies",
+                        subtitle = "Procedural floating sunlit motes & glowing fireflies",
                         checked = settings.sunbeamsEnabled,
                         enabled = true,
                         onCheckedChange = onToggleSunbeams,

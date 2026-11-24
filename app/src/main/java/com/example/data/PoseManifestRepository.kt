@@ -17,12 +17,29 @@ enum class PostureHub(val flowRank: Int) {
     }
 }
 
+data class OverlayAnchorRect(
+    val leftPct: Float? = null,
+    val rightPct: Float? = null,
+    val topPct: Float? = null,
+    val bottomPct: Float? = null,
+    val widthPct: Float = 16f,
+    val visible: Boolean = true
+)
+
+data class PoseOverlayAnchors(
+    val dog: OverlayAnchorRect = OverlayAnchorRect(leftPct = 2f, bottomPct = 1.5f, widthPct = 18f, visible = true),
+    val floorProp: OverlayAnchorRect = OverlayAnchorRect(rightPct = 2f, bottomPct = 1.5f, widthPct = 15f, visible = true),
+    val windChime: OverlayAnchorRect = OverlayAnchorRect(leftPct = 3f, topPct = 0f, widthPct = 12f, visible = true)
+)
+
 data class PoseManifestEntry(
     val id: String,
     val displayName: String,
     val postureHub: PostureHub,
     val category: String,
-    val isUnilateral: Boolean
+    val isUnilateral: Boolean,
+    val roomLayout: String = "standard_center",
+    val overlayAnchors: PoseOverlayAnchors = PoseOverlayAnchors()
 ) {
     val isRestorativeOrPranayama: Boolean
         get() = category.equals("restorative", ignoreCase = true) ||
@@ -106,18 +123,42 @@ object PoseManifestRepository {
                 val p = posesArr.optJSONObject(i) ?: continue
                 val id = p.optString("id").trim()
                 if (id.isBlank()) continue
+                val anchorsObj = p.optJSONObject("overlay_anchors")
+                val parsedAnchors = if (anchorsObj != null) {
+                    PoseOverlayAnchors(
+                        dog = parseAnchor(anchorsObj.optJSONObject("dog"), PoseOverlayAnchors().dog),
+                        floorProp = parseAnchor(anchorsObj.optJSONObject("floor_prop"), PoseOverlayAnchors().floorProp),
+                        windChime = parseAnchor(anchorsObj.optJSONObject("wind_chime"), PoseOverlayAnchors().windChime)
+                    )
+                } else {
+                    PoseOverlayAnchors()
+                }
                 poseMap[id] = PoseManifestEntry(
                     id = id,
                     displayName = p.optString("display_name").trim(),
                     postureHub = PostureHub.fromString(p.optString("posture_hub")),
                     category = p.optString("category").trim(),
-                    isUnilateral = p.optBoolean("is_unilateral", false)
+                    isUnilateral = p.optBoolean("is_unilateral", false),
+                    roomLayout = p.optString("room_layout", "standard_center").trim(),
+                    overlayAnchors = parsedAnchors
                 )
             }
         }
 
         transitionsByKey = transMap
         posesByStem = poseMap
+    }
+
+    private fun parseAnchor(obj: JSONObject?, fallback: OverlayAnchorRect): OverlayAnchorRect {
+        if (obj == null) return fallback
+        return OverlayAnchorRect(
+            leftPct = if (obj.has("left_pct")) obj.optDouble("left_pct").toFloat() else null,
+            rightPct = if (obj.has("right_pct")) obj.optDouble("right_pct").toFloat() else null,
+            topPct = if (obj.has("top_pct")) obj.optDouble("top_pct").toFloat() else null,
+            bottomPct = if (obj.has("bottom_pct")) obj.optDouble("bottom_pct").toFloat() else null,
+            widthPct = if (obj.has("width_pct")) obj.optDouble("width_pct").toFloat() else fallback.widthPct,
+            visible = obj.optBoolean("visible", fallback.visible)
+        )
     }
 
     fun getPoseMetaByStem(context: Context, stem: String?): PoseManifestEntry? {

@@ -77,4 +77,36 @@ class PoseManifestUnitTest {
         assertEquals(30, quick.size)
         assertTrue(quick.all { it.preparationSeconds == 5 && it.holdSeconds == 6 })
     }
+
+    @Test
+    fun overlayAnchorsAndAll15StudioOverlaysAreBundled() {
+        PoseManifestRepository.ensureLoaded(context)
+        val catCow = PoseManifestRepository.getPoseMetaByStem(context, "img_stretch_b1_cat_cow_flow")
+        assertTrue(catCow != null)
+        assertTrue(catCow!!.overlayAnchors.dog.visible)
+        assertTrue(catCow.overlayAnchors.floorProp.visible)
+        assertTrue(catCow.overlayAnchors.windChime.visible)
+
+        val overlays = context.assets.list("stretch_overlays")?.toSet().orEmpty()
+        val expected = listOf(
+            "overlay_dog_idle_rest_chromakey.mp4",
+            "overlay_dog_playful_stretch_chromakey.mp4",
+            "overlay_dog_nap_curled_chromakey.mp4",
+            "overlay_dog_celebrate_chromakey.mp4",
+            "overlay_dog_head_tilt_curious_chromakey.mp4",
+            "overlay_dog_yawn_sleepy_chromakey.mp4",
+            "overlay_dog_belly_roll_chromakey.mp4",
+            "overlay_dog_paw_wave_chromakey.mp4",
+            "overlay_ghibli_tea_set_chromakey.mp4",
+            "overlay_ghibli_candle_warmer_chromakey.mp4",
+            "overlay_ghibli_washi_lantern_chromakey.mp4",
+            "overlay_ghibli_wind_chime_chromakey.mp4",
+            "overlay_aroma_diffuser_mist_chromakey.mp4",
+            "overlay_incense_holder_smoke_chromakey.mp4",
+            "overlay_leaves_sway_corner_chromakey.mp4"
+        )
+        expected.forEach { file ->
+            assertTrue("Missing bundled overlay asset: $file", overlays.contains(file))
+        }
+    }
 }

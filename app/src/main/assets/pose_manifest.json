@@ -70,13 +70,27 @@
       "idle": "overlay_dog_idle_rest.webm",
       "stretch": "overlay_dog_playful_stretch.webm",
       "nap": "overlay_dog_nap_curled.webm",
-      "celebrate": "overlay_dog_celebrate.webm"
+      "celebrate": "overlay_dog_celebrate.webm",
+      "head_tilt": "overlay_dog_head_tilt_curious.webm",
+      "yawn": "overlay_dog_yawn_sleepy.webm",
+      "belly_roll": "overlay_dog_belly_roll.webm",
+      "paw_wave": "overlay_dog_paw_wave.webm"
     },
     "ambient": {
       "aroma_diffuser": "overlay_aroma_diffuser_mist.webm",
       "incense_smoke": "overlay_incense_holder_smoke.webm",
       "swaying_leaves": "overlay_leaves_sway_corner.webm",
       "sunbeams_motes": "overlay_sunbeams_motes_screen_blend.mp4"
+    },
+    "ghibli_floor_props": {
+      "tea_set": "overlay_ghibli_tea_set.webm",
+      "candle_warmer": "overlay_ghibli_candle_warmer.webm",
+      "washi_lantern": "overlay_ghibli_washi_lantern.webm",
+      "incense_smoke": "overlay_incense_holder_smoke.webm",
+      "aroma_diffuser": "overlay_aroma_diffuser_mist.webm"
+    },
+    "ghibli_top_anchor": {
+      "wind_chime": "overlay_ghibli_wind_chime.webm"
     }
   },
   "poses": [
@@ -90,7 +104,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_child_pose_lat_reach",
@@ -102,7 +138,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_child_pose_lat_reach_left",
@@ -114,7 +172,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "overhead_mat",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 3.0,
+          "bottom_pct": 4.0,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 4.0,
+          "bottom_pct": 4.0,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_child_pose_lat_reach_right",
@@ -126,7 +206,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "overhead_mat",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 3.0,
+          "bottom_pct": 4.0,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 4.0,
+          "bottom_pct": 4.0,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_chin_tuck_levator",
@@ -138,7 +240,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_cobra_gentle",
@@ -150,7 +274,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_cross_body_shoulder",
@@ -162,7 +308,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_doorway_chest_opener",
@@ -174,7 +342,30 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "right_wall",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.5,
+          "bottom_pct": 1.5,
+          "width_pct": 16.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "left_pct": 18.0,
+          "bottom_pct": 2.5,
+          "width_pct": 12.5,
+          "visible": true,
+          "note": "shifted_left_of_wall"
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_eagle_arms",
@@ -186,7 +377,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_interlaced_chest_expansion",
@@ -198,7 +411,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_neck_side",
@@ -210,7 +445,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_overhead_triceps_lat",
@@ -222,7 +479,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_puppy_pose_melting_heart",
@@ -234,7 +513,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_reclining_spinal_twist",
@@ -246,7 +547,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "right",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "right_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_restorative_child_pose",
@@ -258,7 +581,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_scm_neck_turn",
@@ -270,7 +615,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_seated_spinal_twist",
@@ -282,7 +649,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_single_knee_to_chest",
@@ -294,7 +683,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_sphinx_pose",
@@ -306,7 +717,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_standing_side_arc",
@@ -318,7 +751,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_standing_side_reach_lat",
@@ -330,7 +785,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_supine_knees_to_chest",
@@ -342,7 +819,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_thread_the_needle",
@@ -354,7 +853,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_wrist_extensor",
@@ -366,7 +887,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_wrist_flexor",
@@ -378,7 +921,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b1_wrist_rotations",
@@ -390,7 +955,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_downward_dog_pedal",
@@ -402,7 +989,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_figure_four_glute",
@@ -414,7 +1023,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_hip_flexor_lunge",
@@ -426,7 +1057,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_lizard_lunge_hip",
@@ -438,7 +1091,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_ninety_ninety_hip",
@@ -450,7 +1125,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_pigeon_pose",
@@ -462,7 +1159,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_plantar_fascia_toe_tuck",
@@ -474,7 +1193,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_pyramid_pose_stretch",
@@ -486,7 +1227,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_seated_butterfly",
@@ -498,7 +1261,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_seated_single_leg_fold",
@@ -510,7 +1295,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_side_lying_quad",
@@ -522,7 +1329,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_single_leg_hamstring_heel",
@@ -534,7 +1363,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_standing_hamstring_fold",
@@ -546,7 +1397,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_standing_quad",
@@ -558,7 +1431,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_wall_calf_gastrocnemius",
@@ -570,7 +1465,30 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "right_wall",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.5,
+          "bottom_pct": 1.5,
+          "width_pct": 16.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "left_pct": 18.0,
+          "bottom_pct": 2.5,
+          "width_pct": 12.5,
+          "visible": true,
+          "note": "shifted_left_of_wall"
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_wall_soleus_bent_knee",
@@ -582,7 +1500,30 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "right_wall",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.5,
+          "bottom_pct": 1.5,
+          "width_pct": 16.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "left_pct": 18.0,
+          "bottom_pct": 2.5,
+          "width_pct": 12.5,
+          "visible": true,
+          "note": "shifted_left_of_wall"
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b2_wide_legged_straddle_fold",
@@ -594,7 +1535,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_ananda_balasana_happy_baby",
@@ -606,7 +1569,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_anjaneyasana_low_lunge",
@@ -618,7 +1603,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_ardha_matsyendrasana",
@@ -630,7 +1637,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_baddha_konasana_butterfly",
@@ -642,7 +1671,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_bhujangasana_cobra",
@@ -654,7 +1705,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_bitilasana_cow",
@@ -666,7 +1739,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_dhanurasana_bow",
@@ -678,7 +1773,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_garudasana_eagle",
@@ -690,7 +1807,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_goddess_pose",
@@ -702,7 +1841,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_gomukhasana_arms",
@@ -714,7 +1875,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_halasana_plow",
@@ -726,7 +1909,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_janu_sirsasana",
@@ -738,7 +1943,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_malasana_squat",
@@ -750,7 +1977,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_marjaryasana_cat_pose",
@@ -762,7 +2011,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_matsyasana_fish",
@@ -774,7 +2045,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_parsvottanasana_pyramid",
@@ -786,7 +2079,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_paschimottanasana_forward_fold",
@@ -798,7 +2113,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_prasarita_padottanasana",
@@ -810,7 +2147,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_salabhasana_locust",
@@ -822,7 +2181,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_setu_bandhasana_bridge",
@@ -834,7 +2215,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_shavasana_corpse",
@@ -846,7 +2249,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_supta_baddha_konasana",
@@ -858,7 +2283,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_supta_matsyendrasana",
@@ -870,7 +2317,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_supta_padangusthasana",
@@ -882,7 +2351,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_trikonasana_triangle",
@@ -894,7 +2385,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_urdhva_mukha_svanasana",
@@ -906,7 +2419,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_ustrasana_camel",
@@ -918,7 +2453,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_utkatasana_chair",
@@ -930,7 +2487,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_uttanasana_forward_fold",
@@ -942,7 +2521,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b3_viparita_karani",
@@ -954,7 +2555,30 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "right_wall",
+      "window_side": "right",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.5,
+          "bottom_pct": 1.5,
+          "width_pct": 16.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "left_pct": 18.0,
+          "bottom_pct": 2.5,
+          "width_pct": 12.5,
+          "visible": true,
+          "note": "shifted_left_of_wall"
+        },
+        "wind_chime": {
+          "right_pct": 20.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": false
+        }
+      }
     },
     {
       "id": "img_stretch_b3_virabhadrasana_one",
@@ -966,7 +2590,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_anulom_vilom_pranayama",
@@ -978,7 +2624,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "right",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "right_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_ardha_chandrasana_half_moon",
@@ -990,7 +2658,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_ardha_padmasana_half_lotus",
@@ -1002,7 +2692,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_bakasana_crow",
@@ -1014,7 +2726,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_bharadvajasana_twist",
@@ -1026,7 +2760,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_bhramari_pranayama",
@@ -1038,7 +2794,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "right",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "right_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_chakrasana_wheel",
@@ -1050,7 +2828,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "right",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "right_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_chaturanga_dandasana",
@@ -1062,7 +2862,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_dandasana_staff",
@@ -1074,7 +2896,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_hanumanasana_split",
@@ -1086,7 +2930,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_kurmasana_tortoise",
@@ -1098,7 +2964,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_makarasana_crocodile",
@@ -1110,7 +2998,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_mandukasana_frog",
@@ -1122,7 +3032,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_mayurasana_peacock",
@@ -1134,7 +3066,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_natarajasana_dancer",
@@ -1146,7 +3100,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_naukasana_boat",
@@ -1158,7 +3134,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_padahastasana_hand_to_foot",
@@ -1170,7 +3168,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_padmasana_lotus",
@@ -1182,7 +3202,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_parighasana_gate",
@@ -1194,7 +3236,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "right",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "right_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_parivrtta_trikonasana",
@@ -1206,7 +3270,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "right",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "right_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_pavanamuktasana_wind_relieving",
@@ -1218,7 +3304,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_phalakasana_plank",
@@ -1230,7 +3338,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "right",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "right_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_purvottanasana_upward_plank",
@@ -1242,7 +3372,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_sarvangasana_shoulderstand",
@@ -1254,7 +3406,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_siddhasana_accomplished",
@@ -1266,7 +3440,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_simhasana_lion",
@@ -1278,7 +3474,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_sirsasana_headstand",
@@ -1290,7 +3508,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_skandasana_side_lunge",
@@ -1302,7 +3542,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "right",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "right_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_sukhasana_easy_pose",
@@ -1314,7 +3576,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_supta_virasana_reclining_hero",
@@ -1326,7 +3610,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "wide_floor",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 1.0,
+          "bottom_pct": 0.8,
+          "width_pct": 15.5,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 1.2,
+          "bottom_pct": 1.0,
+          "width_pct": 13.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_tolasana_scale",
@@ -1338,7 +3644,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_ujjayi_pranayama",
@@ -1350,7 +3678,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "right",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "right_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_upavistha_konasana_wide_angle",
@@ -1362,7 +3712,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "right",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "right_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_utthita_parsvakonasana",
@@ -1374,7 +3746,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_vajrasana_thunderbolt",
@@ -1386,7 +3780,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_vasisthasana_side_plank",
@@ -1398,7 +3814,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_virabhadrasana_three",
@@ -1410,7 +3848,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_b4_virasana_hero",
@@ -1422,7 +3882,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_child",
@@ -1434,7 +3916,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_downward_dog",
@@ -1446,7 +3950,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_standing",
@@ -1458,7 +3984,29 @@
       "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_tree",
@@ -1470,7 +4018,29 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     },
     {
       "id": "img_stretch_warrior",
@@ -1482,7 +4052,49 @@
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right"
+      "diffuser_safe_corner": "bottom_right",
+      "room_layout": "standard_center",
+      "window_side": "left",
+      "overlay_anchors": {
+        "dog": {
+          "left_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 18.0,
+          "visible": true
+        },
+        "floor_prop": {
+          "right_pct": 2.0,
+          "bottom_pct": 1.5,
+          "width_pct": 15.0,
+          "visible": true
+        },
+        "wind_chime": {
+          "left_pct": 3.0,
+          "top_pct": 0.0,
+          "width_pct": 12.0,
+          "visible": true
+        }
+      }
     }
-  ]
+  ],
+  "mode_presets": {
+    "day": {
+      "dog": "idle",
+      "floor_prop": "tea_set",
+      "top_anchor": "wind_chime",
+      "air": "sunbeams_motes"
+    },
+    "sunset": {
+      "dog": "stretch",
+      "floor_prop": "candle_warmer",
+      "top_anchor": "wind_chime",
+      "air": "sunbeams_motes"
+    },
+    "night": {
+      "dog": "nap",
+      "floor_prop": "washi_lantern",
+      "top_anchor": null,
+      "air": "fireflies"
+    }
+  }
 }

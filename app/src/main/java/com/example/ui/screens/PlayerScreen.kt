@@ -184,11 +184,13 @@ fun PlayerScreen(
             }
             .testTag("player_screen")
     ) {
-        val isRestorativePose = remember(currentStretch?.name, currentStretch?.category) {
+        val currentPoseMeta = remember(currentStretch?.name, currentStretch?.category) {
             currentStretch?.let {
-                PoseManifestRepository.getPoseMetaForStretch(context, it.name, it.category)?.isRestorativeOrPranayama
-            } ?: false
+                PoseManifestRepository.getPoseMetaForStretch(context, it.name, it.category)
+            }
         }
+        val isRestorativePose = currentPoseMeta?.isRestorativeOrPranayama == true
+        val poseAnchors = currentPoseMeta?.overlayAnchors ?: com.example.data.PoseOverlayAnchors()
 
         // Hide studio overlays cleanly during stretch slide animations or active horizontal swipe gestures
         val stretchSlideKey = Pair(playerState.currentStretchIndex, currentStretch?.id)
@@ -266,6 +268,8 @@ fun PlayerScreen(
                     dogEnabled = companionDogEnabled,
                     leavesEnabled = swayingLeavesEnabled,
                     sunbeamsEnabled = sunbeamsEnabled,
+                    poseAnchors = poseAnchors,
+                    stretchIndex = playerState.currentStretchIndex,
                     overlayAlpha = overlayAlpha,
                     modifier = Modifier.fillMaxSize()
                 )
