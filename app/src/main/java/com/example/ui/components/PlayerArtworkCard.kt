@@ -35,8 +35,10 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.MusicNote
 import androidx.compose.material.icons.filled.MusicOff
+import androidx.compose.material.icons.filled.ScreenRotation
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material.icons.filled.SkipNext
 import androidx.compose.material3.Card
@@ -93,6 +95,9 @@ fun PlayerArtworkCard(
     onCycleAmbientSoundscape: (() -> Unit)? = null,
     onNavigateBack: (() -> Unit)? = null,
     onOpenSettings: (() -> Unit)? = null,
+    onToggleOrientation: (() -> Unit)? = null,
+    showLandscapeHint: Boolean = false,
+    onDismissLandscapeHint: (() -> Unit)? = null,
     showChrome: Boolean = true,
     onToggleChrome: (() -> Unit)? = null,
     activeTransitionVideoPath: String? = null,
@@ -422,6 +427,28 @@ fun PlayerArtworkCard(
                                 )
                             }
 
+                            if (onToggleOrientation != null) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.Black.copy(alpha = 0.50f))
+                                        .clickable(onClick = {
+                                            onDismissLandscapeHint?.invoke()
+                                            onToggleOrientation()
+                                        })
+                                        .testTag("player_rotate_button"),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ScreenRotation,
+                                        contentDescription = "Switch Portrait / Landscape",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
+                            }
+
                             if (onOpenSettings != null) {
                                 Box(
                                     modifier = Modifier
@@ -526,6 +553,77 @@ fun PlayerArtworkCard(
                                     color = Color.White,
                                     maxLines = 1,
                                     overflow = TextOverflow.Ellipsis
+                                )
+                            }
+                        }
+                    }
+
+                    // One-time Landscape Viewing Tip (auto-dismisses and never repeats)
+                    androidx.compose.animation.AnimatedVisibility(
+                        visible = showLandscapeHint,
+                        enter = fadeIn(tween(240)),
+                        exit = fadeOut(tween(240))
+                    ) {
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(Color.Black.copy(alpha = 0.70f))
+                                .border(
+                                    width = 0.75.dp,
+                                    color = Color.White.copy(alpha = 0.28f),
+                                    shape = RoundedCornerShape(14.dp)
+                                )
+                                .padding(horizontal = 10.dp, vertical = 7.dp)
+                                .testTag("landscape_hint_banner"),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.ScreenRotation,
+                                contentDescription = null,
+                                tint = Color(0xFF5EEAD4),
+                                modifier = Modifier.size(16.dp)
+                            )
+                            Text(
+                                text = "Use landscape mode for better viewing",
+                                style = MaterialTheme.typography.labelSmall.copy(
+                                    fontWeight = FontWeight.Medium
+                                ),
+                                color = Color.White,
+                                modifier = Modifier.weight(1f),
+                                maxLines = 1,
+                                overflow = TextOverflow.Ellipsis
+                            )
+                            if (onToggleOrientation != null) {
+                                Box(
+                                    modifier = Modifier
+                                        .clip(RoundedCornerShape(10.dp))
+                                        .background(Color(0xFF0D9488))
+                                        .clickable {
+                                            onDismissLandscapeHint?.invoke()
+                                            onToggleOrientation()
+                                        }
+                                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                                        .testTag("landscape_hint_switch_button")
+                                ) {
+                                    Text(
+                                        text = "Switch",
+                                        style = MaterialTheme.typography.labelSmall.copy(
+                                            fontWeight = FontWeight.Bold
+                                        ),
+                                        color = Color.White
+                                    )
+                                }
+                            }
+                            if (onDismissLandscapeHint != null) {
+                                Icon(
+                                    imageVector = Icons.Default.Close,
+                                    contentDescription = "Dismiss tip",
+                                    tint = Color.White.copy(alpha = 0.78f),
+                                    modifier = Modifier
+                                        .size(16.dp)
+                                        .clickable(onClick = onDismissLandscapeHint)
                                 )
                             }
                         }
@@ -720,6 +818,28 @@ fun PlayerArtworkCard(
                                     color = phaseTextColor
                                 )
                             }
+                            if (onToggleOrientation != null) {
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clip(CircleShape)
+                                        .background(Color.Black.copy(alpha = 0.50f))
+                                        .clickable(onClick = {
+                                            onDismissLandscapeHint?.invoke()
+                                            onToggleOrientation()
+                                        })
+                                        .testTag("player_rotate_button"),
+                                    contentAlignment = Alignment.Center
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.ScreenRotation,
+                                        contentDescription = "Switch Portrait / Landscape",
+                                        tint = Color.White,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
+                            }
+
                             if (onOpenSettings != null) {
                                 Box(
                                     modifier = Modifier

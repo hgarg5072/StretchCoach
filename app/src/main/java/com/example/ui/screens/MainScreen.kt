@@ -138,22 +138,11 @@ fun MainScreen(
                         selected = selectedTab == 1,
                         onClick = { viewModel.selectTab(1) },
                         icon = {
-                            BadgedBox(
-                                badge = {
-                                    if (playerState.isRunning) {
-                                        Badge(
-                                            containerColor = if (playerState.state == PlayerState.HOLDING) CoralHold else CyanPrep,
-                                            modifier = Modifier.size(8.dp)
-                                        )
-                                    }
-                                }
-                            ) {
-                                Icon(
-                                    imageVector = if (selectedTab == 1) Icons.Filled.PlayCircle else Icons.Outlined.PlayCircleOutline,
-                                    contentDescription = "Player",
-                                    modifier = Modifier.size(24.dp)
-                                )
-                            }
+                            Icon(
+                                imageVector = if (selectedTab == 1) Icons.Filled.PlayCircle else Icons.Outlined.PlayCircleOutline,
+                                contentDescription = "Player",
+                                modifier = Modifier.size(24.dp)
+                            )
                         },
                         label = {
                             Text(

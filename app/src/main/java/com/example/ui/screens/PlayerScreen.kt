@@ -1,6 +1,8 @@
 package com.example.ui.screens
 
 import android.app.Activity
+import android.content.Context
+import android.content.pm.ActivityInfo
 import android.content.res.Configuration
 import android.view.WindowManager
 import androidx.compose.animation.AnimatedContent
@@ -97,6 +99,40 @@ fun PlayerScreen(
         }
         onDispose {
             window?.clearFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON)
+        }
+    }
+
+    // Restore normal auto-rotate when leaving the Player screen
+    DisposableEffect(Unit) {
+        onDispose {
+            (context as? Activity)?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
+
+    val toggleOrientation: () -> Unit = {
+        val act = context as? Activity
+        if (act != null) {
+            act.requestedOrientation = if (isLandscape) {
+                ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+            } else {
+                ActivityInfo.SCREEN_ORIENTATION_SENSOR_LANDSCAPE
+            }
+        }
+    }
+
+    // One-time tip in Portrait encouraging landscape mode for better viewing (shown once only)
+    var showLandscapeHint by remember { mutableStateOf(false) }
+    LaunchedEffect(isLandscape) {
+        if (isLandscape) {
+            showLandscapeHint = false
+        } else {
+            val prefs = context.getSharedPreferences("stretch_coach_prefs", Context.MODE_PRIVATE)
+            if (!prefs.getBoolean("landscape_view_hint_shown", false)) {
+                prefs.edit().putBoolean("landscape_view_hint_shown", true).apply()
+                showLandscapeHint = true
+                delay(7000L)
+                showLandscapeHint = false
+            }
         }
     }
 
@@ -202,6 +238,9 @@ fun PlayerScreen(
                         onCycleAmbientSoundscape = onCycleAmbientSoundscape,
                         onNavigateBack = onNavigateBack,
                         onOpenSettings = onOpenSettings,
+                        onToggleOrientation = toggleOrientation,
+                        showLandscapeHint = showLandscapeHint && !isLandscape,
+                        onDismissLandscapeHint = { showLandscapeHint = false },
                         showChrome = showChrome,
                         onToggleChrome = { showChrome = !showChrome },
                         activeTransitionVideoPath = playerState.activeTransitionVideoPath,
