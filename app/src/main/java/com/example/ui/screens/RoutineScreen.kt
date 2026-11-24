@@ -31,6 +31,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import com.example.data.RoutineEntity
 import com.example.data.StretchEntity
 import com.example.ui.StretchViewModel
@@ -96,144 +97,111 @@ fun RoutineScreen(
             .fillMaxSize()
             .testTag("routine_screen")
     ) {
-        Column(
-            modifier = Modifier.fillMaxSize()
+        // Unified scrollable Routines feed so both Portrait & Landscape stay airy and uncluttered
+        LazyColumn(
+            modifier = Modifier
+                .fillMaxSize()
+                .testTag("stretch_list"),
+            contentPadding = PaddingValues(top = 2.dp, bottom = 84.dp)
         ) {
-        // Routines Selector Horizontal Pills (long-press any pill for actions)
-        if (routines.isNotEmpty()) {
-            RoutineSelectorRow(
-                routines = routines,
-                selectedRoutineId = selectedRoutineId,
-                onSelectRoutine = { viewModel.selectRoutine(it) },
-                onCreateNewRoutine = { showCreateRoutineDialog = true },
-                onDeleteRoutine = { routineToDelete = it },
-                onDuplicateRoutine = { routineToDuplicate = it },
-                onLongPressRoutine = { longPressedRoutine = it }
-            )
-        }
+            // 1. Horizontal Routine Selector Pills
+            if (routines.isNotEmpty()) {
+                item(key = "routine_selector_header") {
+                    RoutineSelectorRow(
+                        routines = routines,
+                        selectedRoutineId = selectedRoutineId,
+                        onSelectRoutine = { viewModel.selectRoutine(it) },
+                        onCreateNewRoutine = { showCreateRoutineDialog = true },
+                        onDeleteRoutine = { routineToDelete = it },
+                        onDuplicateRoutine = { routineToDuplicate = it },
+                        onLongPressRoutine = { longPressedRoutine = it }
+                    )
+                }
+            }
 
-        // Slim 1-line Cloud Sync chip if user has custom routines and isn't signed in
-        val context = LocalContext.current
-        val activity = context as? Activity
-        var dismissedBanner by remember { mutableStateOf(false) }
-        val hasCustomRoutines = routines.any { it.isCustom }
-
-        if (hasCustomRoutines && currentUser == null && !dismissedBanner) {
-            Card(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 16.dp, vertical = 2.dp)
-                    .testTag("cloud_sync_prompt_banner"),
-                shape = RoundedCornerShape(12.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer.copy(alpha = 0.3f)
+            // 2. Hero Summary Card (Start Routine + Duration + compact Flow & Copy chips)
+            item(key = "routine_summary_header") {
+                RoutineSummaryCard(
+                    routine = activeRoutine,
+                    stretches = localStretches,
+                    isCloudSynced = false,
+                    onStartRoutine = { onStartRoutine(0) },
+                    onOpenLibrary = { showLibraryDialog = true },
+                    onAddCustomStretch = {
+                        editingStretch = null
+                        showEditDialog = true
+                    },
+                    onDuplicateRoutine = {
+                        activeRoutine?.let { routineToDuplicate = it }
+                    },
+                    onEditRoutine = {
+                        activeRoutine?.let { routineToEdit = it }
+                    },
+                    onOptimizeFlow = if (localStretches.size >= 2) {
+                        { viewModel.optimizeCurrentRoutineFlow() }
+                    } else null
                 )
-            ) {
-                Row(
-                    modifier = Modifier.padding(horizontal = 10.dp, vertical = 6.dp),
-                    verticalAlignment = Alignment.CenterVertically,
-                    horizontalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    Icon(
-                        imageVector = Icons.Default.CloudQueue,
-                        contentDescription = null,
-                        tint = MaterialTheme.colorScheme.primary,
-                        modifier = Modifier.size(18.dp)
-                    )
-                    Text(
-                        text = "Sign in to sync custom routines",
-                        style = MaterialTheme.typography.labelMedium,
-                        color = MaterialTheme.colorScheme.onSurface,
-                        modifier = Modifier.weight(1f),
-                        maxLines = 1
-                    )
-                    TextButton(
-                        onClick = { activity?.let { act -> viewModel.signInWithGoogle(act) } },
-                        contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp),
+            }
+
+            // 3. Stretch list or empty state
+            if (localStretches.isEmpty()) {
+                item(key = "routine_empty_state") {
+                    Box(
                         modifier = Modifier
-                            .height(28.dp)
-                            .testTag("banner_sign_in_button")
+                            .fillMaxWidth()
+                            .padding(horizontal = 32.dp, vertical = 48.dp),
+                        contentAlignment = Alignment.Center
                     ) {
-                        Text("Sign In", style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold))
+                        Column(
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(12.dp)
+                        ) {
+                            Text(
+                                text = "This routine has no stretches yet",
+                                style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                color = MaterialTheme.colorScheme.onSurface
+                            )
+                            Text(
+                                text = "Select from 150 guided stretches & Indian asanas or add your own.",
+                                style = MaterialTheme.typography.bodySmall,
+                                color = MaterialTheme.colorScheme.onSurfaceVariant,
+                                textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                            )
+                            Button(
+                                onClick = { showLibraryDialog = true },
+                                shape = RoundedCornerShape(12.dp),
+                                modifier = Modifier.testTag("empty_state_browse_library")
+                            ) {
+                                Text("Browse 150 Asanas")
+                            }
+                        }
                     }
-                    IconButton(
-                        onClick = { dismissedBanner = true },
-                        modifier = Modifier.size(20.dp)
+                }
+            } else {
+                item(key = "stretches_section_label") {
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(start = 20.dp, end = 20.dp, top = 8.dp, bottom = 2.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Icon(
-                            imageVector = Icons.Default.Close,
-                            contentDescription = "Dismiss",
-                            tint = MaterialTheme.colorScheme.onSurfaceVariant,
-                            modifier = Modifier.size(14.dp)
+                        Text(
+                            text = "STRETCH SEQUENCE",
+                            style = MaterialTheme.typography.labelSmall.copy(
+                                fontWeight = FontWeight.Bold,
+                                letterSpacing = 0.8.sp
+                            ),
+                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                        )
+                        Text(
+                            text = "Drag handle to reorder",
+                            style = MaterialTheme.typography.labelSmall,
+                            color = MaterialTheme.colorScheme.onSurfaceVariant.copy(alpha = 0.72f)
                         )
                     }
                 }
-            }
-        }
 
-        // Summary Card for the current routine
-        RoutineSummaryCard(
-            routine = activeRoutine,
-            stretches = localStretches,
-            isCloudSynced = currentUser != null,
-            onStartRoutine = { onStartRoutine(0) },
-            onOpenLibrary = { showLibraryDialog = true },
-            onAddCustomStretch = {
-                editingStretch = null
-                showEditDialog = true
-            },
-            onDuplicateRoutine = {
-                activeRoutine?.let { routineToDuplicate = it }
-            },
-            onEditRoutine = {
-                activeRoutine?.let { routineToEdit = it }
-            },
-            onShareToCommunity = if (activeRoutine != null && activeRoutine.isCustom) {
-                { routineToPublish = activeRoutine }
-            } else null
-        )
-
-        // Stretch list
-        if (localStretches.isEmpty()) {
-            Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .padding(32.dp),
-                contentAlignment = Alignment.Center
-            ) {
-                Column(
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(12.dp)
-                ) {
-                    Text(
-                        text = "This routine has no stretches yet",
-                        style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                        color = MaterialTheme.colorScheme.onSurface
-                    )
-                    Text(
-                        text = "Select from 150 guided stretches & Indian asanas or add your own.",
-                        style = MaterialTheme.typography.bodySmall,
-                        color = MaterialTheme.colorScheme.onSurfaceVariant,
-                        textAlign = androidx.compose.ui.text.style.TextAlign.Center
-                    )
-                    Button(
-                        onClick = { showLibraryDialog = true },
-                        shape = RoundedCornerShape(12.dp),
-                        modifier = Modifier.testTag("empty_state_browse_library")
-                    ) {
-                        Text("Browse 150 Asanas")
-                    }
-                }
-            }
-        } else {
-            LazyColumn(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .weight(1f)
-                    .testTag("stretch_list"),
-                contentPadding = PaddingValues(top = 4.dp, bottom = 76.dp)
-            ) {
                 itemsIndexed(localStretches, key = { _, item -> item.id }) { index, stretch ->
                     val isDragging = draggedIndex == index
 
@@ -304,46 +272,46 @@ fun RoutineScreen(
                 }
             }
         }
-        }
 
-        // Thumb-friendly Floating Bottom Action Bar: Library, + Custom, Copy
+        // Sleek compact floating bottom pill: Add from Library + Custom Stretch
         Surface(
             modifier = Modifier
                 .align(Alignment.BottomCenter)
-                .fillMaxWidth()
-                .padding(horizontal = 16.dp, vertical = 10.dp),
-            shape = RoundedCornerShape(18.dp),
+                .padding(horizontal = 24.dp, vertical = 10.dp),
+            shape = RoundedCornerShape(24.dp),
             color = MaterialTheme.colorScheme.surface,
             tonalElevation = 6.dp,
-            shadowElevation = 6.dp,
+            shadowElevation = 8.dp,
             border = androidx.compose.foundation.BorderStroke(
                 1.dp,
-                MaterialTheme.colorScheme.outline.copy(alpha = 0.28f)
+                MaterialTheme.colorScheme.outline.copy(alpha = 0.24f)
             )
         ) {
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 8.dp, vertical = 7.dp),
+                modifier = Modifier.padding(horizontal = 8.dp, vertical = 6.dp),
                 horizontalArrangement = Arrangement.spacedBy(8.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Button(
                     onClick = { showLibraryDialog = true },
                     modifier = Modifier
-                        .weight(1.15f)
-                        .height(40.dp)
+                        .height(38.dp)
                         .testTag("open_library_button"),
-                    shape = RoundedCornerShape(12.dp),
+                    shape = RoundedCornerShape(18.dp),
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         contentColor = MaterialTheme.colorScheme.onPrimaryContainer
                     ),
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 0.dp)
                 ) {
                     Icon(Icons.Default.AutoStories, contentDescription = null, modifier = Modifier.size(16.dp))
-                    Spacer(modifier = Modifier.size(5.dp))
-                    Text("Library", style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, softWrap = false)
+                    Spacer(modifier = Modifier.size(6.dp))
+                    Text(
+                        "Add from Library",
+                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                        maxLines = 1,
+                        softWrap = false
+                    )
                 }
 
                 OutlinedButton(
@@ -352,42 +320,19 @@ fun RoutineScreen(
                         showEditDialog = true
                     },
                     modifier = Modifier
-                        .weight(1f)
-                        .height(40.dp)
+                        .height(38.dp)
                         .testTag("add_custom_stretch_button"),
-                    shape = RoundedCornerShape(12.dp),
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                    shape = RoundedCornerShape(18.dp),
+                    contentPadding = PaddingValues(horizontal = 14.dp, vertical = 0.dp)
                 ) {
                     Icon(Icons.Default.Add, contentDescription = null, modifier = Modifier.size(16.dp))
                     Spacer(modifier = Modifier.size(4.dp))
-                    Text("Custom", style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, softWrap = false)
-                }
-
-                OutlinedButton(
-                    onClick = { activeRoutine?.let { routineToDuplicate = it } },
-                    modifier = Modifier
-                        .weight(0.88f)
-                        .height(40.dp)
-                        .testTag("copy_routine_button"),
-                    shape = RoundedCornerShape(12.dp),
-                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
-                ) {
-                    Icon(Icons.Default.ContentCopy, contentDescription = "Copy & Edit Routine", modifier = Modifier.size(14.dp))
-                    Spacer(modifier = Modifier.size(3.dp))
-                    Text("Copy", style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, softWrap = false)
-                }
-
-                OutlinedButton(
-                    onClick = { viewModel.optimizeCurrentRoutineFlow() },
-                    enabled = localStretches.size >= 2,
-                    modifier = Modifier
-                        .weight(0.88f)
-                        .height(40.dp)
-                        .testTag("optimize_flow_button"),
-                    shape = RoundedCornerShape(12.dp),
-                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
-                ) {
-                    Text("Flow", style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, softWrap = false)
+                    Text(
+                        "Custom",
+                        style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                        maxLines = 1,
+                        softWrap = false
+                    )
                 }
             }
         }

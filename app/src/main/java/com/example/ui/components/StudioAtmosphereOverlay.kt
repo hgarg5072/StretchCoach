@@ -69,17 +69,18 @@ fun StudioAtmosphereOverlay(
 
         // --- LAYER 1: Persistent Studio Overlays ---
 
-        // 1A. Swaying Corner Leaves (top-left, blue screen key)
+        // 1A. Swaying Corner Leaves (top-left, blue screen key — tucked gently into corner so Back HUD stays crisp)
         if (leavesEnabled) {
             ChromaKeyVideoOverlay(
                 assetPath = "stretch_overlays/overlay_leaves_sway_corner_chromakey.mp4",
                 keyMode = OverlayKeyMode.BLUE_KEY,
                 lightingMode = resolvedLighting,
-                opacity = 0.90f,
+                opacity = 0.78f,
                 isPlaying = isPlaying,
                 modifier = Modifier
                     .align(Alignment.TopStart)
-                    .width((stageWidth * 0.24f).coerceIn(72.dp, 150.dp))
+                    .offset(x = (-10).dp, y = (-6).dp)
+                    .width((stageWidth * 0.22f).coerceIn(68.dp, 138.dp))
                     .aspectRatio(16f / 9f)
             )
         }

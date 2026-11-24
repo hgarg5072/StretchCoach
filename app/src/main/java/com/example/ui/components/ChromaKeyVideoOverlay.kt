@@ -441,19 +441,21 @@ private class GlChromaKeyRenderer {
                 vec3 rgb = c.rgb;
                 float alpha = 1.0;
 
-                if (uKeyMode == 0) {
-                    // Green screen chroma key (#00FF00) with spill suppression
-                    float maxRB = max(rgb.r, rgb.b);
-                    float greenExcess = rgb.g - maxRB;
-                    alpha = 1.0 - smoothstep(0.08, 0.24, greenExcess);
-                    // Suppress green edge spill
-                    rgb.g = min(rgb.g, maxRB * 1.04 + 0.03);
-                } else if (uKeyMode == 1) {
-                    // Blue screen chroma key (#0000FF) with spill suppression (for green leaves)
-                    float maxRG = max(rgb.r, rgb.g);
-                    float blueExcess = rgb.b - maxRG;
-                    alpha = 1.0 - smoothstep(0.08, 0.24, blueExcess);
-                    rgb.b = min(rgb.b, maxRG * 1.04 + 0.03);
+                if (uKeyMode == 0 || uKeyMode == 1) {
+                    // Auto-detect green (#00FF00) vs blue (#0000FF) chroma background from corner pixel
+                    vec3 corner = texture2D(sTexture, vec2(0.02, 0.02)).rgb;
+                    bool isBlueScreen = (corner.b > corner.g && corner.b > corner.r + 0.15) || (uKeyMode == 1);
+                    if (isBlueScreen) {
+                        float maxRG = max(rgb.r, rgb.g);
+                        float blueExcess = rgb.b - maxRG;
+                        alpha = 1.0 - smoothstep(0.08, 0.24, blueExcess);
+                        rgb.b = min(rgb.b, maxRG * 1.04 + 0.03);
+                    } else {
+                        float maxRB = max(rgb.r, rgb.b);
+                        float greenExcess = rgb.g - maxRB;
+                        alpha = 1.0 - smoothstep(0.08, 0.24, greenExcess);
+                        rgb.g = min(rgb.g, maxRB * 1.04 + 0.03);
+                    }
                 } else {
                     // Screen/additive blend on black (#000000) for sunbeams & dust motes
                     float lum = max(rgb.r, max(rgb.g, rgb.b));
