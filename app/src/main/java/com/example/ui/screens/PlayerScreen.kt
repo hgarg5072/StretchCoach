@@ -192,7 +192,7 @@ fun PlayerScreen(
         val isRestorativePose = currentPoseMeta?.isRestorativeOrPranayama == true
         val poseAnchors = currentPoseMeta?.overlayAnchors ?: com.example.data.PoseOverlayAnchors()
 
-        // Hide studio overlays cleanly during stretch slide animations or active horizontal swipe gestures
+        // Hide studio overlays briefly during stretch slide animations or active horizontal swipe gestures
         val stretchSlideKey = Pair(playerState.currentStretchIndex, currentStretch?.id)
         var lastSlideKey by remember { mutableStateOf(stretchSlideKey) }
         var isSlidingStretch by remember { mutableStateOf(false) }
@@ -200,14 +200,14 @@ fun PlayerScreen(
             if (stretchSlideKey != lastSlideKey) {
                 lastSlideKey = stretchSlideKey
                 isSlidingStretch = true
-                delay(340L)
+                delay(200L)
                 isSlidingStretch = false
             }
         }
         val hideOverlaysForSlide = isSlidingStretch || abs(swipeOffsetX) > 6f
         val overlayAlpha by animateFloatAsState(
             targetValue = if (hideOverlaysForSlide) 0f else 1f,
-            animationSpec = tween(durationMillis = if (hideOverlaysForSlide) 60 else 220),
+            animationSpec = tween(durationMillis = if (hideOverlaysForSlide) 50 else 110),
             label = "studio_overlay_slide_alpha"
         )
 

@@ -432,8 +432,8 @@ fun SettingsDialog(
                         tag = "toggle_companion_dog"
                     )
                     SettingToggleRow(
-                        title = "Window Wind Chime & Leaves",
-                        subtitle = "Ghibli glass furin chime & foliage in Day/Sunset",
+                        title = "Swaying Corner Leaves",
+                        subtitle = "Subtle Ghibli studio foliage in top-left corner",
                         checked = settings.swayingLeavesEnabled,
                         enabled = true,
                         onCheckedChange = onToggleSwayingLeaves,

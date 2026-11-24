@@ -64,43 +64,26 @@ fun StudioAtmosphereOverlay(
     val resolvedLighting = lightingMode.resolveForCurrentHour()
     val isPlaying = playerState != PlayerState.PAUSED
 
-    // 8-Action Golden Retriever Puppy state machine
-    val dogAssetPath = remember(playerState, isTransitioning, isRestorativePose, resolvedLighting, stretchIndex) {
+    // Persistent Companion Dog state machine (avoids re-preparing MediaPlayer on every stretch so overlays appear instantaneously)
+    val dogAssetPath = remember(playerState, isTransitioning, isRestorativePose, resolvedLighting) {
         when {
             playerState == PlayerState.COMPLETE ->
                 "stretch_overlays/overlay_dog_celebrate_chromakey.mp4"
-            isRestorativePose || resolvedLighting == StudioLightingMode.NIGHT -> {
-                if (stretchIndex % 3 == 2) "stretch_overlays/overlay_dog_yawn_sleepy_chromakey.mp4"
-                else "stretch_overlays/overlay_dog_nap_curled_chromakey.mp4"
-            }
+            isRestorativePose || resolvedLighting == StudioLightingMode.NIGHT ->
+                "stretch_overlays/overlay_dog_nap_curled_chromakey.mp4"
             isTransitioning ->
                 "stretch_overlays/overlay_dog_playful_stretch_chromakey.mp4"
-            playerState == PlayerState.PREPARING -> {
-                when (stretchIndex % 3) {
-                    0 -> "stretch_overlays/overlay_dog_paw_wave_chromakey.mp4"
-                    1 -> "stretch_overlays/overlay_dog_head_tilt_curious_chromakey.mp4"
-                    else -> "stretch_overlays/overlay_dog_playful_stretch_chromakey.mp4"
-                }
-            }
-            playerState == PlayerState.HOLDING -> {
-                when (stretchIndex % 4) {
-                    2 -> "stretch_overlays/overlay_dog_belly_roll_chromakey.mp4"
-                    3 -> "stretch_overlays/overlay_dog_head_tilt_curious_chromakey.mp4"
-                    else -> "stretch_overlays/overlay_dog_idle_rest_chromakey.mp4"
-                }
-            }
             else ->
                 "stretch_overlays/overlay_dog_idle_rest_chromakey.mp4"
         }
     }
 
-    // Studio Floor Prop (Auto-syncs Tea Set / Candle Warmer / Washi Lantern with Day / Sunset / Night)
+    // Studio Floor Prop (Defaults to glowing Clay Candle Aroma Warmer; Auto syncs Candle / Washi Lantern)
     val resolvedPropSpec: Pair<String, OverlayKeyMode>? = remember(aromaProp, resolvedLighting) {
         val effectiveProp = when (aromaProp) {
             StudioAromaProp.AUTO_GHIBLI -> when (resolvedLighting) {
-                StudioLightingMode.SUNSET -> StudioAromaProp.CANDLE_WARMER
                 StudioLightingMode.NIGHT -> StudioAromaProp.WASHI_LANTERN
-                else -> StudioAromaProp.TEA_SET
+                else -> StudioAromaProp.CANDLE_WARMER
             }
             else -> aromaProp
         }
@@ -130,7 +113,7 @@ fun StudioAtmosphereOverlay(
         val isPortrait = stageHeight > stageWidth
         val portraitStageHeight = stageWidth / 1.18f
 
-        // --- LAYER 1A: Window Wind Chime (Day/Sunset) + Swaying Corner Leaves ---
+        // --- LAYER 1A: Swaying Corner Leaves (top-left window frame; wind chime omitted per user preference) ---
         if (leavesEnabled) {
             val leavesModifier = if (isPortrait) {
                 Modifier
@@ -153,32 +136,6 @@ fun StudioAtmosphereOverlay(
                 isPlaying = isPlaying,
                 modifier = leavesModifier
             )
-
-            // Ghibli Glass Wind Chime hanging near top-left window in Day & Sunset (hidden in Night per spec)
-            if (resolvedLighting != StudioLightingMode.NIGHT && poseAnchors.windChime.visible) {
-                val chimeModifier = if (isPortrait) {
-                    Modifier
-                        .align(Alignment.CenterStart)
-                        .offset(x = 18.dp, y = -(portraitStageHeight * 0.36f) - 14.dp)
-                        .width((stageWidth * 0.14f).coerceIn(44.dp, 62.dp))
-                        .aspectRatio(0.85f)
-                } else {
-                    val leftPct = (poseAnchors.windChime.leftPct ?: 3f) / 100f
-                    Modifier
-                        .align(Alignment.TopStart)
-                        .offset(x = (stageWidth * leftPct) + 34.dp, y = 44.dp)
-                        .width((stageWidth * 0.085f).coerceIn(40.dp, 64.dp))
-                        .aspectRatio(0.85f)
-                }
-                ChromaKeyVideoOverlay(
-                    assetPath = "stretch_overlays/overlay_ghibli_wind_chime_chromakey.mp4",
-                    keyMode = OverlayKeyMode.BLUE_KEY,
-                    lightingMode = resolvedLighting,
-                    opacity = 0.86f * overlayAlpha,
-                    isPlaying = isPlaying,
-                    modifier = chimeModifier
-                )
-            }
         }
 
         // --- LAYER 1B: Studio Floor Prop (Tea Set / Candle Warmer / Washi Lantern / Diffuser / Incense) ---
@@ -225,30 +182,34 @@ fun StudioAtmosphereOverlay(
             )
         }
 
-        // --- LAYER 1C: 8-Action Golden Retriever Puppy Companion ---
+        // --- LAYER 1C: Companion Dog grounded on wooden studio floor (pulled slightly inward from wall) ---
         if (dogEnabled && poseAnchors.dog.visible) {
             val dogAnchor = poseAnchors.dog
             val targetDogWidth: Dp = if (isPortrait) {
-                (stageWidth * 0.26f).coerceIn(88.dp, 114.dp)
+                (stageWidth * 0.25f).coerceIn(84.dp, 110.dp)
             } else {
-                (stageWidth * (dogAnchor.widthPct / 100f).coerceIn(0.14f, 0.20f)).coerceIn(66.dp, 116.dp)
+                (stageWidth * (dogAnchor.widthPct / 100f).coerceIn(0.14f, 0.19f)).coerceIn(66.dp, 112.dp)
             }
-            val animDogWidth by animateDpAsState(targetDogWidth, tween(450), label = "dog_w")
+            val animDogWidth by animateDpAsState(targetDogWidth, tween(350), label = "dog_w")
 
-            val dogLeftDp = (stageWidth * ((dogAnchor.leftPct ?: 2f) / 100f)).coerceIn(6.dp, 28.dp)
-            val animDogX by animateDpAsState(dogLeftDp, tween(450), label = "dog_x")
+            val dogLeftDp = if (isPortrait) {
+                (stageWidth * 0.06f).coerceIn(20.dp, 38.dp)
+            } else {
+                (stageWidth * 0.055f).coerceIn(30.dp, 54.dp)
+            }
+            val animDogX by animateDpAsState(dogLeftDp, tween(350), label = "dog_x")
 
             val dogModifier = if (isPortrait) {
                 Modifier
                     .align(Alignment.CenterStart)
-                    .offset(x = animDogX, y = (portraitStageHeight * 0.41f) - 14.dp)
+                    .offset(x = animDogX, y = (portraitStageHeight * 0.43f) - 14.dp)
                     .width(animDogWidth)
                     .aspectRatio(1f)
             } else {
                 Modifier
                     .align(Alignment.BottomStart)
                     .offset(x = animDogX)
-                    .padding(bottom = 92.dp)
+                    .padding(bottom = 52.dp)
                     .width(animDogWidth)
                     .aspectRatio(1f)
             }

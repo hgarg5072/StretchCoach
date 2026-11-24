@@ -82,7 +82,7 @@ data class UserSettings(
     val customTrackPath: String = "",
     val customTrackTitle: String = "",
     val studioLightingMode: StudioLightingMode = StudioLightingMode.AUTO,
-    val studioAromaProp: StudioAromaProp = StudioAromaProp.AUTO_GHIBLI,
+    val studioAromaProp: StudioAromaProp = StudioAromaProp.CANDLE_WARMER,
     val companionDogEnabled: Boolean = true,
     val swayingLeavesEnabled: Boolean = true,
     val sunbeamsEnabled: Boolean = true,
@@ -139,9 +139,9 @@ class SettingsRepository(private val context: Context) {
         val lightingString = preferences[PreferencesKeys.STUDIO_LIGHTING_MODE] ?: StudioLightingMode.AUTO.name
         val studioLightingMode = runCatching { StudioLightingMode.valueOf(lightingString) }
             .getOrDefault(StudioLightingMode.AUTO)
-        val aromaString = preferences[PreferencesKeys.STUDIO_AROMA_PROP] ?: StudioAromaProp.AUTO_GHIBLI.name
+        val aromaString = preferences[PreferencesKeys.STUDIO_AROMA_PROP] ?: StudioAromaProp.CANDLE_WARMER.name
         val studioAromaProp = runCatching { StudioAromaProp.valueOf(aromaString) }
-            .getOrDefault(StudioAromaProp.AUTO_GHIBLI)
+            .getOrDefault(StudioAromaProp.CANDLE_WARMER)
         val companionDogEnabled = preferences[PreferencesKeys.COMPANION_DOG_ENABLED] ?: true
         val swayingLeavesEnabled = preferences[PreferencesKeys.SWAYING_LEAVES_ENABLED] ?: true
         val sunbeamsEnabled = preferences[PreferencesKeys.SUNBEAMS_ENABLED] ?: true
