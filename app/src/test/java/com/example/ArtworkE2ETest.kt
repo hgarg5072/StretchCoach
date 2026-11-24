@@ -404,9 +404,9 @@ class ArtworkE2ETest {
             assertEquals("Exactly 101 stretches must have Devanagari indianName", 101, nonNullCount)
             assertEquals("Exactly 49 stretches must have null indianName", 49, nullCount)
 
-            // Verify all 5 default routines seed cleanly and ArtworkMapper never throws or returns legacy drawables
+            // Verify all 6 default routines seed cleanly and ArtworkMapper never throws or returns legacy drawables
             val routines = dao.getAllRoutinesSync()
-            assertEquals("Must seed all 5 default routines", 5, routines.size)
+            assertEquals("Must seed all 6 default routines", 6, routines.size)
             routines.forEach { routine ->
                 val stretches = dao.getStretchesForRoutineSync(routine.id)
                 assertTrue("Default routine '${routine.name}' must contain stretches", stretches.isNotEmpty())

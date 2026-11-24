@@ -44,11 +44,15 @@ import androidx.compose.ui.platform.LocalDensity
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.unit.dp
 import com.example.data.AmbientSoundscape
+import com.example.data.PoseManifestRepository
 import com.example.data.StretchEntity
+import com.example.data.StudioAromaProp
+import com.example.data.StudioLightingMode
 import com.example.ui.PlayerState
 import com.example.ui.PlayerUiState
 import com.example.ui.components.PlayerArtworkCard
 import com.example.ui.components.PlayerControlsRow
+import com.example.ui.components.StudioAtmosphereOverlay
 
 @Composable
 fun PlayerScreen(
@@ -66,6 +70,12 @@ fun PlayerScreen(
     ambientSoundscape: AmbientSoundscape = AmbientSoundscape.OFF,
     customTrackTitle: String = "",
     onCycleAmbientSoundscape: () -> Unit = {},
+    studioLightingMode: StudioLightingMode = StudioLightingMode.AUTO,
+    studioAromaProp: StudioAromaProp = StudioAromaProp.DIFFUSER,
+    companionDogEnabled: Boolean = true,
+    swayingLeavesEnabled: Boolean = true,
+    sunbeamsEnabled: Boolean = true,
+    onTransitionClipFinished: () -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -134,41 +144,67 @@ fun PlayerScreen(
             }
             .testTag("player_screen")
     ) {
+        val isRestorativePose = remember(currentStretch?.name, currentStretch?.category) {
+            currentStretch?.let {
+                PoseManifestRepository.getPoseMetaForStretch(context, it.name, it.category)?.isRestorativeOrPranayama
+            } ?: false
+        }
+
         val heroArtwork: @Composable (Modifier) -> Unit = { heroMod ->
-            AnimatedContent(
-                targetState = Pair(playerState.currentStretchIndex, currentStretch?.id),
-                transitionSpec = {
-                    val dir = if (targetState.first >= initialState.first && slideDirection >= 0) 1 else -1
-                    (slideInHorizontally(animationSpec = tween(280)) { width -> dir * (width / 2) } +
-                        fadeIn(animationSpec = tween(240))) togetherWith
-                        (slideOutHorizontally(animationSpec = tween(240)) { width -> -dir * (width / 2) } +
-                            fadeOut(animationSpec = tween(200)))
-                },
-                label = "player_stretch_transition",
-                modifier = heroMod
-            ) { _ ->
-                PlayerArtworkCard(
-                    currentStretch = currentStretch,
-                    state = playerState.state,
-                    currentIndex = playerState.currentStretchIndex,
-                    totalCount = effectiveTotalCount,
-                    nextStretch = nextStretch,
-                    remainingSeconds = playerState.remainingSeconds,
-                    totalSegmentSeconds = playerState.totalSegmentSeconds,
-                    progress = playerState.progress,
-                    fillAvailableHeight = true,
-                    ambientSoundscape = ambientSoundscape,
-                    customTrackTitle = customTrackTitle,
-                    onCycleAmbientSoundscape = onCycleAmbientSoundscape,
-                    onNavigateBack = onNavigateBack,
-                    onOpenSettings = onOpenSettings,
-                    showChrome = showChrome,
-                    onToggleChrome = { showChrome = !showChrome },
-                    modifier = Modifier
-                        .fillMaxSize()
-                        .graphicsLayer {
-                            translationX = swipeOffsetX * 0.35f
-                        }
+            Box(modifier = heroMod) {
+                AnimatedContent(
+                    targetState = Pair(playerState.currentStretchIndex, currentStretch?.id),
+                    transitionSpec = {
+                        val dir = if (targetState.first >= initialState.first && slideDirection >= 0) 1 else -1
+                        (slideInHorizontally(animationSpec = tween(280)) { width -> dir * (width / 2) } +
+                            fadeIn(animationSpec = tween(240))) togetherWith
+                            (slideOutHorizontally(animationSpec = tween(240)) { width -> -dir * (width / 2) } +
+                                fadeOut(animationSpec = tween(200)))
+                    },
+                    label = "player_stretch_transition",
+                    modifier = Modifier.fillMaxSize()
+                ) { _ ->
+                    PlayerArtworkCard(
+                        currentStretch = currentStretch,
+                        state = playerState.state,
+                        currentIndex = playerState.currentStretchIndex,
+                        totalCount = effectiveTotalCount,
+                        nextStretch = nextStretch,
+                        remainingSeconds = playerState.remainingSeconds,
+                        totalSegmentSeconds = playerState.totalSegmentSeconds,
+                        progress = playerState.progress,
+                        fillAvailableHeight = true,
+                        ambientSoundscape = ambientSoundscape,
+                        customTrackTitle = customTrackTitle,
+                        onCycleAmbientSoundscape = onCycleAmbientSoundscape,
+                        onNavigateBack = onNavigateBack,
+                        onOpenSettings = onOpenSettings,
+                        showChrome = showChrome,
+                        onToggleChrome = { showChrome = !showChrome },
+                        activeTransitionVideoPath = playerState.activeTransitionVideoPath,
+                        activeTransitionCue = playerState.activeTransitionCue,
+                        onTransitionFinished = onTransitionClipFinished,
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .graphicsLayer {
+                                translationX = swipeOffsetX * 0.35f
+                            }
+                    )
+                }
+
+                // Persistent Studio Overlays (Dog, Back-Right Diffuser/Incense, Corner Leaves, Lighting, Sunbeams)
+                // Mounted outside AnimatedContent so overlays never reset or blink between stretches
+                StudioAtmosphereOverlay(
+                    playerState = playerState.state,
+                    isTransitioning = playerState.state == PlayerState.PREPARING &&
+                        !playerState.activeTransitionVideoPath.isNullOrBlank(),
+                    isRestorativePose = isRestorativePose,
+                    lightingMode = studioLightingMode,
+                    aromaProp = studioAromaProp,
+                    dogEnabled = companionDogEnabled,
+                    leavesEnabled = swayingLeavesEnabled,
+                    sunbeamsEnabled = sunbeamsEnabled,
+                    modifier = Modifier.fillMaxSize()
                 )
             }
         }

@@ -30,14 +30,21 @@ import androidx.compose.ui.viewinterop.AndroidView
 fun LoopingStretchVideo(
     assetPath: String,
     isPlaying: Boolean,
+    isLooping: Boolean = true,
+    mirrorHorizontal: Boolean = false,
+    onCompleted: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     var hasRenderedFirstFrame by remember(assetPath) { mutableStateOf(false) }
     val currentIsPlaying by rememberUpdatedState(isPlaying)
+    val currentIsLooping by rememberUpdatedState(isLooping)
+    val currentMirror by rememberUpdatedState(mirrorHorizontal)
+    val currentOnCompleted by rememberUpdatedState(onCompleted)
     val playerHolder = remember { VideoPlayerHolder() }
 
-    // Sync play / pause state without recreating MediaPlayer
-    DisposableEffect(isPlaying, assetPath) {
+    // Sync play / pause and mirror state without recreating MediaPlayer
+    DisposableEffect(isPlaying, mirrorHorizontal, assetPath) {
+        playerHolder.setMirror(mirrorHorizontal)
         playerHolder.setPlaying(isPlaying)
         onDispose {}
     }
@@ -55,11 +62,14 @@ fun LoopingStretchVideo(
                 surfaceTextureListener = object : TextureView.SurfaceTextureListener {
                     override fun onSurfaceTextureAvailable(st: SurfaceTexture, width: Int, height: Int) {
                         playerHolder.attachSurface(this@apply, st, width, height)
+                        playerHolder.setMirror(currentMirror)
                         playerHolder.loadAsset(
                             context = context,
                             assetPath = assetPath,
                             shouldPlay = currentIsPlaying,
-                            onFirstFrame = { hasRenderedFirstFrame = true }
+                            looping = currentIsLooping,
+                            onFirstFrame = { hasRenderedFirstFrame = true },
+                            onCompleted = { currentOnCompleted?.invoke() }
                         )
                     }
 
@@ -77,6 +87,7 @@ fun LoopingStretchVideo(
             }
         },
         update = { textureView ->
+            playerHolder.setMirror(mirrorHorizontal)
             if (playerHolder.loadedAssetPath != assetPath) {
                 hasRenderedFirstFrame = false
                 if (textureView.isAvailable && textureView.surfaceTexture != null) {
@@ -90,7 +101,9 @@ fun LoopingStretchVideo(
                         context = textureView.context,
                         assetPath = assetPath,
                         shouldPlay = currentIsPlaying,
-                        onFirstFrame = { hasRenderedFirstFrame = true }
+                        looping = isLooping,
+                        onFirstFrame = { hasRenderedFirstFrame = true },
+                        onCompleted = { currentOnCompleted?.invoke() }
                     )
                 }
             } else {
@@ -111,8 +124,16 @@ private class VideoPlayerHolder {
     private var videoHeight: Int = 0
     private var isPrepared: Boolean = false
     private var desiredPlaying: Boolean = true
+    private var mirrorHorizontal: Boolean = false
     var loadedAssetPath: String? = null
         private set
+
+    fun setMirror(mirror: Boolean) {
+        if (mirrorHorizontal != mirror) {
+            mirrorHorizontal = mirror
+            applyCenterCropTransform()
+        }
+    }
 
     fun attachSurface(tv: TextureView, st: SurfaceTexture, width: Int, height: Int) {
         textureView = tv
@@ -133,7 +154,9 @@ private class VideoPlayerHolder {
         context: android.content.Context,
         assetPath: String,
         shouldPlay: Boolean,
-        onFirstFrame: () -> Unit
+        looping: Boolean = true,
+        onFirstFrame: () -> Unit,
+        onCompleted: () -> Unit = {}
     ) {
         desiredPlaying = shouldPlay
         loadedAssetPath = assetPath
@@ -147,8 +170,14 @@ private class VideoPlayerHolder {
             afd.close()
 
             mp.setSurface(activeSurface)
-            mp.isLooping = true
+            mp.isLooping = looping
             mp.setVolume(0f, 0f)
+
+            mp.setOnCompletionListener {
+                if (!looping) {
+                    onCompleted()
+                }
+            }
 
             mp.setOnVideoSizeChangedListener { _, w, h ->
                 videoWidth = w
@@ -219,7 +248,8 @@ private class VideoPlayerHolder {
         }
 
         val matrix = Matrix()
-        matrix.setScale(scaleX, scaleY, viewWidth / 2f, viewHeight / 2f)
+        val signedScaleX = if (mirrorHorizontal) -scaleX else scaleX
+        matrix.setScale(signedScaleX, scaleY, viewWidth / 2f, viewHeight / 2f)
         tv.post {
             tv.setTransform(matrix)
         }

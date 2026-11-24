@@ -43,7 +43,9 @@ data class PlayerUiState(
     val activeRoutine: List<StretchEntity> = emptyList(),
     val currentStretchIndex: Int = 0,
     val remainingSeconds: Int = 0,
-    val totalSegmentSeconds: Int = 0
+    val totalSegmentSeconds: Int = 0,
+    val activeTransitionVideoPath: String? = null,
+    val activeTransitionCue: String? = null
 ) {
     val currentStretch: StretchEntity?
         get() = activeRoutine.getOrNull(currentStretchIndex)
@@ -231,6 +233,7 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
     val selectedTab: StateFlow<Int> = _selectedTab.asStateFlow()
 
     private var timerJob: Job? = null
+    private var pendingTransitionRoute: List<com.example.data.HubTransitionSpec> = emptyList()
 
     init {
         speechController.onSpeakingStateChanged = { isSpeaking ->
@@ -684,6 +687,65 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
+    fun setStudioLightingMode(mode: com.example.data.StudioLightingMode) {
+        viewModelScope.launch { settingsRepository.setStudioLightingMode(mode) }
+    }
+
+    fun setStudioAromaProp(prop: com.example.data.StudioAromaProp) {
+        viewModelScope.launch { settingsRepository.setStudioAromaProp(prop) }
+    }
+
+    fun setCompanionDogEnabled(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setCompanionDogEnabled(enabled) }
+    }
+
+    fun setSwayingLeavesEnabled(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setSwayingLeavesEnabled(enabled) }
+    }
+
+    fun setSunbeamsEnabled(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setSunbeamsEnabled(enabled) }
+    }
+
+    fun setHubTransitionsEnabled(enabled: Boolean) {
+        viewModelScope.launch { settingsRepository.setHubTransitionsEnabled(enabled) }
+    }
+
+    /**
+     * 1-tap Smart Flow Order: sorts the active routine's stretches by
+     * STANDING -> KNEELING -> PRONE -> SUPINE -> SEATED to minimize awkward floor/standing hopping.
+     */
+    fun optimizeCurrentRoutineFlow() {
+        viewModelScope.launch {
+            val stretches = currentRoutineStretches.value
+            if (stretches.size < 2) return@launch
+            val sorted = com.example.data.PoseManifestRepository.sortStretchesBySmartFlow(getApplication(), stretches)
+            stretchRepository.updateSortOrders(sorted.map { it.id })
+        }
+    }
+
+    fun onTransitionClipFinished() {
+        val current = _playerUiState.value
+        if (current.state != PlayerState.PREPARING) {
+            pendingTransitionRoute = emptyList()
+            _playerUiState.update { it.copy(activeTransitionVideoPath = null, activeTransitionCue = null) }
+            return
+        }
+        val nextHop = pendingTransitionRoute.firstOrNull()
+        if (nextHop != null && current.remainingSeconds >= 2) {
+            pendingTransitionRoute = pendingTransitionRoute.drop(1)
+            _playerUiState.update {
+                it.copy(
+                    activeTransitionVideoPath = nextHop.assetPath,
+                    activeTransitionCue = nextHop.cue
+                )
+            }
+        } else {
+            pendingTransitionRoute = emptyList()
+            _playerUiState.update { it.copy(activeTransitionVideoPath = null, activeTransitionCue = null) }
+        }
+    }
+
     fun cycleAmbientSoundscape() {
         val hasCustomTrack = userSettings.value.customTrackPath.isNotBlank() &&
             java.io.File(userSettings.value.customTrackPath).isFile
@@ -829,12 +891,29 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
         }
     }
 
-    private fun startStretchAtIndex(index: Int, routine: List<StretchEntity>) {
+    private fun startStretchAtIndex(index: Int, routine: List<StretchEntity>, previousStretch: StretchEntity? = null) {
         timerJob?.cancel()
+        pendingTransitionRoute = emptyList()
         val stretch = routine.getOrNull(index) ?: run {
             completeRoutine()
             return
         }
+
+        // Resolve PREP-only 5-hub posture transition if transitioning from a different posture hub
+        val transitionRoute = if (previousStretch != null && userSettings.value.hubTransitionsEnabled && stretch.preparationSeconds > 0) {
+            val ctx = getApplication<Application>()
+            val fromHub = com.example.data.PoseManifestRepository.getPoseMetaForStretch(ctx, previousStretch.name, previousStretch.category)?.postureHub
+            val toHub = com.example.data.PoseManifestRepository.getPoseMetaForStretch(ctx, stretch.name, stretch.category)?.postureHub
+            if (fromHub != null && toHub != null && fromHub != toHub) {
+                com.example.data.PoseManifestRepository.resolveTransitionRoute(fromHub, toHub)
+            } else {
+                emptyList()
+            }
+        } else {
+            emptyList()
+        }
+        val firstTransition = transitionRoute.firstOrNull()
+        pendingTransitionRoute = if (transitionRoute.size > 1) transitionRoute.drop(1) else emptyList()
 
         val prepTime = stretch.preparationSeconds
         if (prepTime > 0) {
@@ -844,7 +923,9 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
                     activeRoutine = routine,
                     currentStretchIndex = index,
                     remainingSeconds = prepTime,
-                    totalSegmentSeconds = prepTime
+                    totalSegmentSeconds = prepTime,
+                    activeTransitionVideoPath = firstTransition?.assetPath,
+                    activeTransitionCue = firstTransition?.cue
                 )
             }
 
@@ -901,6 +982,7 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
 
     private fun startHoldPhase(index: Int, routine: List<StretchEntity>, holdSeconds: Int) {
         timerJob?.cancel()
+        pendingTransitionRoute = emptyList()
         val stretch = routine.getOrNull(index) ?: return
         val validHold = holdSeconds.coerceAtLeast(1)
 
@@ -909,7 +991,9 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
                 state = PlayerState.HOLDING,
                 currentStretchIndex = index,
                 remainingSeconds = validHold,
-                totalSegmentSeconds = validHold
+                totalSegmentSeconds = validHold,
+                activeTransitionVideoPath = null,
+                activeTransitionCue = null
             )
         }
 
@@ -938,7 +1022,7 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
 
             // Move to next stretch or complete
             if (index < routine.size - 1) {
-                startStretchAtIndex(index + 1, routine)
+                startStretchAtIndex(index + 1, routine, previousStretch = stretch)
             } else {
                 completeRoutine()
             }
@@ -999,7 +1083,7 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
             }
 
             if (index < routine.size - 1) {
-                startStretchAtIndex(index + 1, routine)
+                startStretchAtIndex(index + 1, routine, previousStretch = routine.getOrNull(index))
             } else {
                 completeRoutine()
             }
@@ -1009,7 +1093,11 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
     fun skipNext() {
         val current = _playerUiState.value
         if (current.currentStretchIndex < current.activeRoutine.size - 1) {
-            startStretchAtIndex(current.currentStretchIndex + 1, current.activeRoutine)
+            startStretchAtIndex(
+                current.currentStretchIndex + 1,
+                current.activeRoutine,
+                previousStretch = current.currentStretch
+            )
         } else {
             completeRoutine()
         }
@@ -1018,7 +1106,11 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
     fun skipPrevious() {
         val current = _playerUiState.value
         if (current.currentStretchIndex > 0) {
-            startStretchAtIndex(current.currentStretchIndex - 1, current.activeRoutine)
+            startStretchAtIndex(
+                current.currentStretchIndex - 1,
+                current.activeRoutine,
+                previousStretch = current.currentStretch
+            )
         } else {
             restartCurrentStretch()
         }

@@ -366,15 +366,28 @@ fun RoutineScreen(
                 OutlinedButton(
                     onClick = { activeRoutine?.let { routineToDuplicate = it } },
                     modifier = Modifier
-                        .weight(0.95f)
+                        .weight(0.88f)
                         .height(40.dp)
                         .testTag("copy_routine_button"),
                     shape = RoundedCornerShape(12.dp),
-                    contentPadding = PaddingValues(horizontal = 8.dp, vertical = 0.dp)
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
                 ) {
-                    Icon(Icons.Default.ContentCopy, contentDescription = "Copy & Edit Routine", modifier = Modifier.size(15.dp))
-                    Spacer(modifier = Modifier.size(4.dp))
+                    Icon(Icons.Default.ContentCopy, contentDescription = "Copy & Edit Routine", modifier = Modifier.size(14.dp))
+                    Spacer(modifier = Modifier.size(3.dp))
                     Text("Copy", style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, softWrap = false)
+                }
+
+                OutlinedButton(
+                    onClick = { viewModel.optimizeCurrentRoutineFlow() },
+                    enabled = localStretches.size >= 2,
+                    modifier = Modifier
+                        .weight(0.88f)
+                        .height(40.dp)
+                        .testTag("optimize_flow_button"),
+                    shape = RoundedCornerShape(12.dp),
+                    contentPadding = PaddingValues(horizontal = 6.dp, vertical = 0.dp)
+                ) {
+                    Text("Flow", style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold), maxLines = 1, softWrap = false)
                 }
             }
         }

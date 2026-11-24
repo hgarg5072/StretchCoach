@@ -66,13 +66,21 @@ class StretchRepository(
                 }
             }
         } else {
-            // Check if any default routine is missing stretches
+            // Check if any default routine is missing or missing stretches
             AppDatabase.DEFAULT_ROUTINES.forEach { defaultRoutine ->
                 val existing = existingRoutines.find { it.name.equals(defaultRoutine.name, ignoreCase = true) }
-                if (existing != null) {
+                if (existing == null) {
+                    val insertedId = stretchDao.insertRoutine(defaultRoutine)
+                    val stretches = AppDatabase.createDefaultStretchesForRoutine(defaultRoutine.id)
+                        .map { it.copy(routineId = insertedId) }
+                    if (stretches.isNotEmpty()) {
+                        stretchDao.insertAll(stretches)
+                    }
+                } else {
                     val count = stretchDao.getStretchCountForRoutine(existing.id)
                     if (count == 0) {
-                        val stretches = AppDatabase.createDefaultStretchesForRoutine(existing.id)
+                        val stretches = AppDatabase.createDefaultStretchesForRoutine(defaultRoutine.id)
+                            .map { it.copy(routineId = existing.id) }
                         if (stretches.isNotEmpty()) {
                             stretchDao.insertAll(stretches)
                         }

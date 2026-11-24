@@ -63,6 +63,8 @@ import com.example.data.AmbientSoundscape
 import com.example.data.AppTheme
 import com.example.data.AsanaPronunciationStyle
 import com.example.data.BackupStatus
+import com.example.data.StudioAromaProp
+import com.example.data.StudioLightingMode
 import com.example.data.UserSettings
 import com.example.data.VoiceMode
 import com.example.ui.theme.CyanPrep
@@ -103,6 +105,12 @@ fun SettingsDialog(
     onSetAmbientVolume: (Float) -> Unit = {},
     onToggleTransitionChimes: (Boolean) -> Unit = {},
     onOpenOnlineAudioPicker: () -> Unit = {},
+    onSetStudioLightingMode: (StudioLightingMode) -> Unit = {},
+    onSetStudioAromaProp: (StudioAromaProp) -> Unit = {},
+    onToggleCompanionDog: (Boolean) -> Unit = {},
+    onToggleSwayingLeaves: (Boolean) -> Unit = {},
+    onToggleSunbeams: (Boolean) -> Unit = {},
+    onToggleHubTransitions: (Boolean) -> Unit = {},
     onTestVoice: () -> Unit = {},
     onDismiss: () -> Unit
 ) {
@@ -339,6 +347,114 @@ fun SettingsDialog(
                             modifier = Modifier.testTag("switch_transition_chimes")
                         )
                     }
+                }
+
+                HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))
+
+                // Studio Atmosphere, Lighting & Companion Dog
+                Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
+                    Text(
+                        text = "Studio Atmosphere & Buddy",
+                        style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                        color = MaterialTheme.colorScheme.onSurface
+                    )
+
+                    Text(
+                        text = "Studio Lighting",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        StudioLightingMode.values().forEach { mode ->
+                            val isSelected = settings.studioLightingMode == mode
+                            Surface(
+                                shape = RoundedCornerShape(10.dp),
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.65f),
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .clickable { onSetStudioLightingMode(mode) }
+                                    .testTag("lighting_btn_${mode.name}")
+                            ) {
+                                Text(
+                                    text = mode.displayName,
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    Text(
+                        text = "Background Aroma Prop",
+                        style = MaterialTheme.typography.labelMedium,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    FlowRow(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.spacedBy(6.dp),
+                        verticalArrangement = Arrangement.spacedBy(6.dp)
+                    ) {
+                        StudioAromaProp.values().forEach { prop ->
+                            val isSelected = settings.studioAromaProp == prop
+                            Surface(
+                                shape = RoundedCornerShape(10.dp),
+                                color = if (isSelected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.65f),
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(10.dp))
+                                    .clickable { onSetStudioAromaProp(prop) }
+                                    .testTag("aroma_btn_${prop.name}")
+                            ) {
+                                Text(
+                                    text = prop.displayName,
+                                    modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
+                                    style = MaterialTheme.typography.labelMedium.copy(
+                                        fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Medium,
+                                        color = if (isSelected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
+                                    )
+                                )
+                            }
+                        }
+                    }
+
+                    SettingToggleRow(
+                        title = "Companion Yoga Dog",
+                        subtitle = "Cozy buddy stretches on transitions & naps at night",
+                        checked = settings.companionDogEnabled,
+                        enabled = true,
+                        onCheckedChange = onToggleCompanionDog,
+                        tag = "toggle_companion_dog"
+                    )
+                    SettingToggleRow(
+                        title = "Swaying Corner Leaves",
+                        subtitle = "Subtle Ghibli studio foliage in top-left corner",
+                        checked = settings.swayingLeavesEnabled,
+                        enabled = true,
+                        onCheckedChange = onToggleSwayingLeaves,
+                        tag = "toggle_swaying_leaves"
+                    )
+                    SettingToggleRow(
+                        title = "Sunbeams & Dust Motes",
+                        subtitle = "Soft glowing light rays floating across studio",
+                        checked = settings.sunbeamsEnabled,
+                        enabled = true,
+                        onCheckedChange = onToggleSunbeams,
+                        tag = "toggle_sunbeams"
+                    )
+                    SettingToggleRow(
+                        title = "Posture Transitions (Prep Only)",
+                        subtitle = "Show transition clips when switching standing/floor",
+                        checked = settings.hubTransitionsEnabled,
+                        enabled = true,
+                        onCheckedChange = onToggleHubTransitions,
+                        tag = "toggle_hub_transitions"
+                    )
                 }
 
                 HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f))

@@ -50,6 +50,12 @@ abstract class AppDatabase : RoomDatabase() {
                 name = "Runner's Recovery",
                 description = "Essential stretches for quads, hamstrings, hips, and calves.",
                 isCustom = false
+            ),
+            RoutineEntity(
+                id = 6L,
+                name = "Quick Verify (30)",
+                description = "Fast 30-pose showcase (5s prep / 6s hold) covering all 5 posture hubs, L/R mirroring, transitions, and restorative poses.",
+                isCustom = false
             )
         )
 
@@ -108,18 +114,58 @@ abstract class AppDatabase : RoomDatabase() {
                     "wall_calf_gastrocnemius_left",
                     "downward_dog_pedal"
                 )
+                6L -> listOf(
+                    // Standing + L/R unilateral mirroring
+                    "tadasana_mountain_alignment",
+                    "virabhadrasana_two_right",
+                    "virabhadrasana_two_left",
+                    "trikonasana_triangle_right",
+                    "trikonasana_triangle_left",
+                    "vrikshasana_tree_right",
+                    "vrikshasana_tree_left",
+                    "standing_hamstring_fold",
+                    // 2-hop STANDING -> PRONE (via Kneeling)
+                    "bhujangasana_cobra_pose",
+                    "dhanurasana_bow_pose",
+                    "salabhasana_locust_pose",
+                    // PRONE -> KNEELING
+                    "cat_cow_spinal_flow",
+                    "marjaryasana_cat_pose",
+                    "puppy_pose_melting_heart",
+                    "ustrasana_camel_pose",
+                    "hip_flexor_lunge_right",
+                    "hip_flexor_lunge_left",
+                    // KNEELING -> SEATED
+                    "seated_butterfly",
+                    "paschimottanasana_seated_forward_fold",
+                    "janu_sirsasana_right",
+                    "janu_sirsasana_left",
+                    "ardha_matsyendrasana_right",
+                    "ardha_matsyendrasana_left",
+                    "naukasana_boat",
+                    // SEATED -> SUPINE
+                    "setu_bandhasana_bridge_pose",
+                    "supta_matsyendrasana_twist_right",
+                    "supta_matsyendrasana_twist_left",
+                    "ananda_balasana_happy_baby",
+                    // Restorative & Pranayama (triggers Dog nap state!)
+                    "shavasana_corpse_pose",
+                    "anulom_vilom_pranayama"
+                )
                 else -> emptyList()
             }
 
+            val isQuickVerify = routineId == 6L
             return libraryIds.mapIndexedNotNull { index, libId ->
                 val lib = StretchLibrary.getById(libId) ?: return@mapIndexedNotNull null
                 StretchEntity(
                     routineId = routineId,
                     libraryId = lib.id,
                     name = lib.name,
+                    indianName = lib.indianName,
                     category = lib.category.title,
-                    preparationSeconds = lib.defaultPrepSeconds,
-                    holdSeconds = lib.defaultHoldSeconds,
+                    preparationSeconds = if (isQuickVerify) 5 else lib.defaultPrepSeconds,
+                    holdSeconds = if (isQuickVerify) 6 else lib.defaultHoldSeconds,
                     prepCue = lib.prepCue,
                     holdCue = lib.holdCue,
                     notes = lib.benefits,

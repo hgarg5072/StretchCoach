@@ -41,6 +41,28 @@ enum class AmbientSoundscape(val displayName: String, val subtitle: String) {
     CUSTOM_TRACK("My Music", "Downloaded or imported relaxation track")
 }
 
+enum class StudioLightingMode(val displayName: String) {
+    AUTO("Auto"),
+    DAY("Day"),
+    SUNSET("Sunset"),
+    NIGHT("Night");
+
+    fun resolveForCurrentHour(hourOfDay: Int = java.util.Calendar.getInstance().get(java.util.Calendar.HOUR_OF_DAY)): StudioLightingMode {
+        if (this != AUTO) return this
+        return when (hourOfDay) {
+            in 6..16 -> DAY
+            in 17..19 -> SUNSET
+            else -> NIGHT
+        }
+    }
+}
+
+enum class StudioAromaProp(val displayName: String) {
+    DIFFUSER("Diffuser"),
+    INCENSE("Incense"),
+    NONE("Off")
+}
+
 data class UserSettings(
     val theme: AppTheme = AppTheme.SYSTEM,
     val voiceMode: VoiceMode = VoiceMode.BALANCED,
@@ -54,7 +76,13 @@ data class UserSettings(
     val ambientVolume: Float = 0.35f,
     val transitionChimesEnabled: Boolean = true,
     val customTrackPath: String = "",
-    val customTrackTitle: String = ""
+    val customTrackTitle: String = "",
+    val studioLightingMode: StudioLightingMode = StudioLightingMode.AUTO,
+    val studioAromaProp: StudioAromaProp = StudioAromaProp.DIFFUSER,
+    val companionDogEnabled: Boolean = true,
+    val swayingLeavesEnabled: Boolean = true,
+    val sunbeamsEnabled: Boolean = true,
+    val hubTransitionsEnabled: Boolean = true
 )
 
 class SettingsRepository(private val context: Context) {
@@ -73,6 +101,12 @@ class SettingsRepository(private val context: Context) {
         val TRANSITION_CHIMES_ENABLED = booleanPreferencesKey("transition_chimes_enabled")
         val CUSTOM_TRACK_PATH = stringPreferencesKey("custom_track_path")
         val CUSTOM_TRACK_TITLE = stringPreferencesKey("custom_track_title")
+        val STUDIO_LIGHTING_MODE = stringPreferencesKey("studio_lighting_mode")
+        val STUDIO_AROMA_PROP = stringPreferencesKey("studio_aroma_prop")
+        val COMPANION_DOG_ENABLED = booleanPreferencesKey("companion_dog_enabled")
+        val SWAYING_LEAVES_ENABLED = booleanPreferencesKey("swaying_leaves_enabled")
+        val SUNBEAMS_ENABLED = booleanPreferencesKey("sunbeams_enabled")
+        val HUB_TRANSITIONS_ENABLED = booleanPreferencesKey("hub_transitions_enabled")
     }
 
     val userSettingsFlow: Flow<UserSettings> = context.dataStore.data.map { preferences ->
@@ -98,6 +132,16 @@ class SettingsRepository(private val context: Context) {
         val transitionChimesEnabled = preferences[PreferencesKeys.TRANSITION_CHIMES_ENABLED] ?: true
         val customTrackPath = preferences[PreferencesKeys.CUSTOM_TRACK_PATH] ?: ""
         val customTrackTitle = preferences[PreferencesKeys.CUSTOM_TRACK_TITLE] ?: ""
+        val lightingString = preferences[PreferencesKeys.STUDIO_LIGHTING_MODE] ?: StudioLightingMode.AUTO.name
+        val studioLightingMode = runCatching { StudioLightingMode.valueOf(lightingString) }
+            .getOrDefault(StudioLightingMode.AUTO)
+        val aromaString = preferences[PreferencesKeys.STUDIO_AROMA_PROP] ?: StudioAromaProp.DIFFUSER.name
+        val studioAromaProp = runCatching { StudioAromaProp.valueOf(aromaString) }
+            .getOrDefault(StudioAromaProp.DIFFUSER)
+        val companionDogEnabled = preferences[PreferencesKeys.COMPANION_DOG_ENABLED] ?: true
+        val swayingLeavesEnabled = preferences[PreferencesKeys.SWAYING_LEAVES_ENABLED] ?: true
+        val sunbeamsEnabled = preferences[PreferencesKeys.SUNBEAMS_ENABLED] ?: true
+        val hubTransitionsEnabled = preferences[PreferencesKeys.HUB_TRANSITIONS_ENABLED] ?: true
 
         UserSettings(
             theme = theme,
@@ -112,7 +156,13 @@ class SettingsRepository(private val context: Context) {
             ambientVolume = ambientVolume,
             transitionChimesEnabled = transitionChimesEnabled,
             customTrackPath = customTrackPath,
-            customTrackTitle = customTrackTitle
+            customTrackTitle = customTrackTitle,
+            studioLightingMode = studioLightingMode,
+            studioAromaProp = studioAromaProp,
+            companionDogEnabled = companionDogEnabled,
+            swayingLeavesEnabled = swayingLeavesEnabled,
+            sunbeamsEnabled = sunbeamsEnabled,
+            hubTransitionsEnabled = hubTransitionsEnabled
         )
     }
 
@@ -190,5 +240,29 @@ class SettingsRepository(private val context: Context) {
                 preferences[PreferencesKeys.AMBIENT_SOUNDSCAPE] = AmbientSoundscape.CUSTOM_TRACK.name
             }
         }
+    }
+
+    suspend fun setStudioLightingMode(mode: StudioLightingMode) {
+        context.dataStore.edit { it[PreferencesKeys.STUDIO_LIGHTING_MODE] = mode.name }
+    }
+
+    suspend fun setStudioAromaProp(prop: StudioAromaProp) {
+        context.dataStore.edit { it[PreferencesKeys.STUDIO_AROMA_PROP] = prop.name }
+    }
+
+    suspend fun setCompanionDogEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[PreferencesKeys.COMPANION_DOG_ENABLED] = enabled }
+    }
+
+    suspend fun setSwayingLeavesEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[PreferencesKeys.SWAYING_LEAVES_ENABLED] = enabled }
+    }
+
+    suspend fun setSunbeamsEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[PreferencesKeys.SUNBEAMS_ENABLED] = enabled }
+    }
+
+    suspend fun setHubTransitionsEnabled(enabled: Boolean) {
+        context.dataStore.edit { it[PreferencesKeys.HUB_TRANSITIONS_ENABLED] = enabled }
     }
 }

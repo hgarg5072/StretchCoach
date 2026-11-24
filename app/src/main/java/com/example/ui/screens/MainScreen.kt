@@ -196,7 +196,13 @@ fun MainScreen(
                         onNavigateBack = { viewModel.selectTab(0) },
                         ambientSoundscape = userSettings.ambientSoundscape,
                         customTrackTitle = userSettings.customTrackTitle,
-                        onCycleAmbientSoundscape = { viewModel.cycleAmbientSoundscape() }
+                        onCycleAmbientSoundscape = { viewModel.cycleAmbientSoundscape() },
+                        studioLightingMode = userSettings.studioLightingMode,
+                        studioAromaProp = userSettings.studioAromaProp,
+                        companionDogEnabled = userSettings.companionDogEnabled,
+                        swayingLeavesEnabled = userSettings.swayingLeavesEnabled,
+                        sunbeamsEnabled = userSettings.sunbeamsEnabled,
+                        onTransitionClipFinished = { viewModel.onTransitionClipFinished() }
                     )
                 }
                 else -> {
@@ -247,6 +253,12 @@ fun MainScreen(
                 viewModel.refreshDownloadedTracks()
                 showOnlineAudioDialog = true
             },
+            onSetStudioLightingMode = { viewModel.setStudioLightingMode(it) },
+            onSetStudioAromaProp = { viewModel.setStudioAromaProp(it) },
+            onToggleCompanionDog = { viewModel.setCompanionDogEnabled(it) },
+            onToggleSwayingLeaves = { viewModel.setSwayingLeavesEnabled(it) },
+            onToggleSunbeams = { viewModel.setSunbeamsEnabled(it) },
+            onToggleHubTransitions = { viewModel.setHubTransitionsEnabled(it) },
             onTestVoice = {
                 viewModel.testVoicePronunciation(
                     "Bhujangasana (Cobra Pose)",

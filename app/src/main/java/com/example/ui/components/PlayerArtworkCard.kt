@@ -92,6 +92,9 @@ fun PlayerArtworkCard(
     onOpenSettings: (() -> Unit)? = null,
     showChrome: Boolean = true,
     onToggleChrome: (() -> Unit)? = null,
+    activeTransitionVideoPath: String? = null,
+    activeTransitionCue: String? = null,
+    onTransitionFinished: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -105,7 +108,13 @@ fun PlayerArtworkCard(
         if (customFile != null) null
         else currentStretch?.let { ArtworkMapper.getVideoAssetPathForStretch(context, it.name, it.category) }
     }
-    val hasImage = customFile != null || artworkRes != null
+    val isPlayingTransition = state == PlayerState.PREPARING && !activeTransitionVideoPath.isNullOrBlank()
+    val effectiveVideoPath = if (isPlayingTransition) activeTransitionVideoPath else videoAssetPath
+    val mirrorLeftSide = remember(currentStretch?.name, currentStretch?.category, isPlayingTransition) {
+        if (isPlayingTransition || currentStretch == null) false
+        else com.example.data.PoseManifestRepository.shouldMirrorForLeftSide(context, currentStretch.name, currentStretch.category)
+    }
+    val hasImage = customFile != null || artworkRes != null || isPlayingTransition
 
     // Subtle breathing pulse animation while running (PREPARING or HOLDING)
     val infiniteTransition = rememberInfiniteTransition(label = "player_artwork_pulse")
@@ -238,19 +247,27 @@ fun PlayerArtworkCard(
                             .scale(scale),
                         contentScale = ContentScale.Crop
                     )
-                } else if (artworkRes != null) {
-                    Image(
-                        painter = painterResource(id = artworkRes),
-                        contentDescription = currentStretch?.name ?: "Stretch demonstration",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .scale(if (videoAssetPath == null) scale else 1f),
-                        contentScale = ContentScale.Crop
-                    )
-                    if (videoAssetPath != null) {
+                } else if (artworkRes != null || effectiveVideoPath != null) {
+                    if (artworkRes != null) {
+                        Image(
+                            painter = painterResource(id = artworkRes),
+                            contentDescription = currentStretch?.name ?: "Stretch demonstration",
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .scale(
+                                    scaleX = (if (effectiveVideoPath == null) scale else 1f) * (if (mirrorLeftSide) -1f else 1f),
+                                    scaleY = if (effectiveVideoPath == null) scale else 1f
+                                ),
+                            contentScale = ContentScale.Crop
+                        )
+                    }
+                    if (effectiveVideoPath != null) {
                         LoopingStretchVideo(
-                            assetPath = videoAssetPath,
+                            assetPath = effectiveVideoPath,
                             isPlaying = state != PlayerState.PAUSED,
+                            isLooping = !isPlayingTransition,
+                            mirrorHorizontal = mirrorLeftSide,
+                            onCompleted = if (isPlayingTransition) onTransitionFinished else null,
                             modifier = Modifier.fillMaxSize()
                         )
                     }
@@ -505,6 +522,8 @@ fun PlayerArtworkCard(
                                             modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE)
                                         )
                                         val cueText = when {
+                                            isPlayingTransition && !activeTransitionCue.isNullOrBlank() ->
+                                                activeTransitionCue
                                             state == PlayerState.PREPARING && currentStretch.effectivePrepCue.isNotBlank() ->
                                                 currentStretch.effectivePrepCue
                                             state == PlayerState.HOLDING && currentStretch.effectiveHoldCue.isNotBlank() ->
