@@ -21,6 +21,11 @@ android {
     versionName = "1.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+    ndk {
+      // Strip x86/x86_64 emulator native libraries from device APKs
+      abiFilters += listOf("arm64-v8a", "armeabi-v7a")
+    }
   }
 
   signingConfigs {
@@ -42,9 +47,15 @@ android {
   buildTypes {
     release {
       isCrunchPngs = false
-      isMinifyEnabled = false
+      isMinifyEnabled = true
+      isShrinkResources = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-      signingConfig = signingConfigs.getByName("release")
+      val releaseKeystore = file(System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks")
+      signingConfig = when {
+        releaseKeystore.exists() -> signingConfigs.getByName("release")
+        file("${rootDir}/debug.keystore").exists() -> signingConfigs.getByName("debugConfig")
+        else -> signingConfigs.getByName("debug")
+      }
     }
     debug {
       if (file("${rootDir}/debug.keystore").exists()) {

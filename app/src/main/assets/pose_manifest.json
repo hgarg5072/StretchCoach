@@ -265,40 +265,6 @@
       }
     },
     {
-      "id": "img_stretch_b1_cobra_gentle",
-      "display_name": "Cobra Gentle",
-      "video_file": "img_stretch_b1_cobra_gentle.mp4",
-      "image_file": "img_stretch_b1_cobra_gentle.jpg",
-      "posture_hub": "PRONE",
-      "category": "mobility",
-      "is_unilateral": false,
-      "recommended_dog_state": "overlay_dog_idle_rest",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "wide_floor",
-      "window_side": "left",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 1.0,
-          "bottom_pct": 0.8,
-          "width_pct": 15.5,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 1.2,
-          "bottom_pct": 1.0,
-          "width_pct": 13.0,
-          "visible": true
-        },
-        "wind_chime": {
-          "left_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
       "id": "img_stretch_b1_cross_body_shoulder",
       "display_name": "Cross Body Shoulder",
       "video_file": "img_stretch_b1_cross_body_shoulder.mp4",
@@ -538,113 +504,11 @@
       }
     },
     {
-      "id": "img_stretch_b1_reclining_spinal_twist",
-      "display_name": "Reclining Spinal Twist",
-      "video_file": "img_stretch_b1_reclining_spinal_twist.mp4",
-      "image_file": "img_stretch_b1_reclining_spinal_twist.jpg",
-      "posture_hub": "SUPINE",
-      "category": "restorative",
-      "is_unilateral": true,
-      "recommended_dog_state": "overlay_dog_nap_curled",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "wide_floor",
-      "window_side": "right",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 1.0,
-          "bottom_pct": 0.8,
-          "width_pct": 15.5,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 1.2,
-          "bottom_pct": 1.0,
-          "width_pct": 13.0,
-          "visible": true
-        },
-        "wind_chime": {
-          "right_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
-      "id": "img_stretch_b1_restorative_child_pose",
-      "display_name": "Restorative Child Pose",
-      "video_file": "img_stretch_b1_restorative_child_pose.mp4",
-      "image_file": "img_stretch_b1_restorative_child_pose.jpg",
-      "posture_hub": "KNEELING",
-      "category": "restorative",
-      "is_unilateral": false,
-      "recommended_dog_state": "overlay_dog_nap_curled",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "standard_center",
-      "window_side": "left",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 18.0,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 15.0,
-          "visible": true
-        },
-        "wind_chime": {
-          "left_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
       "id": "img_stretch_b1_scm_neck_turn",
       "display_name": "Scm Neck Turn",
       "video_file": "img_stretch_b1_scm_neck_turn.mp4",
       "image_file": "img_stretch_b1_scm_neck_turn.jpg",
       "posture_hub": "STANDING",
-      "category": "mobility",
-      "is_unilateral": true,
-      "recommended_dog_state": "overlay_dog_idle_rest",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "standard_center",
-      "window_side": "left",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 18.0,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 15.0,
-          "visible": true
-        },
-        "wind_chime": {
-          "left_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
-      "id": "img_stretch_b1_seated_spinal_twist",
-      "display_name": "Seated Spinal Twist",
-      "video_file": "img_stretch_b1_seated_spinal_twist.mp4",
-      "image_file": "img_stretch_b1_seated_spinal_twist.jpg",
-      "posture_hub": "SEATED",
       "category": "mobility",
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
@@ -784,40 +648,6 @@
       "category": "mobility",
       "is_unilateral": true,
       "recommended_dog_state": "overlay_dog_idle_rest",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "standard_center",
-      "window_side": "left",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 18.0,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 15.0,
-          "visible": true
-        },
-        "wind_chime": {
-          "left_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
-      "id": "img_stretch_b1_supine_knees_to_chest",
-      "display_name": "Supine Knees To Chest",
-      "video_file": "img_stretch_b1_supine_knees_to_chest.mp4",
-      "image_file": "img_stretch_b1_supine_knees_to_chest.jpg",
-      "posture_hub": "SUPINE",
-      "category": "restorative",
-      "is_unilateral": false,
-      "recommended_dog_state": "overlay_dog_nap_curled",
       "dog_safe_corner": "bottom_left",
       "diffuser_safe_corner": "bottom_right",
       "room_layout": "standard_center",
@@ -1048,40 +878,6 @@
       }
     },
     {
-      "id": "img_stretch_b2_hip_flexor_lunge",
-      "display_name": "Hip Flexor Lunge",
-      "video_file": "img_stretch_b2_hip_flexor_lunge.mp4",
-      "image_file": "img_stretch_b2_hip_flexor_lunge.jpg",
-      "posture_hub": "KNEELING",
-      "category": "mobility",
-      "is_unilateral": true,
-      "recommended_dog_state": "overlay_dog_idle_rest",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "standard_center",
-      "window_side": "left",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 18.0,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 15.0,
-          "visible": true
-        },
-        "wind_chime": {
-          "left_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
       "id": "img_stretch_b2_lizard_lunge_hip",
       "display_name": "Lizard Lunge Hip",
       "video_file": "img_stretch_b2_lizard_lunge_hip.mp4",
@@ -1218,108 +1014,6 @@
       }
     },
     {
-      "id": "img_stretch_b2_pyramid_pose_stretch",
-      "display_name": "Pyramid Pose Stretch",
-      "video_file": "img_stretch_b2_pyramid_pose_stretch.mp4",
-      "image_file": "img_stretch_b2_pyramid_pose_stretch.jpg",
-      "posture_hub": "STANDING",
-      "category": "mobility",
-      "is_unilateral": true,
-      "recommended_dog_state": "overlay_dog_idle_rest",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "standard_center",
-      "window_side": "left",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 18.0,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 15.0,
-          "visible": true
-        },
-        "wind_chime": {
-          "left_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
-      "id": "img_stretch_b2_seated_butterfly",
-      "display_name": "Seated Butterfly",
-      "video_file": "img_stretch_b2_seated_butterfly.mp4",
-      "image_file": "img_stretch_b2_seated_butterfly.jpg",
-      "posture_hub": "SEATED",
-      "category": "mobility",
-      "is_unilateral": false,
-      "recommended_dog_state": "overlay_dog_idle_rest",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "standard_center",
-      "window_side": "left",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 18.0,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 15.0,
-          "visible": true
-        },
-        "wind_chime": {
-          "left_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
-      "id": "img_stretch_b2_seated_single_leg_fold",
-      "display_name": "Seated Single Leg Fold",
-      "video_file": "img_stretch_b2_seated_single_leg_fold.mp4",
-      "image_file": "img_stretch_b2_seated_single_leg_fold.jpg",
-      "posture_hub": "SEATED",
-      "category": "mobility",
-      "is_unilateral": true,
-      "recommended_dog_state": "overlay_dog_idle_rest",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "standard_center",
-      "window_side": "left",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 18.0,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 15.0,
-          "visible": true
-        },
-        "wind_chime": {
-          "left_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
       "id": "img_stretch_b2_side_lying_quad",
       "display_name": "Side Lying Quad",
       "video_file": "img_stretch_b2_side_lying_quad.mp4",
@@ -1361,40 +1055,6 @@
       "posture_hub": "STANDING",
       "category": "mobility",
       "is_unilateral": true,
-      "recommended_dog_state": "overlay_dog_idle_rest",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "standard_center",
-      "window_side": "left",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 18.0,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 15.0,
-          "visible": true
-        },
-        "wind_chime": {
-          "left_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
-      "id": "img_stretch_b2_standing_hamstring_fold",
-      "display_name": "Standing Hamstring Fold",
-      "video_file": "img_stretch_b2_standing_hamstring_fold.mp4",
-      "image_file": "img_stretch_b2_standing_hamstring_fold.jpg",
-      "posture_hub": "STANDING",
-      "category": "mobility",
-      "is_unilateral": false,
       "recommended_dog_state": "overlay_dog_idle_rest",
       "dog_safe_corner": "bottom_left",
       "diffuser_safe_corner": "bottom_right",
@@ -1516,40 +1176,6 @@
           "width_pct": 12.5,
           "visible": true,
           "note": "shifted_left_of_wall"
-        },
-        "wind_chime": {
-          "left_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
-      "id": "img_stretch_b2_wide_legged_straddle_fold",
-      "display_name": "Wide Legged Straddle Fold",
-      "video_file": "img_stretch_b2_wide_legged_straddle_fold.mp4",
-      "image_file": "img_stretch_b2_wide_legged_straddle_fold.jpg",
-      "posture_hub": "STANDING",
-      "category": "mobility",
-      "is_unilateral": false,
-      "recommended_dog_state": "overlay_dog_idle_rest",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "standard_center",
-      "window_side": "left",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 18.0,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 2.0,
-          "bottom_pct": 1.5,
-          "width_pct": 15.0,
-          "visible": true
         },
         "wind_chime": {
           "left_pct": 3.0,

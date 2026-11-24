@@ -53,27 +53,27 @@ object ArtworkBatch1 {
         // #16 Standing Side-Bend Arc
         "standing side-bend arc" to R.drawable.img_stretch_b1_standing_side_arc,
         "standing_side_arc" to R.drawable.img_stretch_b1_standing_side_arc,
-        // #17 Supine Double Knee Hug
-        "supine double knee hug" to R.drawable.img_stretch_b1_supine_knees_to_chest,
-        "supine_knees_to_chest" to R.drawable.img_stretch_b1_supine_knees_to_chest,
+        // #17 Supine Double Knee Hug (canonical Pavanamuktasana asset)
+        "supine double knee hug" to R.drawable.img_stretch_b4_pavanamuktasana_wind_relieving,
+        "supine_knees_to_chest" to R.drawable.img_stretch_b4_pavanamuktasana_wind_relieving,
         // #18 Single Knee-to-Chest Decompression
         "single knee-to-chest decompression" to R.drawable.img_stretch_b1_single_knee_to_chest,
         "single_knee_to_chest" to R.drawable.img_stretch_b1_single_knee_to_chest,
-        // #19 Reclining Spinal Twist (Right)
-        "reclining spinal twist (right)" to R.drawable.img_stretch_b1_reclining_spinal_twist,
-        "reclining_spinal_twist_right" to R.drawable.img_stretch_b1_reclining_spinal_twist,
-        // #20 Reclining Spinal Twist (Left)
-        "reclining spinal twist (left)" to R.drawable.img_stretch_b1_reclining_spinal_twist,
-        "reclining_spinal_twist_left" to R.drawable.img_stretch_b1_reclining_spinal_twist,
-        // #21 Seated Torso Spinal Twist
-        "seated torso spinal twist" to R.drawable.img_stretch_b1_seated_spinal_twist,
-        "seated_spinal_twist" to R.drawable.img_stretch_b1_seated_spinal_twist,
+        // #19 Reclining Spinal Twist (Right) (canonical Supta Matsyendrasana asset)
+        "reclining spinal twist (right)" to R.drawable.img_stretch_b3_supta_matsyendrasana,
+        "reclining_spinal_twist_right" to R.drawable.img_stretch_b3_supta_matsyendrasana,
+        // #20 Reclining Spinal Twist (Left) (canonical Supta Matsyendrasana asset)
+        "reclining spinal twist (left)" to R.drawable.img_stretch_b3_supta_matsyendrasana,
+        "reclining_spinal_twist_left" to R.drawable.img_stretch_b3_supta_matsyendrasana,
+        // #21 Seated Torso Spinal Twist (canonical Ardha Matsyendrasana asset)
+        "seated torso spinal twist" to R.drawable.img_stretch_b3_ardha_matsyendrasana,
+        "seated_spinal_twist" to R.drawable.img_stretch_b3_ardha_matsyendrasana,
         // #22 Sphinx Pose Lumbar Extension
         "sphinx pose lumbar extension" to R.drawable.img_stretch_b1_sphinx_pose,
         "sphinx_pose_extension" to R.drawable.img_stretch_b1_sphinx_pose,
-        // #23 Gentle Cobra Pose
-        "gentle cobra pose" to R.drawable.img_stretch_b1_cobra_gentle,
-        "cobra_stretch_gentle" to R.drawable.img_stretch_b1_cobra_gentle,
+        // #23 Gentle Cobra Pose (canonical Bhujangasana asset)
+        "gentle cobra pose" to R.drawable.img_stretch_b3_bhujangasana_cobra,
+        "cobra_stretch_gentle" to R.drawable.img_stretch_b3_bhujangasana_cobra,
         // #46 Wrist Flexor Stretch (Palm Up)
         "wrist flexor stretch (palm up)" to R.drawable.img_stretch_b1_wrist_flexor,
         "wrist_flexor_extension" to R.drawable.img_stretch_b1_wrist_flexor,
@@ -86,9 +86,9 @@ object ArtworkBatch1 {
         // #49 Standing Side Lat Reach
         "standing side lat reach" to R.drawable.img_stretch_b1_standing_side_reach_lat,
         "standing_side_reach_lat" to R.drawable.img_stretch_b1_standing_side_reach_lat,
-        // #50 Restorative Child's Pose
-        "restorative child's pose" to R.drawable.img_stretch_b1_restorative_child_pose,
-        "child_pose_full_body" to R.drawable.img_stretch_b1_restorative_child_pose,
+        // #50 Restorative Child's Pose (canonical Balasana asset)
+        "restorative child's pose" to R.drawable.img_stretch_child,
+        "child_pose_full_body" to R.drawable.img_stretch_child,
         // #13 Cat-Cow Spine Mobilizer
         "cat-cow spine mobilizer" to R.drawable.img_stretch_b1_cat_cow_flow,
         "cat_cow_spinal_flow" to R.drawable.img_stretch_b1_cat_cow_flow

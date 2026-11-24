@@ -147,25 +147,70 @@ class ArtworkE2ETest {
                     validDrawableNameRegex.matches(entryName)
                 )
 
-                val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-                BitmapFactory.decodeResource(res, resId, opts)
+                val (width, height) = readDrawableDimensions(res, resId)
                 assertEquals(
-                    "Drawable '$entryName' width must be 1376 (not legacy 1024/1408)",
-                    1376,
-                    opts.outWidth
+                    "Drawable '$entryName' width must be 480 (optimized WebP thumbnail)",
+                    480,
+                    width
                 )
                 assertEquals(
-                    "Drawable '$entryName' height must be 768",
-                    768,
-                    opts.outHeight
+                    "Drawable '$entryName' height must be 270 (optimized WebP thumbnail)",
+                    270,
+                    height
                 )
-                val aspect = opts.outWidth.toFloat() / opts.outHeight.toFloat()
+                val aspect = width.toFloat() / height.toFloat()
                 assertTrue(
                     "Drawable '$entryName' must be 16:9 aspect ratio, was $aspect",
                     abs(aspect - (16f / 9f)) < 0.05f
                 )
             }
         }
+    }
+
+    /**
+     * Reads true pixel dimensions from a WebP (VP8 / VP8L / VP8X) drawable header directly so
+     * Robolectric JVM tests (whose ImageIO lacks a WebP plugin and returns 100x100) still
+     * strictly verify the real bundled 480x270 dimensions.
+     */
+    private fun readDrawableDimensions(res: android.content.res.Resources, resId: Int): Pair<Int, Int> {
+        val header = res.openRawResource(resId).use { stream ->
+            val buf = ByteArray(32)
+            val n = stream.read(buf)
+            if (n >= 30) buf else null
+        }
+        if (header != null &&
+            header[0] == 'R'.code.toByte() && header[1] == 'I'.code.toByte() &&
+            header[2] == 'F'.code.toByte() && header[3] == 'F'.code.toByte() &&
+            header[8] == 'W'.code.toByte() && header[9] == 'E'.code.toByte() &&
+            header[10] == 'B'.code.toByte() && header[11] == 'P'.code.toByte()
+        ) {
+            val chunk = String(header, 12, 4, Charsets.US_ASCII)
+            when (chunk) {
+                "VP8 " -> {
+                    val w = ((header[26].toInt() and 0xFF) or ((header[27].toInt() and 0xFF) shl 8)) and 0x3FFF
+                    val h = ((header[28].toInt() and 0xFF) or ((header[29].toInt() and 0xFF) shl 8)) and 0x3FFF
+                    return w to h
+                }
+                "VP8L" -> {
+                    val b0 = header[21].toInt() and 0xFF
+                    val b1 = header[22].toInt() and 0xFF
+                    val b2 = header[23].toInt() and 0xFF
+                    val b3 = header[24].toInt() and 0xFF
+                    val bits = b0 or (b1 shl 8) or (b2 shl 16) or (b3 shl 24)
+                    val w = (bits and 0x3FFF) + 1
+                    val h = ((bits ushr 14) and 0x3FFF) + 1
+                    return w to h
+                }
+                "VP8X" -> {
+                    val w = 1 + ((header[24].toInt() and 0xFF) or ((header[25].toInt() and 0xFF) shl 8) or ((header[26].toInt() and 0xFF) shl 16))
+                    val h = 1 + ((header[27].toInt() and 0xFF) or ((header[28].toInt() and 0xFF) shl 8) or ((header[29].toInt() and 0xFF) shl 16))
+                    return w to h
+                }
+            }
+        }
+        val opts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+        BitmapFactory.decodeResource(res, resId, opts)
+        return opts.outWidth to opts.outHeight
     }
 
     // =========================================================================

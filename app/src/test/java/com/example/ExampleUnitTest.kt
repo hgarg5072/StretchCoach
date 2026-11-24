@@ -194,13 +194,13 @@ class ExampleUnitTest {
         assertNull(ArtworkMapper.getDrawableForStretch("", ""))
         assertNull(ArtworkMapper.getDrawableForStretch("   ", "Yoga Asanas"))
 
-        // Newly visually-verified Batch 1..4 exact matches
+        // Newly visually-verified Batch 1..4 exact matches (deduplicated to canonical Balasana asset)
         assertEquals(
-            R.drawable.img_stretch_b1_restorative_child_pose,
+            R.drawable.img_stretch_child,
             ArtworkMapper.getDrawableForStretch("Restorative Child's Pose", "Back & Spine")
         )
         assertEquals(
-            R.drawable.img_stretch_b1_restorative_child_pose,
+            R.drawable.img_stretch_child,
             ArtworkMapper.getDrawableForStretch("child_pose_full_body", "Back & Spine")
         )
         assertEquals(

@@ -22,9 +22,9 @@ class PoseManifestUnitTest {
         get() = ApplicationProvider.getApplicationContext()
 
     @Test
-    fun manifestLoads117PosesAnd12Transitions() {
+    fun manifestLoadsCanonicalPosesAnd12Transitions() {
         PoseManifestRepository.ensureLoaded(context)
-        assertEquals(122, PoseManifestRepository.totalLoadedPoses())
+        assertEquals(111, PoseManifestRepository.totalLoadedPoses())
         assertEquals(12, PoseManifestRepository.totalLoadedTransitions())
     }
 

@@ -12,10 +12,28 @@
 #   public *;
 #}
 
-# Uncomment this to preserve the line number information for
-# debugging stack traces.
-#-keepattributes SourceFile,LineNumberTable
+# Preserve line numbers for readable crash stack traces
+-keepattributes SourceFile,LineNumberTable
 
-# If you keep the line number information, uncomment this to
-# hide the original source file name.
-#-renamesourcefileattribute SourceFile
+# Keep data entities, backup/export models, and Firestore/Moshi reflection DTOs
+-keep class com.example.data.** { *; }
+
+# Keep Android R.drawable entry names intact for ArtworkMapper/PoseManifestRepository lookup
+-keepclassmembers class com.example.R$drawable {
+    public static <fields>;
+}
+
+# Moshi / Kotlin reflection safety
+-keepclasseswithmembers class * {
+    @com.squareup.moshi.FromJson <methods>;
+    @com.squareup.moshi.ToJson <methods>;
+}
+-keep @com.squareup.moshi.JsonClass class * { *; }
+
+# Suppress harmless optional warnings from Retrofit / OkHttp / Coroutines
+-dontwarn okhttp3.**
+-dontwarn okio.**
+-dontwarn retrofit2.**
+-dontwarn org.conscrypt.**
+-dontwarn org.bouncycastle.**
+-dontwarn org.openjsse.**
