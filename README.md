@@ -1,30 +1,83 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Stretch Coach
 
-# Run and deploy your AI Studio app
+An offline-first Android yoga & mobility coaching app built with **Kotlin**, **Jetpack Compose**, **Room**, **DataStore**, **Google TTS**, and **OpenGL ES 2.0**, featuring a hand-painted Studio Ghibli-inspired sunlit yoga sanctuary.
 
-This contains everything you need to run your app locally.
+- **Latest Release APK (`45.0 MB`):** [Download StretchCoach.apk on Google Drive](https://drive.google.com/file/d/1WrBxwvdn5Y5nSB6_kRWsR5ddq8TgpP4u/view?usp=drivesdk)
+- **Shared Studio Assets & Releases Folder:** [Google Drive Folder](https://drive.google.com/drive/folders/1K8UG0yUtaxtDtEzZj4VGnCrVHo4nXhe-)
 
-View your app in AI Studio: https://ai.studio/apps/e03c86f2-0daa-415a-81b3-6bcb91bb144d
+---
 
-## Run Locally
+## Key Features
 
-**Prerequisites:**  [Android Studio](https://developer.android.com/studio)
+- **150-Stretch Bilingual Library & 7 Built-In Routines:** Includes English + Devanagari (`हिन्दी / संस्कृत`) names, prep/hold cues, and 7 preloaded routines — including the full **52-step *Subah Subah*** morning mobility routine with 100% verified looping pose videos.
+- **111 Canonical Looping Pose Videos & 12 Hub Transitions:** Smooth posture-hub transitions (`STANDING ↔ KNEELING ↔ SEATED ↔ PRONE ↔ SUPINE`), automatic left-side mirroring (and dedicated `_left.mp4` / `_right.mp4` clips where needed), and Smart Flow sorting.
+- **Living Studio Atmosphere (OpenGL ES 2.0):**
+  - Localized Monstera plant breeze shader (`GlBreezeVideoRenderer`) running directly on the pose video texture.
+  - Real-time chroma-key studio overlays (`ChromaKeyVideoOverlay`): **8 Golden Puppy animations**, **Auto Ghibli** lighting props (`Tea Set` in Day, `Candle Warmer` in Sunset, `Washi Lantern` with warm floor glow in Night), and **Glass Furin Wind Chime** (with automatic low-RAM device guard).
+  - Event-driven `SurfaceTexture.OnFrameAvailableListener` rendering that automatically pauses decoders when the timer is paused/idle.
+- **Living Empty Sanctuary for Custom Stretches:** Custom user-created stretches without a matched pose video render the full-resolution sunlit empty yoga studio backdrop (`img_stretch_empty_studio_sanctuary.webp`) with a 4s/4s meditative breathing ring and live atmosphere overlays.
+- **Voice Coaching & Bundled Meditation Music:** Offline Google TTS prep/hold cues with a 5-second spoken countdown, 1:1 tick-locked progress animation, and bundled 9-minute ambient meditation music (`default_meditation_music.m4a`).
+- **Full-Screen Zen Mode & Landscape Support:** Clean top-center stretch name pill (`Name • देवनागरी`), unclipped 16:9 stage for wide supine/prone poses, and 1-tap orientation toggle.
 
+---
 
-1. Open Android Studio
-2. Select **Open** and choose the directory containing this project
-3. Allow Android Studio to fix any incompatibilities as it imports the project.
-4. Create a file named `.env` in the project directory and set `GEMINI_API_KEY` in that file to your Gemini API key (see `.env.example` for an example)
-5. Remove this line from the app's `build.gradle.kts` file: `signingConfig = signingConfigs.getByName("debugConfig")`
-6. Run the app on an emulator or physical device
-7. If you have already published your app in AI Studio, please [request upload key reset](https://support.google.com/googleplay/android-developer/answer/9842756#zippy=%2Crequest-an-upload-key-reset) in Google Play Console.
+## Asset & APK Size Optimization (`130 MB → 45.0 MB`)
 
-## Reference Videos & Asset Specs
+All optimized assets are tracked directly in Git under `app/src/main/`:
+
+| Asset / Layer | Specs | Size |
+| :--- | :--- | :---: |
+| `app/src/main/res/drawable/` | 112 pose thumbnails (`480×270` WebP, `-q 75`) + full-res `1376×768` Empty Sanctuary (`-q 82`) | **2.2 MB** |
+| `app/src/main/assets/stretch_videos/` | 111 canonical poses + L/R variants (`960×540`, 16 fps, H.264 `main`, CRF 27, `+faststart`, silent) | **27 MB** |
+| `app/src/main/assets/stretch_transitions/` | 12 posture-hub transitions (`960×540`, 16 fps, H.264 `main`, CRF 27) | **2.4 MB** |
+| `app/src/main/assets/stretch_overlays/` | 12 chroma-key overlays (8 puppy actions + 3 Ghibli lighting props + wind chime) | **3.3 MB** |
+| `app/src/main/assets/ambient_audio/` | Bundled 9-minute meditation track (96 kbps stereo AAC `.m4a`) | **6.3 MB** |
+| **Release APK (`app-release.apk`)** | R8 minification (`isMinifyEnabled = true`), resource shrinking (`isShrinkResources = true`), `arm64-v8a` & `armeabi-v7a` ABI filter | **45.0 MB** |
+
+---
+
+## Project Structure
+
+```text
+app/src/main/
+├── assets/
+│   ├── ambient_audio/          # Default bundled meditation music (.m4a)
+│   ├── pose_manifest.json      # 111 canonical poses, posture hubs, overlay anchor coordinates, 12 transitions
+│   ├── stretch_overlays/       # 12 chroma-key MP4 overlays (puppy, tea set, candle warmer, lantern, wind chime)
+│   ├── stretch_transitions/    # 12 posture-hub transition MP4s
+│   └── stretch_videos/         # Looping Studio Ghibli pose MP4s (540p, 16fps H.264)
+├── res/drawable/               # WebP pose thumbnails & full-res Empty Sanctuary backdrop
+└── java/com/example/
+    ├── audio/                  # AmbientAudioController & SpeechController (TTS)
+    ├── data/                   # Room DB, StretchLibrary, ExtraYogaAsanas, ArtworkMapper, PoseManifestRepository
+    ├── ui/components/          # PlayerArtworkCard, LoopingStretchVideo, ChromaKeyVideoOverlay, StudioAtmosphereOverlay, SettingsDialog
+    └── ui/screens/             # RoutineScreen, PlayerScreen, MainScreen
+```
+
+---
+
+## Build & Test Locally
+
+**Prerequisites:** JDK 21 and Android SDK (`compileSdk 36`, `minSdk 26`).
+
+```bash
+# Run all unit tests (ArtworkE2ETest, PoseManifestUnitTest, AmbientAudioUnitTest, ExampleUnitTest)
+./gradlew testDebugUnitTest --no-daemon
+
+# Build R8-minified Release APK (45 MB, falls back to debug keystore locally if no upload keystore is configured)
+./gradlew assembleRelease --no-daemon
+
+# Install Release APK onto a connected Android device
+adb install -r app/build/outputs/apk/release/app-release.apk
+```
+
+Optional: copy `.env.example` to `.env` if configuring Firebase/Google Sign-In cloud backup locally.
+
+---
+
+## Reference Videos & Documentation
 
 - **Recorded Custom Stretches Reference (`Spine Alignment`, `Scapula Stretch`, `Shoulder Stretches`):** https://drive.google.com/file/d/1irYd7QxWxeF4v57BCdu8PrWBySD2bwQ1/view
 - **52-Step Routine Walkthrough Recording:** https://drive.google.com/file/d/1Csj_XEKOpQIu9Vn3yLiD1N_xXKCJnNpC/view
-- **Shared Studio Assets & APK Folder:** https://drive.google.com/drive/folders/1K8UG0yUtaxtDtEzZj4VGnCrVHo4nXhe-
 - **Batch 5 Image & Video Generation Spec:** [`docs/new_poses_generation_prompts.md`](docs/new_poses_generation_prompts.md)
 - **52-Step Routine Analysis:** [`docs/whatsapp_routine_analysis.md`](docs/whatsapp_routine_analysis.md)
