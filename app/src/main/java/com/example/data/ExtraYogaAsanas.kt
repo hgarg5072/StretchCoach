@@ -1,0 +1,560 @@
+package com.example.data
+
+/**
+ * 50 additional classic Indian Yogasanas, Pranayama & mobility poses
+ * expanding the pre-fed library to 150 guided stretches & asanas with Indian names.
+ */
+object ExtraYogaAsanas {
+    val EXTRA_50_ASANAS: List<LibraryStretch> = listOf(
+        LibraryStretch(
+            id = "padmasana_lotus",
+            name = "Padmasana (Lotus Pose)",
+            indianName = "पद्मासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 10,
+            defaultHoldSeconds = 45,
+            prepCue = "Sit tall and gently place each foot onto the opposite thigh with soles facing upward.",
+            holdCue = "Rest hands on knees in chin mudra, lengthen your spine, and breathe calmly.",
+            benefits = "Opens hips and ankles, calms the nervous system, and supports meditative posture."
+        ),
+        LibraryStretch(
+            id = "ardha_padmasana_half_lotus",
+            name = "Ardha Padmasana (Half Lotus Pose)",
+            indianName = "अर्ध पद्मासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 40,
+            prepCue = "Sit cross-legged and place one foot gently onto the opposite thigh.",
+            holdCue = "Keep both sitting bones grounded, relax shoulders down, and lengthen through the crown.",
+            benefits = "Accessible hip opener that prepares knees and hips for full Lotus."
+        ),
+        LibraryStretch(
+            id = "vajrasana_thunderbolt",
+            name = "Vajrasana (Thunderbolt Pose)",
+            indianName = "वज्रासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 45,
+            prepCue = "Kneel on the mat with big toes touching and sit your hips back onto your heels.",
+            holdCue = "Rest palms on thighs, keep your back upright, and breathe slowly into the belly.",
+            benefits = "Aids digestion, stretches ankles and quads, and encourages erect spinal alignment."
+        ),
+        LibraryStretch(
+            id = "sukhasana_easy_pose",
+            name = "Sukhasana (Easy Seated Pose)",
+            indianName = "सुखासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 45,
+            prepCue = "Sit comfortably cross-legged with shins relaxed and pelvis neutral.",
+            holdCue = "Soften your shoulders away from ears and take slow, steady nasal breaths.",
+            benefits = "Gently opens hips, eases mental fatigue, and establishes grounded posture."
+        ),
+        LibraryStretch(
+            id = "siddhasana_accomplished",
+            name = "Siddhasana (Accomplished Pose)",
+            indianName = "सिद्धासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 45,
+            prepCue = "Sit with one heel close to the pelvis and the other tucked neatly in front.",
+            holdCue = "Maintain an effortless upright spine and quiet rhythmic breathing.",
+            benefits = "Stabilizes the pelvis, opens inner hips, and promotes deep focus."
+        ),
+        LibraryStretch(
+            id = "chakrasana_wheel",
+            name = "Chakrasana (Wheel Pose)",
+            indianName = "चक्रासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 10,
+            defaultHoldSeconds = 20,
+            prepCue = "Lie on your back, place feet near hips and palms beside ears, then press up into an arch.",
+            holdCue = "Push evenly through palms and heels, open the chest, and breathe steadily.",
+            benefits = "Deeply opens chest, shoulders, and hip flexors while strengthening arms and spine."
+        ),
+        LibraryStretch(
+            id = "sarvangasana_shoulderstand",
+            name = "Sarvangasana (Shoulder Stand)",
+            indianName = "सर्वांगासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 10,
+            defaultHoldSeconds = 35,
+            prepCue = "Lie supine, lift legs overhead, support your mid-back with palms, and extend legs skyward.",
+            holdCue = "Keep weight on shoulders rather than neck, gaze softly at toes, and breathe calmly.",
+            benefits = "Boosts circulation, relieves tired legs, and calms the parasympathetic nervous system."
+        ),
+        LibraryStretch(
+            id = "sirsasana_headstand",
+            name = "Sirsasana (Supported Headstand)",
+            indianName = "शीर्षासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 12,
+            defaultHoldSeconds = 30,
+            prepCue = "Interlace fingers on mat, cradle crown of head, engage forearms, and lift legs slowly.",
+            holdCue = "Press forearms firmly into the mat, engage core, and keep shoulders lifted away from ears.",
+            benefits = "Builds core and shoulder stability while refreshing blood flow and focus."
+        ),
+        LibraryStretch(
+            id = "naukasana_boat",
+            name = "Naukasana (Boat Pose)",
+            indianName = "नौकासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 25,
+            prepCue = "Sit on sitting bones, lean torso back slightly, and lift legs and extended arms into a V.",
+            holdCue = "Keep chest lifted, spine long, and breathe smoothly without tensing the neck.",
+            benefits = "Strengthens deep core, hip flexors, and lower back endurance."
+        ),
+        LibraryStretch(
+            id = "pavanamuktasana_wind_relieving",
+            name = "Pavanamuktasana (Wind-Relieving Pose)",
+            indianName = "पवनमुक्तासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 35,
+            prepCue = "Lie on your back and hug both knees firmly toward your chest with relaxed shoulders.",
+            holdCue = "Gently press lower back into the mat and breathe deeply into the abdomen.",
+            benefits = "Decompresses the lumbar spine, relieves bloating, and relaxes tight glutes."
+        ),
+        LibraryStretch(
+            id = "makarasana_crocodile",
+            name = "Makarasana (Crocodile Relaxation Pose)",
+            indianName = "मकरासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 45,
+            prepCue = "Lie face down with toes turned outward and rest your forehead on stacked forearms.",
+            holdCue = "Let the lower back soften completely with each slow belly exhale.",
+            benefits = "Soothes lower back strain, eases sciatic tension, and promotes deep relaxation."
+        ),
+        LibraryStretch(
+            id = "bakasana_crow",
+            name = "Bakasana (Crow Pose)",
+            indianName = "बकासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 10,
+            defaultHoldSeconds = 20,
+            prepCue = "Squat low, plant palms shoulder-width, place knees high on upper arms, and shift forward.",
+            holdCue = "Grip the mat with fingertips, draw heels toward glutes, and gaze slightly ahead.",
+            benefits = "Builds wrist, arm, and core strength along with balance and concentration."
+        ),
+        LibraryStretch(
+            id = "mayurasana_peacock",
+            name = "Mayurasana (Peacock Pose)",
+            indianName = "मयूरासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 10,
+            defaultHoldSeconds = 15,
+            prepCue = "Kneel, turn fingertips back toward knees, tuck elbows against abdomen, and extend legs.",
+            holdCue = "Engage core and glutes to hover parallel to the floor while breathing evenly.",
+            benefits = "Strengthens wrists, forearms, and core while stimulating abdominal circulation."
+        ),
+        LibraryStretch(
+            id = "chaturanga_dandasana",
+            name = "Chaturanga Dandasana (Four-Limbed Staff)",
+            indianName = "चतुरंग दंडासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 20,
+            prepCue = "From high plank, shift slightly forward and bend elbows to 90 degrees hugging ribs.",
+            holdCue = "Keep body in one straight line from heels to crown with core firmly engaged.",
+            benefits = "Builds triceps, shoulder, and full-body core stability."
+        ),
+        LibraryStretch(
+            id = "dandasana_staff",
+            name = "Dandasana (Staff Pose)",
+            indianName = "दंडासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 30,
+            prepCue = "Sit with legs extended straight forward, feet flexed, and palms beside your hips.",
+            holdCue = "Press lightly through palms to lift your sternum tall and engage the quadriceps.",
+            benefits = "Improves seated posture, strengthens back extensors, and stretches hamstrings."
+        ),
+        LibraryStretch(
+            id = "ardha_chandrasana_right",
+            name = "Ardha Chandrasana (Half Moon - Right)",
+            indianName = "अर्ध चन्द्रासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 25,
+            prepCue = "Balance on your right foot and right fingertips, lifting left leg parallel to floor.",
+            holdCue = "Stack hips open, extend left arm skyward, and keep the lifted foot flexed.",
+            benefits = "Improves single-leg balance, strengthens glutes, and opens hips and chest."
+        ),
+        LibraryStretch(
+            id = "ardha_chandrasana_left",
+            name = "Ardha Chandrasana (Half Moon - Left)",
+            indianName = "अर्ध चन्द्रासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 25,
+            prepCue = "Balance on your left foot and left fingertips, lifting right leg parallel to floor.",
+            holdCue = "Stack hips open, reach right arm high, and breathe smoothly for stability.",
+            benefits = "Builds ankle stability, lateral hip strength, and full-body coordination."
+        ),
+        LibraryStretch(
+            id = "utthita_parsvakonasana_right",
+            name = "Utthita Parsvakonasana (Extended Side Angle - Right)",
+            indianName = "उत्थित पार्श्वकोणासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 30,
+            prepCue = "From Warrior II on the right, rest right forearm on thigh and sweep left arm overhead.",
+            holdCue = "Create one long diagonal line from left heel to left fingertips, opening chest upward.",
+            benefits = "Deeply stretches side waist, groins, and legs while building lower-body stamina."
+        ),
+        LibraryStretch(
+            id = "utthita_parsvakonasana_left",
+            name = "Utthita Parsvakonasana (Extended Side Angle - Left)",
+            indianName = "उत्थित पार्श्वकोणासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 30,
+            prepCue = "From Warrior II on the left, rest left forearm on thigh and sweep right arm overhead.",
+            holdCue = "Press outer edge of right foot into mat and lengthen through the right ribs.",
+            benefits = "Opens lateral torso, shoulders, and hips while strengthening thighs."
+        ),
+        LibraryStretch(
+            id = "parivrtta_trikonasana_right",
+            name = "Parivrtta Trikonasana (Revolved Triangle - Right)",
+            indianName = "परिवृत्त त्रिकोणासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 25,
+            prepCue = "Step right foot forward, hinge with flat back, place left hand near right foot, and twist right.",
+            holdCue = "Keep hips squared back, lengthen spine on inhales, and rotate chest on exhales.",
+            benefits = "Releases tight hamstrings and IT band while wringing out thoracic stiffness."
+        ),
+        LibraryStretch(
+            id = "parivrtta_trikonasana_left",
+            name = "Parivrtta Trikonasana (Revolved Triangle - Left)",
+            indianName = "परिवृत्त त्रिकोणासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 25,
+            prepCue = "Step left foot forward, hinge forward, place right hand near left foot, and twist left.",
+            holdCue = "Draw left hip gently back, reach left arm upward, and keep breath steady.",
+            benefits = "Balances spinal rotation and deeply lengthens the posterior chain."
+        ),
+        LibraryStretch(
+            id = "hanumanasana_right",
+            name = "Hanumanasana (Monkey Split - Right)",
+            indianName = "हनुमानासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 10,
+            defaultHoldSeconds = 30,
+            prepCue = "From low lunge with right leg forward, slowly slide right heel forward to a comfortable depth.",
+            holdCue = "Keep hips square, support yourself with fingertips on floor or blocks, and breathe gently.",
+            benefits = "Intensely lengthens hamstrings, psoas, and hip flexors."
+        ),
+        LibraryStretch(
+            id = "hanumanasana_left",
+            name = "Hanumanasana (Monkey Split - Left)",
+            indianName = "हनुमानासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 10,
+            defaultHoldSeconds = 30,
+            prepCue = "From low lunge with left leg forward, slowly extend left heel forward within comfort.",
+            holdCue = "Stay tall through the torso, avoid forcing, and soften tension on every exhale.",
+            benefits = "Develops deep front-to-back split mobility in hips and hamstrings."
+        ),
+        LibraryStretch(
+            id = "natarajasana_right",
+            name = "Natarajasana (Dancer Pose - Right)",
+            indianName = "नटराजासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 25,
+            prepCue = "Stand on your right leg, hold left ankle behind you, and kick gently into your hand.",
+            holdCue = "Reach right arm forward, lift chest proudly, and fix gaze on a steady point.",
+            benefits = "Opens chest, shoulders, and hip flexors while training graceful balance."
+        ),
+        LibraryStretch(
+            id = "natarajasana_left",
+            name = "Natarajasana (Dancer Pose - Left)",
+            indianName = "नटराजासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 25,
+            prepCue = "Stand on your left leg, clasp right ankle behind you, and lift right thigh upward.",
+            holdCue = "Keep standing knee soft, open right shoulder, and breathe smoothly.",
+            benefits = "Strengthens standing leg and back while stretching quads and chest."
+        ),
+        LibraryStretch(
+            id = "virasana_hero",
+            name = "Virasana (Hero Pose)",
+            indianName = "वीरासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 40,
+            prepCue = "Kneel with knees together and feet slightly wider than hips, lowering seat between heels.",
+            holdCue = "Sit evenly on the mat or a block, lengthen spine, and relax hands onto thighs.",
+            benefits = "Stretches quads, knees, and ankles while relieving tired feet."
+        ),
+        LibraryStretch(
+            id = "supta_virasana_reclining_hero",
+            name = "Supta Virasana (Reclining Hero Pose)",
+            indianName = "सुप्त वीरासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 10,
+            defaultHoldSeconds = 35,
+            prepCue = "From Hero Pose, walk hands back onto elbows or recline gently onto a bolster.",
+            holdCue = "Keep knees comfortable, allow chest and thighs to open, and take slow breaths.",
+            benefits = "Deeply stretches quadriceps, hip flexors, abdomen, and ankles."
+        ),
+        LibraryStretch(
+            id = "mandukasana_frog",
+            name = "Mandukasana (Frog Pose)",
+            indianName = "मंडूकासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 35,
+            prepCue = "From all fours, widen knees gently apart with shins parallel and rest on forearms.",
+            holdCue = "Keep hips aligned with knees and exhale softly to release inner-thigh tension.",
+            benefits = "Targets deep hip adductors and groin flexibility."
+        ),
+        LibraryStretch(
+            id = "simhasana_lion",
+            name = "Simhasana (Lion Pose)",
+            indianName = "सिंहासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 20,
+            prepCue = "Kneel or sit tall, spread fingers wide on knees, inhale deeply through the nose.",
+            holdCue = "Exhale with a gentle sigh, relaxing jaw, tongue, face, and throat muscles.",
+            benefits = "Releases facial, jaw, and vocal tension while lifting energy."
+        ),
+        LibraryStretch(
+            id = "kurmasana_tortoise",
+            name = "Kurmasana (Tortoise Pose)",
+            indianName = "कूर्मासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 10,
+            defaultHoldSeconds = 35,
+            prepCue = "Sit with legs wide and knees slightly bent, slide arms under knees, and fold forward.",
+            holdCue = "Let shoulders and upper back soften downward as you breathe into your back ribs.",
+            benefits = "Deeply stretches back, hips, and hamstrings while inducing calm inward focus."
+        ),
+        LibraryStretch(
+            id = "shashankasana_hare",
+            name = "Shashankasana (Hare Pose)",
+            indianName = "शशांकासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 40,
+            prepCue = "From kneeling Vajrasana, reach arms up and fold forward resting forehead on the mat.",
+            holdCue = "Relax shoulders, neck, and lower back completely with slow exhales.",
+            benefits = "Calms stress, stretches the entire back, and gently decompresses the spine."
+        ),
+        LibraryStretch(
+            id = "padahastasana_hand_to_foot",
+            name = "Padahastasana (Hand-to-Foot Forward Fold)",
+            indianName = "पादहस्तासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 30,
+            prepCue = "Fold forward from standing and slide palms underneath the soles of your feet.",
+            holdCue = "Keep knees softly bent if needed, relax your head, and lengthen the back of legs.",
+            benefits = "Stretches hamstrings, calves, and wrists simultaneously."
+        ),
+        LibraryStretch(
+            id = "vasisthasana_right",
+            name = "Vasisthasana (Side Plank - Right)",
+            indianName = "वसिष्ठासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 25,
+            prepCue = "Shift onto right palm and outer right foot, stacking legs and lifting hips high.",
+            holdCue = "Extend left arm toward ceiling, engage obliques, and keep shoulder strong.",
+            benefits = "Strengthens obliques, wrists, shoulders, and lateral hip stabilizers."
+        ),
+        LibraryStretch(
+            id = "vasisthasana_left",
+            name = "Vasisthasana (Side Plank - Left)",
+            indianName = "वसिष्ठासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 25,
+            prepCue = "Shift onto left palm and outer left foot, stacking legs and lifting hips steadily.",
+            holdCue = "Reach right arm skyward, lengthen waist, and breathe smoothly.",
+            benefits = "Builds balanced core strength and shoulder stability."
+        ),
+        LibraryStretch(
+            id = "skandasana_right",
+            name = "Skandasana (Side Lunge - Right)",
+            indianName = "स्कंदासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 30,
+            prepCue = "From a wide stance, bend deeply into your right knee while extending left leg straight.",
+            holdCue = "Flex left toes toward ceiling, keep chest lifted, and feel the inner-thigh stretch.",
+            benefits = "Opens hips, groin, and ankles while mobilizing hamstrings."
+        ),
+        LibraryStretch(
+            id = "skandasana_left",
+            name = "Skandasana (Side Lunge - Left)",
+            indianName = "स्कंदासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 30,
+            prepCue = "Bend deeply into your left knee while extending right leg straight with toes pointed up.",
+            holdCue = "Support with hands on mat or palms at heart, breathing smoothly into the hips.",
+            benefits = "Improves lateral hip mobility and lower-body flexibility."
+        ),
+        LibraryStretch(
+            id = "tolasana_scale",
+            name = "Tolasana (Scale Pose)",
+            indianName = "तोलासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 15,
+            prepCue = "Sit cross-legged or in lotus, plant palms beside hips, and press down to lift seat.",
+            holdCue = "Draw knees upward with core strength and keep shoulders steady.",
+            benefits = "Strengthens abs, arms, and wrists while building upward lift."
+        ),
+        LibraryStretch(
+            id = "bharadvajasana_right",
+            name = "Bharadvajasana (Seated Sage Twist - Right)",
+            indianName = "भरद्वाजासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 30,
+            prepCue = "Sit with legs swept to the left, place left hand on right knee, and gently twist right.",
+            holdCue = "Grow tall through the spine on inhales and soften into the rotation on exhales.",
+            benefits = "Gently massages spine and relieves upper-back and neck tension."
+        ),
+        LibraryStretch(
+            id = "bharadvajasana_left",
+            name = "Bharadvajasana (Seated Sage Twist - Left)",
+            indianName = "भरद्वाजासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 30,
+            prepCue = "Sit with legs swept to the right, place right hand on left knee, and gently twist left.",
+            holdCue = "Keep shoulders relaxed and breath flowing evenly throughout the twist.",
+            benefits = "Restores thoracic rotation and eases seated desk stiffness."
+        ),
+        LibraryStretch(
+            id = "upavistha_konasana_wide_angle",
+            name = "Upavistha Konasana (Seated Wide-Angle Fold)",
+            indianName = "उपविष्ट कोणासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 40,
+            prepCue = "Sit with legs spread comfortably wide, toes pointing up, and walk hands forward.",
+            holdCue = "Hinge from the hips with a long spine and breathe into inner thighs and hamstrings.",
+            benefits = "Deeply opens adductors, hamstrings, and groin."
+        ),
+        LibraryStretch(
+            id = "purvottanasana_upward_plank",
+            name = "Purvottanasana (Upward Plank Pose)",
+            indianName = "पूर्वोत्तानासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 20,
+            prepCue = "Sit with legs straight, place palms behind hips, and press hips upward toward ceiling.",
+            holdCue = "Open chest wide, reach toes toward floor, and keep neck comfortable.",
+            benefits = "Counteracts slouching by opening shoulders and chest while strengthening glutes."
+        ),
+        LibraryStretch(
+            id = "parighasana_gate_right",
+            name = "Parighasana (Gate Pose - Right)",
+            indianName = "परिघासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 30,
+            prepCue = "Kneel upright, extend right leg to the side, and arc left arm over toward right foot.",
+            holdCue = "Open left ribcage toward ceiling and breathe deeply into the side body.",
+            benefits = "Stretches intercostal muscles, lats, and inner thighs."
+        ),
+        LibraryStretch(
+            id = "parighasana_gate_left",
+            name = "Parighasana (Gate Pose - Left)",
+            indianName = "परिघासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 30,
+            prepCue = "Kneel upright, extend left leg to the side, and arc right arm over toward left foot.",
+            holdCue = "Keep hips stacked over kneeling knee and lengthen through the right side waist.",
+            benefits = "Improves lateral spine mobility and ribcage expansion."
+        ),
+        LibraryStretch(
+            id = "virabhadrasana_3_right",
+            name = "Virabhadrasana III (Warrior III - Right)",
+            indianName = "वीरभद्रासन तीन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 25,
+            prepCue = "Balance on your right foot, hinge torso forward, and lift left leg into a straight T.",
+            holdCue = "Square hips toward floor, extend arms forward or to sides, and engage core.",
+            benefits = "Strengthens posterior chain, ankles, and core stability."
+        ),
+        LibraryStretch(
+            id = "virabhadrasana_3_left",
+            name = "Virabhadrasana III (Warrior III - Left)",
+            indianName = "वीरभद्रासन तीन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 25,
+            prepCue = "Balance on your left foot, hinge torso forward, and lift right leg parallel to mat.",
+            holdCue = "Lengthen from back heel to crown and keep breath calm and steady.",
+            benefits = "Builds single-leg balance, glute strength, and posture control."
+        ),
+        LibraryStretch(
+            id = "phalakasana_plank",
+            name = "Phalakasana (Plank Pose)",
+            indianName = "फलकासन",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 30,
+            prepCue = "Place hands under shoulders and step feet back into a strong, level plank.",
+            holdCue = "Press mat away, draw navel gently toward spine, and keep neck neutral.",
+            benefits = "Strengthens core, shoulders, and full-body alignment."
+        ),
+        LibraryStretch(
+            id = "surya_namaskar_flow",
+            name = "Surya Namaskar (Sun Salutation Flow)",
+            indianName = "सूर्य नमस्कार",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 60,
+            prepCue = "Stand at top of mat in Prayer Pose and prepare to flow smoothly with each breath.",
+            holdCue = "Move mindfully through reach, fold, lunge, plank, cobra, and downward dog.",
+            benefits = "Full-body warm-up that energizes circulation, joints, and breath."
+        ),
+        LibraryStretch(
+            id = "anulom_vilom_pranayama",
+            name = "Anulom Vilom (Alternate Nostril Breathing)",
+            indianName = "अनुलोम विलोम प्राणायाम",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 8,
+            defaultHoldSeconds = 60,
+            prepCue = "Sit comfortably tall with spine erect and bring right thumb and ring finger near nostrils.",
+            holdCue = "Inhale slowly through left nostril, switch, exhale right, inhale right, exhale left.",
+            benefits = "Balances autonomic nervous system, lowers stress, and sharpens clarity."
+        ),
+        LibraryStretch(
+            id = "bhramari_pranayama",
+            name = "Bhramari Pranayama (Humming Bee Breath)",
+            indianName = "भ्रामरी प्राणायाम",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 45,
+            prepCue = "Sit tall with eyes closed, relax jaw, and inhale deeply through the nose.",
+            holdCue = "Exhale with a gentle, soothing humming sound, feeling calm vibration in the head.",
+            benefits = "Quietens anxious thoughts, releases facial tension, and promotes restful sleep."
+        ),
+        LibraryStretch(
+            id = "ujjayi_pranayama",
+            name = "Ujjayi Pranayama (Ocean Breath)",
+            indianName = "उज्जायी प्राणायाम",
+            category = StretchCategory.YOGA_ASANAS,
+            defaultPrepSeconds = 6,
+            defaultHoldSeconds = 45,
+            prepCue = "Sit comfortably upright, close eyes, and soften throat and shoulders.",
+            holdCue = "Breathe slowly through the nose with a soft ocean-wave whisper at the back of throat.",
+            benefits = "Deepens lung capacity, steadies heart rate, and anchors mindful focus."
+        )
+    )
+}

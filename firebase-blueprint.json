@@ -1,0 +1,131 @@
+{
+  "entities": {
+    "CustomRoutine": {
+      "title": "CustomRoutine",
+      "description": "User created custom stretching routine with stretch sequence for cloud backup and multi-device sync",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique routine document ID"
+        },
+        "userId": {
+          "type": "string",
+          "description": "The UID of the Google authenticated user who owns this routine"
+        },
+        "name": {
+          "type": "string",
+          "description": "Routine name (e.g. Desk Neck Relief, Runner Cool-down)"
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional description of the routine"
+        },
+        "isCustom": {
+          "type": "boolean",
+          "description": "Flag indicating if this is a user-created custom routine"
+        },
+        "stretches": {
+          "type": "array",
+          "description": "Ordered stretch items in the routine"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp; clients must submit FieldValue.serverTimestamp()"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp; clients must submit FieldValue.serverTimestamp()"
+        }
+      },
+      "required": ["userId", "name", "stretches", "createdAt", "updatedAt"]
+    },
+    "PublicRoutine": {
+      "title": "PublicRoutine",
+      "description": "Publicly shared mobility routine accessible to all community members for copying and following",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique document ID of the public routine"
+        },
+        "authorId": {
+          "type": "string",
+          "description": "UID of the user who published the routine"
+        },
+        "authorName": {
+          "type": "string",
+          "description": "Display name of the author"
+        },
+        "name": {
+          "type": "string",
+          "description": "Routine title"
+        },
+        "description": {
+          "type": "string",
+          "description": "Optional description of the routine and benefits"
+        },
+        "category": {
+          "type": "string",
+          "description": "Category tag (e.g. Desk, Back, Hips, Full Body)"
+        },
+        "stretches": {
+          "type": "array",
+          "description": "List of stretch steps included in this routine"
+        },
+        "cloneCount": {
+          "type": "integer",
+          "description": "Number of times this routine has been copied by community members"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Creation timestamp"
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Last update timestamp"
+        }
+      },
+      "required": ["authorId", "authorName", "name", "stretches", "cloneCount", "createdAt", "updatedAt"]
+    },
+    "FollowedCreator": {
+      "title": "FollowedCreator",
+      "description": "Creator followed by the user",
+      "type": "object",
+      "properties": {
+        "creatorId": {
+          "type": "string",
+          "description": "UID of followed creator"
+        },
+        "creatorName": {
+          "type": "string",
+          "description": "Display name of followed creator"
+        },
+        "followedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp when followed"
+        }
+      },
+      "required": ["creatorId", "followedAt"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}/custom_routines/{routineId}": {
+      "schema": "CustomRoutine",
+      "description": "User isolated collection of custom stretching routines"
+    },
+    "/public_routines/{routineId}": {
+      "schema": "PublicRoutine",
+      "description": "Community feed of shared stretching routines"
+    },
+    "/users/{userId}/following/{creatorId}": {
+      "schema": "FollowedCreator",
+      "description": "User followed creators"
+    }
+  }
+}

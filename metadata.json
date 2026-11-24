@@ -1,0 +1,6 @@
+{
+  "name": "Stretch Coach",
+  "description": "Mobility routines with guided voice cues and customizable timers",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
