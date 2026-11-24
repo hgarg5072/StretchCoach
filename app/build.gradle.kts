@@ -61,7 +61,7 @@ android {
     buildConfig = true
   }
   androidResources {
-    noCompress += listOf("mp4")
+    noCompress += listOf("mp4", "m4a")
   }
   testOptions { unitTests { isIncludeAndroidResources = true } }
   dependenciesInfo {

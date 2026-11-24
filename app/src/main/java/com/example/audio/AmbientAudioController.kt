@@ -1,5 +1,6 @@
 package com.example.audio
 
+import android.content.Context
 import android.media.AudioAttributes
 import android.media.AudioFormat
 import android.media.AudioTrack
@@ -28,7 +29,7 @@ import kotlin.random.Random
  * morning breeze, Tibetan singing bowls) and transition chimes via Android AudioTrack,
  * with smooth gain ramping and automatic ducking whenever TTS voice cues speak.
  */
-class AmbientAudioController {
+class AmbientAudioController(private val appContext: Context? = null) {
 
     private val scope = CoroutineScope(SupervisorJob() + Dispatchers.Default)
 
@@ -63,6 +64,11 @@ class AmbientAudioController {
             stop()
             return
         }
+        if (soundscape == AmbientSoundscape.MEDITATION_MUSIC) {
+            stopSynthLoop()
+            startAssetMediaPlayer(DEFAULT_MEDITATION_ASSET)
+            return
+        }
         if (soundscape == AmbientSoundscape.CUSTOM_TRACK) {
             stopSynthLoop()
             startMediaPlayer(customFilePath)
@@ -89,7 +95,12 @@ class AmbientAudioController {
         if (soundscape == AmbientSoundscape.OFF || userVolume <= 0.001f) {
             stop()
         } else if (isSessionActive) {
-            if (soundscape == AmbientSoundscape.CUSTOM_TRACK) {
+            if (soundscape == AmbientSoundscape.MEDITATION_MUSIC) {
+                stopSynthLoop()
+                if (activeMediaPath != "asset://$DEFAULT_MEDITATION_ASSET" || mediaPlayer == null) {
+                    startAssetMediaPlayer(DEFAULT_MEDITATION_ASSET)
+                }
+            } else if (soundscape == AmbientSoundscape.CUSTOM_TRACK) {
                 stopSynthLoop()
                 if (activeMediaPath != customFilePath || mediaPlayer == null) {
                     startMediaPlayer(customFilePath)
@@ -143,6 +154,46 @@ class AmbientAudioController {
         isPlayingLoop = false
         loopJob?.cancel()
         loopJob = null
+    }
+
+    private fun startAssetMediaPlayer(assetPath: String) {
+        val ctx = appContext ?: return
+        val key = "asset://$assetPath"
+        synchronized(mediaPlayerLock) {
+            if (mediaPlayer != null && activeMediaPath == key) {
+                runCatching {
+                    applyMediaPlayerVolumeLocked()
+                    if (mediaPlayer?.isPlaying != true) {
+                        mediaPlayer?.start()
+                    }
+                }
+                return
+            }
+            stopMediaPlayerLocked()
+            runCatching {
+                val afd = ctx.assets.openFd(assetPath)
+                val player = MediaPlayer().apply {
+                    setAudioAttributes(
+                        AudioAttributes.Builder()
+                            .setUsage(AudioAttributes.USAGE_MEDIA)
+                            .setContentType(AudioAttributes.CONTENT_TYPE_MUSIC)
+                            .build()
+                    )
+                    setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
+                    afd.close()
+                    isLooping = true
+                    prepare()
+                    val v = effectiveMediaVolume()
+                    setVolume(v, v)
+                    start()
+                }
+                mediaPlayer = player
+                activeMediaPath = key
+            }.onFailure { e ->
+                Log.w(TAG, "Built-in meditation audio playback failed for '$assetPath': ${e.message}")
+                stopMediaPlayerLocked()
+            }
+        }
     }
 
     private fun startMediaPlayer(filePath: String) {
@@ -412,7 +463,7 @@ class AmbientAudioController {
             sampleIndex++
 
             return when (mode) {
-                AmbientSoundscape.OFF, AmbientSoundscape.CUSTOM_TRACK -> 0.0 to 0.0
+                AmbientSoundscape.OFF, AmbientSoundscape.CUSTOM_TRACK, AmbientSoundscape.MEDITATION_MUSIC -> 0.0 to 0.0
                 AmbientSoundscape.TANPURA_DRONE -> synthTanpura(t)
                 AmbientSoundscape.SOFT_RAIN -> synthRain(t)
                 AmbientSoundscape.MORNING_BREEZE -> synthBreeze(t)
@@ -541,6 +592,7 @@ class AmbientAudioController {
 
     companion object {
         private const val TAG = "AmbientAudioController"
+        const val DEFAULT_MEDITATION_ASSET = "ambient_audio/default_meditation_music.m4a"
         private const val SAMPLE_RATE = 22050
         private const val DUCK_MULTIPLIER = 0.22f
         private const val MASTER_HEADROOM = 0.55f

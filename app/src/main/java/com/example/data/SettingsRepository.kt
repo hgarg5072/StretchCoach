@@ -33,6 +33,7 @@ enum class AsanaPronunciationStyle {
 }
 
 enum class AmbientSoundscape(val displayName: String, val subtitle: String) {
+    MEDITATION_MUSIC("Meditation", "Built-in calm meditation background music"),
     OFF("Off", "Silent session"),
     TANPURA_DRONE("Tanpura", "Warm yoga studio harmonic drone"),
     SOFT_RAIN("Rain", "Gentle rainfall outside the studio"),
@@ -76,7 +77,7 @@ data class UserSettings(
     val countdownAnnouncements: Boolean = true,
     val halfwayCue: Boolean = true,
     val nextStretchCue: Boolean = true,
-    val ambientSoundscape: AmbientSoundscape = AmbientSoundscape.TANPURA_DRONE,
+    val ambientSoundscape: AmbientSoundscape = AmbientSoundscape.MEDITATION_MUSIC,
     val ambientVolume: Float = 0.35f,
     val transitionChimesEnabled: Boolean = true,
     val customTrackPath: String = "",
@@ -129,9 +130,9 @@ class SettingsRepository(private val context: Context) {
         val halfwayCue = preferences[PreferencesKeys.HALFWAY_CUE] ?: true
         val nextStretchCue = preferences[PreferencesKeys.NEXT_STRETCH_CUE] ?: true
 
-        val soundscapeString = preferences[PreferencesKeys.AMBIENT_SOUNDSCAPE] ?: AmbientSoundscape.TANPURA_DRONE.name
+        val soundscapeString = preferences[PreferencesKeys.AMBIENT_SOUNDSCAPE] ?: AmbientSoundscape.MEDITATION_MUSIC.name
         val ambientSoundscape = runCatching { AmbientSoundscape.valueOf(soundscapeString) }
-            .getOrDefault(AmbientSoundscape.TANPURA_DRONE)
+            .getOrDefault(AmbientSoundscape.MEDITATION_MUSIC)
         val ambientVolume = (preferences[PreferencesKeys.AMBIENT_VOLUME] ?: 0.35f).coerceIn(0f, 1f)
         val transitionChimesEnabled = preferences[PreferencesKeys.TRANSITION_CHIMES_ENABLED] ?: true
         val customTrackPath = preferences[PreferencesKeys.CUSTOM_TRACK_PATH] ?: ""

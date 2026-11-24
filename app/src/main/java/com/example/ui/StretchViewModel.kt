@@ -81,7 +81,7 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
     )
     private val settingsRepository = SettingsRepository(application)
     val speechController = SpeechController(application)
-    val ambientAudioController = com.example.audio.AmbientAudioController()
+    val ambientAudioController = com.example.audio.AmbientAudioController(application)
     val voiceEngineInfo = speechController.voiceEngineInfo
 
     val currentUser = authManager.currentUser

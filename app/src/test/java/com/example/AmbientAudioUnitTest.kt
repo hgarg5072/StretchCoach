@@ -56,7 +56,7 @@ class AmbientAudioUnitTest {
     @Test
     fun defaultUserSettingsEnableAmbientAndChimes() {
         val defaults = UserSettings()
-        assertEquals(AmbientSoundscape.TANPURA_DRONE, defaults.ambientSoundscape)
+        assertEquals(AmbientSoundscape.MEDITATION_MUSIC, defaults.ambientSoundscape)
         assertTrue(defaults.ambientVolume in 0.1f..0.8f)
         assertTrue(defaults.transitionChimesEnabled)
     }
