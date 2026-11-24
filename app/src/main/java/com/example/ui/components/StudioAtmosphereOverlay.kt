@@ -5,6 +5,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
@@ -68,15 +69,24 @@ fun StudioAtmosphereOverlay(
     ) {
         val stageWidth = maxWidth
         val isPortrait = maxHeight > maxWidth
+        val portraitStageHeight = stageWidth * (9f / 16f)
 
         // --- LAYER 1: Persistent Studio Overlays ---
 
-        // 1A. Swaying Corner Leaves (top-left, blue screen key — tucked gently into corner so Back HUD stays crisp)
+        // 1A. Swaying Corner Leaves (top-left window frame — blue screen key)
         if (leavesEnabled) {
-            val leavesWidth = if (isPortrait) {
-                (stageWidth * 0.36f).coerceIn(115.dp, 165.dp)
+            val leavesModifier = if (isPortrait) {
+                Modifier
+                    .align(Alignment.CenterStart)
+                    .offset(x = (-8).dp, y = -(portraitStageHeight * 0.40f) - 24.dp)
+                    .width((stageWidth * 0.30f).coerceIn(96.dp, 136.dp))
+                    .aspectRatio(16f / 9f)
             } else {
-                (stageWidth * 0.22f).coerceIn(68.dp, 138.dp)
+                Modifier
+                    .align(Alignment.TopStart)
+                    .offset(x = (-10).dp, y = (-6).dp)
+                    .width((stageWidth * 0.22f).coerceIn(68.dp, 138.dp))
+                    .aspectRatio(16f / 9f)
             }
             ChromaKeyVideoOverlay(
                 assetPath = "stretch_overlays/overlay_leaves_sway_corner_chromakey.mp4",
@@ -84,22 +94,17 @@ fun StudioAtmosphereOverlay(
                 lightingMode = resolvedLighting,
                 opacity = 0.78f * overlayAlpha,
                 isPlaying = isPlaying,
-                modifier = Modifier
-                    .align(Alignment.TopStart)
-                    .offset(x = (-10).dp, y = (-6).dp)
-                    .width(leavesWidth)
-                    .aspectRatio(16f / 9f)
+                modifier = leavesModifier
             )
         }
 
-        // 1B. Aroma Diffuser / Incense
-        // Landscape: tucked on back-right studio floor; Portrait: clearly visible on right wood floor below the 16:9 stage
+        // 1B. Aroma Diffuser / Incense grounded on the back-right wooden studio floor
         if (aromaAssetPath != null) {
             val aromaModifier = if (isPortrait) {
                 Modifier
-                    .align(Alignment.BottomEnd)
-                    .padding(end = 16.dp, bottom = 128.dp)
-                    .width((stageWidth * 0.24f).coerceIn(82.dp, 108.dp))
+                    .align(Alignment.CenterEnd)
+                    .offset(x = (-10).dp, y = (portraitStageHeight * 0.24f) - 24.dp)
+                    .width((stageWidth * 0.16f).coerceIn(54.dp, 72.dp))
                     .aspectRatio(1f)
             } else {
                 Modifier
@@ -118,14 +123,13 @@ fun StudioAtmosphereOverlay(
             )
         }
 
-        // 1C. Companion Dog (all 4 dog MP4s are 1:1 square on blue screen)
-        // Landscape: bottom-left above HUD; Portrait: generous size on bottom-left wood floor below the 16:9 stage
+        // 1C. Companion Dog (1:1 square on blue screen) grounded on the bottom-left wooden studio floor
         if (dogEnabled) {
             val dogModifier = if (isPortrait) {
                 Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(start = 14.dp, bottom = 118.dp)
-                    .width((stageWidth * 0.30f).coerceIn(104.dp, 134.dp))
+                    .align(Alignment.CenterStart)
+                    .offset(x = 8.dp, y = (portraitStageHeight * 0.42f) - 24.dp)
+                    .width((stageWidth * 0.23f).coerceIn(78.dp, 98.dp))
                     .aspectRatio(1f)
             } else {
                 Modifier
@@ -184,13 +188,22 @@ fun StudioAtmosphereOverlay(
 
         // --- LAYER 3: Sunbeams & Dust Motes (Screen/Additive Blend on Black) ---
         if (sunbeamsEnabled) {
+            val sunbeamsModifier = if (isPortrait) {
+                Modifier
+                    .fillMaxWidth()
+                    .align(Alignment.Center)
+                    .offset(y = (-24).dp)
+                    .aspectRatio(16f / 9f)
+            } else {
+                Modifier.fillMaxSize()
+            }
             ChromaKeyVideoOverlay(
                 assetPath = "stretch_overlays/overlay_sunbeams_motes_screen_blend.mp4",
                 keyMode = OverlayKeyMode.SCREEN_BLACK,
                 lightingMode = resolvedLighting,
                 opacity = (if (resolvedLighting == StudioLightingMode.NIGHT) 0.24f else 0.42f) * overlayAlpha,
                 isPlaying = isPlaying,
-                modifier = Modifier.fillMaxSize()
+                modifier = sunbeamsModifier
             )
         }
     }
