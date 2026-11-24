@@ -632,7 +632,9 @@ fun PlayerArtworkCard(
                                 .height(4.dp)
                                 .clip(RoundedCornerShape(999.dp)),
                             color = badgeColor,
-                            trackColor = Color.White.copy(alpha = 0.25f)
+                            trackColor = Color.White.copy(alpha = 0.25f),
+                            gapSize = 0.dp,
+                            drawStopIndicator = {}
                         )
                     }
                 }
@@ -834,7 +836,8 @@ private fun OverlayClockRing(
             color = ringColor,
             trackColor = if (onDarkScrim) Color.White.copy(alpha = 0.22f) else MaterialTheme.colorScheme.outline.copy(alpha = 0.25f),
             strokeWidth = 5.dp,
-            strokeCap = StrokeCap.Round
+            strokeCap = StrokeCap.Round,
+            gapSize = 0.dp
         )
         Text(
             text = timeText,
