@@ -1,5 +1,6 @@
 package com.example.ui.components
 
+import android.content.res.Configuration
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.core.Animatable
 import androidx.compose.animation.core.FastOutSlowInEasing
@@ -26,6 +27,7 @@ import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -56,6 +58,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
@@ -218,9 +221,28 @@ fun PlayerArtworkCard(
                     .aspectRatio(16f / 10f)
             }
 
+            val isPortraitTall = fillAvailableHeight &&
+                LocalConfiguration.current.orientation != Configuration.ORIENTATION_LANDSCAPE
+
             Box(
                 modifier = containerModifier
                     .clip(RoundedCornerShape(24.dp))
+                    .then(
+                        if (isPortraitTall) {
+                            Modifier.background(
+                                Brush.verticalGradient(
+                                    colors = listOf(
+                                        Color(0xFFE7DEC9), // Warm sunlit Ghibli studio wall
+                                        Color(0xFFEBE2D1),
+                                        Color(0xFFDCC8AB), // Warm wooden studio floor
+                                        Color(0xFFC9AE8B)
+                                    )
+                                )
+                            )
+                        } else {
+                            Modifier
+                        }
+                    )
                     .border(
                         1.dp,
                         MaterialTheme.colorScheme.outline.copy(alpha = 0.35f),
@@ -238,37 +260,75 @@ fun PlayerArtworkCard(
                         }
                     )
             ) {
-                if (customFile != null) {
-                    AsyncImage(
-                        model = customFile,
-                        contentDescription = currentStretch?.name ?: "Stretch demonstration",
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .scale(scale),
-                        contentScale = ContentScale.Crop
-                    )
-                } else if (artworkRes != null || effectiveVideoPath != null) {
-                    if (artworkRes != null) {
-                        Image(
-                            painter = painterResource(id = artworkRes),
+                val mediaStageModifier = if (isPortraitTall) {
+                    Modifier
+                        .fillMaxWidth()
+                        .align(Alignment.Center)
+                        .offset(y = (-24).dp)
+                        .aspectRatio(16f / 9f)
+                } else {
+                    Modifier.fillMaxSize()
+                }
+
+                Box(modifier = mediaStageModifier) {
+                    if (customFile != null) {
+                        AsyncImage(
+                            model = customFile,
                             contentDescription = currentStretch?.name ?: "Stretch demonstration",
                             modifier = Modifier
                                 .fillMaxSize()
-                                .scale(
-                                    scaleX = (if (effectiveVideoPath == null) scale else 1f) * (if (mirrorLeftSide) -1f else 1f),
-                                    scaleY = if (effectiveVideoPath == null) scale else 1f
-                                ),
+                                .scale(scale),
                             contentScale = ContentScale.Crop
                         )
+                    } else if (artworkRes != null || effectiveVideoPath != null) {
+                        if (artworkRes != null) {
+                            Image(
+                                painter = painterResource(id = artworkRes),
+                                contentDescription = currentStretch?.name ?: "Stretch demonstration",
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .scale(
+                                        scaleX = (if (effectiveVideoPath == null) scale else 1f) * (if (mirrorLeftSide) -1f else 1f),
+                                        scaleY = if (effectiveVideoPath == null) scale else 1f
+                                    ),
+                                contentScale = ContentScale.Crop
+                            )
+                        }
+                        if (effectiveVideoPath != null) {
+                            LoopingStretchVideo(
+                                assetPath = effectiveVideoPath,
+                                isPlaying = state != PlayerState.PAUSED,
+                                isLooping = !isPlayingTransition,
+                                mirrorHorizontal = mirrorLeftSide,
+                                onCompleted = if (isPlayingTransition) onTransitionFinished else null,
+                                modifier = Modifier.fillMaxSize()
+                            )
+                        }
                     }
-                    if (effectiveVideoPath != null) {
-                        LoopingStretchVideo(
-                            assetPath = effectiveVideoPath,
-                            isPlaying = state != PlayerState.PAUSED,
-                            isLooping = !isPlayingTransition,
-                            mirrorHorizontal = mirrorLeftSide,
-                            onCompleted = if (isPlayingTransition) onTransitionFinished else null,
-                            modifier = Modifier.fillMaxSize()
+
+                    // Soft feather top/bottom edges in Portrait so the 16:9 stage melts into the studio wall & wood floor
+                    if (isPortraitTall) {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(18.dp)
+                                .align(Alignment.TopCenter)
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(Color(0xFFEBE2D1), Color.Transparent)
+                                    )
+                                )
+                        )
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .height(20.dp)
+                                .align(Alignment.BottomCenter)
+                                .background(
+                                    Brush.verticalGradient(
+                                        colors = listOf(Color.Transparent, Color(0xFFDCC8AB))
+                                    )
+                                )
                         )
                     }
                 }

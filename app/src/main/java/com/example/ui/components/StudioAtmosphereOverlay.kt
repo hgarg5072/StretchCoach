@@ -67,11 +67,17 @@ fun StudioAtmosphereOverlay(
             .clip(RoundedCornerShape(24.dp))
     ) {
         val stageWidth = maxWidth
+        val isPortrait = maxHeight > maxWidth
 
         // --- LAYER 1: Persistent Studio Overlays ---
 
         // 1A. Swaying Corner Leaves (top-left, blue screen key — tucked gently into corner so Back HUD stays crisp)
         if (leavesEnabled) {
+            val leavesWidth = if (isPortrait) {
+                (stageWidth * 0.36f).coerceIn(115.dp, 165.dp)
+            } else {
+                (stageWidth * 0.22f).coerceIn(68.dp, 138.dp)
+            }
             ChromaKeyVideoOverlay(
                 assetPath = "stretch_overlays/overlay_leaves_sway_corner_chromakey.mp4",
                 keyMode = OverlayKeyMode.BLUE_KEY,
@@ -81,41 +87,60 @@ fun StudioAtmosphereOverlay(
                 modifier = Modifier
                     .align(Alignment.TopStart)
                     .offset(x = (-10).dp, y = (-6).dp)
-                    .width((stageWidth * 0.22f).coerceIn(68.dp, 138.dp))
+                    .width(leavesWidth)
                     .aspectRatio(16f / 9f)
             )
         }
 
-        // 1B. Aroma Diffuser / Incense tucked into the BACK-RIGHT studio wall/corner
-        // (smaller scale & elevated above the mat/clock so it sits naturally in the background)
+        // 1B. Aroma Diffuser / Incense
+        // Landscape: tucked on back-right studio floor; Portrait: clearly visible on right wood floor below the 16:9 stage
         if (aromaAssetPath != null) {
-            ChromaKeyVideoOverlay(
-                assetPath = aromaAssetPath,
-                keyMode = OverlayKeyMode.GREEN_KEY,
-                lightingMode = resolvedLighting,
-                opacity = 0.86f * overlayAlpha,
-                isPlaying = isPlaying,
-                modifier = Modifier
+            val aromaModifier = if (isPortrait) {
+                Modifier
+                    .align(Alignment.BottomEnd)
+                    .padding(end = 16.dp, bottom = 128.dp)
+                    .width((stageWidth * 0.24f).coerceIn(82.dp, 108.dp))
+                    .aspectRatio(1f)
+            } else {
+                Modifier
                     .align(Alignment.CenterEnd)
                     .offset(x = (-6).dp, y = 26.dp)
                     .width((stageWidth * 0.13f).coerceIn(48.dp, 92.dp))
                     .aspectRatio(1f)
+            }
+            ChromaKeyVideoOverlay(
+                assetPath = aromaAssetPath,
+                keyMode = OverlayKeyMode.GREEN_KEY,
+                lightingMode = resolvedLighting,
+                opacity = 0.88f * overlayAlpha,
+                isPlaying = isPlaying,
+                modifier = aromaModifier
             )
         }
 
-        // 1C. Companion Dog (bottom-left above the bottom HUD bar — all 4 dog MP4s are 1:1 square on blue screen)
+        // 1C. Companion Dog (all 4 dog MP4s are 1:1 square on blue screen)
+        // Landscape: bottom-left above HUD; Portrait: generous size on bottom-left wood floor below the 16:9 stage
         if (dogEnabled) {
+            val dogModifier = if (isPortrait) {
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(start = 14.dp, bottom = 118.dp)
+                    .width((stageWidth * 0.30f).coerceIn(104.dp, 134.dp))
+                    .aspectRatio(1f)
+            } else {
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .padding(start = 10.dp, bottom = 92.dp)
+                    .width((stageWidth * 0.16f).coerceIn(62.dp, 108.dp))
+                    .aspectRatio(1f)
+            }
             ChromaKeyVideoOverlay(
                 assetPath = dogAssetPath,
                 keyMode = OverlayKeyMode.BLUE_KEY,
                 lightingMode = resolvedLighting,
                 opacity = 0.96f * overlayAlpha,
                 isPlaying = isPlaying,
-                modifier = Modifier
-                    .align(Alignment.BottomStart)
-                    .padding(start = 10.dp, bottom = 92.dp)
-                    .width((stageWidth * 0.16f).coerceIn(62.dp, 108.dp))
-                    .aspectRatio(1f)
+                modifier = dogModifier
             )
         }
 
