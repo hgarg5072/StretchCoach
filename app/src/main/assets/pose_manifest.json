@@ -946,40 +946,6 @@
       }
     },
     {
-      "id": "img_stretch_b2_pigeon_pose",
-      "display_name": "Pigeon Pose",
-      "video_file": "img_stretch_b2_pigeon_pose.mp4",
-      "image_file": "img_stretch_b2_pigeon_pose.jpg",
-      "posture_hub": "KNEELING",
-      "category": "mobility",
-      "is_unilateral": true,
-      "recommended_dog_state": "overlay_dog_idle_rest",
-      "dog_safe_corner": "bottom_left",
-      "diffuser_safe_corner": "bottom_right",
-      "room_layout": "wide_floor",
-      "window_side": "left",
-      "overlay_anchors": {
-        "dog": {
-          "left_pct": 1.0,
-          "bottom_pct": 0.8,
-          "width_pct": 15.5,
-          "visible": true
-        },
-        "floor_prop": {
-          "right_pct": 1.2,
-          "bottom_pct": 1.0,
-          "width_pct": 13.0,
-          "visible": true
-        },
-        "wind_chime": {
-          "left_pct": 3.0,
-          "top_pct": 0.0,
-          "width_pct": 12.0,
-          "visible": true
-        }
-      }
-    },
-    {
       "id": "img_stretch_b2_plantar_fascia_toe_tuck",
       "display_name": "Plantar Fascia Toe Tuck",
       "video_file": "img_stretch_b2_plantar_fascia_toe_tuck.mp4",
@@ -3854,6 +3820,115 @@
           "left_pct": 2.0,
           "top_pct": 0.0,
           "width_pct": 11.0
+        }
+      }
+    },
+    {
+      "id": "img_stretch_b2_pigeon_pose",
+      "display_name": "Eka Pada Rajakapotasana (Pigeon Pose)",
+      "video_file": "img_stretch_b2_pigeon_pose.mp4",
+      "image_file": "img_stretch_b2_pigeon_pose.webp",
+      "posture_hub": "KNEELING",
+      "category": "hips",
+      "is_unilateral": true,
+      "recommended_dog_state": "overlay_dog_idle_rest",
+      "room_layout": "wide_floor",
+      "overlay_anchors": {
+        "landscape": {
+          "dog": {
+            "visible": true,
+            "left_pct": 2.0,
+            "bottom_pct": 2.0,
+            "width_pct": 14.0
+          },
+          "floor_prop": {
+            "visible": true,
+            "right_pct": 1.5,
+            "bottom_pct": 2.0,
+            "width_pct": 12.0
+          },
+          "wind_chime": {
+            "visible": true,
+            "left_pct": 2.0,
+            "top_pct": 0.0,
+            "width_pct": 10.0
+          }
+        },
+        "portrait": {
+          "dog": {
+            "visible": true,
+            "left_pct": 2.0,
+            "bottom_pct": 2.0,
+            "width_pct": 15.0
+          },
+          "floor_prop": {
+            "visible": false,
+            "right_pct": 2.0,
+            "bottom_pct": 2.0,
+            "width_pct": 14.0
+          },
+          "wind_chime": {
+            "visible": true,
+            "left_pct": 2.0,
+            "top_pct": 0.0,
+            "width_pct": 14.0
+          }
+        }
+      }
+    },
+    {
+      "id": "img_stretch_surya_namaskar_flow",
+      "display_name": "Surya Namaskar (Sun Salutation Flow)",
+      "video_file": "img_stretch_surya_namaskar_flow.mp4",
+      "image_file": "img_stretch_surya_namaskar_flow.webp",
+      "posture_hub": "STANDING",
+      "category": "flow",
+      "is_unilateral": false,
+      "is_flow_mode": true,
+      "default_rounds": 6,
+      "default_playback_speed": 0.75,
+      "recommended_dog_state": "overlay_dog_playful_stretch",
+      "room_layout": "standard_center",
+      "overlay_anchors": {
+        "landscape": {
+          "dog": {
+            "visible": true,
+            "left_pct": 1.5,
+            "bottom_pct": 2.0,
+            "width_pct": 13.0
+          },
+          "floor_prop": {
+            "visible": true,
+            "right_pct": 1.5,
+            "bottom_pct": 2.0,
+            "width_pct": 12.0
+          },
+          "wind_chime": {
+            "visible": true,
+            "left_pct": 2.0,
+            "top_pct": 0.0,
+            "width_pct": 10.0
+          }
+        },
+        "portrait": {
+          "dog": {
+            "visible": false,
+            "left_pct": 2.0,
+            "bottom_pct": 2.0,
+            "width_pct": 13.0
+          },
+          "floor_prop": {
+            "visible": false,
+            "right_pct": 2.0,
+            "bottom_pct": 2.0,
+            "width_pct": 13.0
+          },
+          "wind_chime": {
+            "visible": true,
+            "left_pct": 2.0,
+            "top_pct": 0.0,
+            "width_pct": 14.0
+          }
         }
       }
     }

@@ -78,10 +78,13 @@ fun PlayerScreen(
     onCycleAmbientSoundscape: () -> Unit = {},
     studioLightingMode: StudioLightingMode = StudioLightingMode.AUTO,
     studioAromaProp: StudioAromaProp = StudioAromaProp.AUTO_GHIBLI,
-    companionDogEnabled: Boolean = true,
+    companionPet: com.example.data.CompanionPet = com.example.data.CompanionPet.GOLDEN_PUPPY,
     swayingLeavesEnabled: Boolean = true,
     sunbeamsEnabled: Boolean = true,
     onTransitionClipFinished: () -> Unit = {},
+    onFlowRoundCompleted: () -> Unit = {},
+    onSetFlowTargetRounds: (Int) -> Unit = {},
+    onSetFlowPlaybackSpeed: (Float) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
     val context = LocalContext.current
@@ -192,7 +195,31 @@ fun PlayerScreen(
         val isRestorativePose = currentPoseMeta?.isRestorativeOrPranayama == true
         val isWidePose = currentPoseMeta?.postureHub == com.example.data.PostureHub.SUPINE ||
             currentPoseMeta?.postureHub == com.example.data.PostureHub.PRONE
-        val poseAnchors = currentPoseMeta?.overlayAnchors ?: com.example.data.PoseOverlayAnchors()
+        val mirroredLeft = remember(currentStretch?.name, currentStretch?.category) {
+            currentStretch?.let {
+                PoseManifestRepository.shouldMirrorForLeftSide(context, it.name, it.category)
+            } ?: false
+        }
+        val poseAnchors = currentPoseMeta?.anchorsFor(
+            isPortrait = !isLandscape,
+            mirroredLeft = mirroredLeft
+        ) ?: com.example.data.PoseOverlayAnchors()
+        val hasVideoForStretch = remember(currentStretch?.name, currentStretch?.category) {
+            currentStretch?.let {
+                com.example.data.ArtworkMapper.getVideoAssetPathForStretch(context, it.name, it.category) != null
+            } ?: false
+        }
+        val isEmptySanctuary = currentStretch != null && !hasVideoForStretch && currentStretch.customImagePath.isNullOrBlank()
+        val roamConfig = remember(currentPoseMeta, isEmptySanctuary, mirroredLeft, studioAromaProp, poseAnchors) {
+            PoseManifestRepository.resolveRoamConfig(
+                entry = currentPoseMeta,
+                isEmptySanctuary = isEmptySanctuary,
+                mirroredLeft = mirroredLeft,
+                hasActiveFloorProp = studioAromaProp != StudioAromaProp.NONE && poseAnchors.floorProp.visible,
+                propRightPct = poseAnchors.floorProp.rightPct ?: 2f,
+                propWidthPct = poseAnchors.floorProp.widthPct
+            )
+        }
 
         // Hide studio overlays briefly during stretch slide animations or active horizontal swipe gestures
         val stretchSlideKey = Pair(playerState.currentStretchIndex, currentStretch?.id)
@@ -240,6 +267,13 @@ fun PlayerScreen(
                 slideDirection = slideDirection,
                 swipeOffsetX = swipeOffsetX,
                 isWidePose = isWidePose,
+                isFlowMode = playerState.isFlowMode,
+                flowCurrentRound = playerState.flowCurrentRound,
+                flowTargetRounds = playerState.flowTargetRounds,
+                flowPlaybackSpeed = playerState.flowPlaybackSpeed,
+                onFlowRoundCompleted = onFlowRoundCompleted,
+                onSetFlowTargetRounds = onSetFlowTargetRounds,
+                onSetFlowPlaybackSpeed = onSetFlowPlaybackSpeed,
                 atmosphereOverlay = {
                     StudioAtmosphereOverlay(
                         playerState = playerState.state,
@@ -248,10 +282,11 @@ fun PlayerScreen(
                         isRestorativePose = isRestorativePose,
                         lightingMode = studioLightingMode,
                         aromaProp = studioAromaProp,
-                        dogEnabled = companionDogEnabled,
+                        companionPet = companionPet,
                         leavesEnabled = swayingLeavesEnabled,
                         sunbeamsEnabled = sunbeamsEnabled,
                         poseAnchors = poseAnchors,
+                        roamConfig = roamConfig,
                         stretchIndex = playerState.currentStretchIndex,
                         totalStretches = effectiveTotalCount,
                         isWidePose = isWidePose,

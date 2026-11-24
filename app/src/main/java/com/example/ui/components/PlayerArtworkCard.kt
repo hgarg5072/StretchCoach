@@ -113,6 +113,13 @@ fun PlayerArtworkCard(
     slideDirection: Int = 1,
     swipeOffsetX: Float = 0f,
     isWidePose: Boolean = false,
+    isFlowMode: Boolean = false,
+    flowCurrentRound: Int = 1,
+    flowTargetRounds: Int = 6,
+    flowPlaybackSpeed: Float = 0.75f,
+    onFlowRoundCompleted: (() -> Unit)? = null,
+    onSetFlowTargetRounds: ((Int) -> Unit)? = null,
+    onSetFlowPlaybackSpeed: ((Float) -> Unit)? = null,
     atmosphereOverlay: (@Composable () -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
@@ -349,7 +356,9 @@ fun PlayerArtworkCard(
                                         isPlaying = state != PlayerState.PAUSED,
                                         isLooping = !isPlayingTransition,
                                         mirrorHorizontal = mirrorLeftSide,
+                                        playbackSpeed = if (isFlowMode && !isPlayingTransition) flowPlaybackSpeed else 1f,
                                         onCompleted = if (isPlayingTransition) onTransitionFinished else null,
+                                        onLoopCompleted = if (isFlowMode && !isPlayingTransition) onFlowRoundCompleted else null,
                                         modifier = Modifier.fillMaxSize()
                                     )
                                 }
@@ -829,7 +838,7 @@ fun PlayerArtworkCard(
                             }
                         }
 
-                        if (fillAvailableHeight || isActivePhase || state == PlayerState.COMPLETE) {
+                        if (!isFlowMode && (fillAvailableHeight || isActivePhase || state == PlayerState.COMPLETE)) {
                             Spacer(modifier = Modifier.width(12.dp))
                             OverlayClockRing(
                                 timeText = formattedTime,
@@ -840,7 +849,81 @@ fun PlayerArtworkCard(
                         }
                     }
 
-                    if (isActivePhase && totalSegmentSeconds > 0) {
+                    if (isFlowMode) {
+                        Spacer(modifier = Modifier.height(10.dp))
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            // Rounds counter pill (- Round 1 of 6 +)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(6.dp),
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color(0xB81C1917))
+                                    .border(0.75.dp, Color(0x4DFFF8EB), RoundedCornerShape(16.dp))
+                                    .padding(horizontal = 10.dp, vertical = 5.dp)
+                                    .testTag("flow_rounds_pill")
+                            ) {
+                                Text(
+                                    text = "−",
+                                    color = Color(0xFFFFFBF2),
+                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .clickable { onSetFlowTargetRounds?.invoke((flowTargetRounds - 1).coerceAtLeast(1)) }
+                                        .padding(horizontal = 6.dp, vertical = 1.dp)
+                                )
+                                Text(
+                                    text = "Round $flowCurrentRound of $flowTargetRounds",
+                                    color = Color(0xFFFFFBF2),
+                                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold)
+                                )
+                                Text(
+                                    text = "+",
+                                    color = Color(0xFFFFFBF2),
+                                    style = MaterialTheme.typography.titleSmall.copy(fontWeight = FontWeight.Bold),
+                                    modifier = Modifier
+                                        .clip(CircleShape)
+                                        .clickable { onSetFlowTargetRounds?.invoke((flowTargetRounds + 1).coerceAtMost(24)) }
+                                        .padding(horizontal = 6.dp, vertical = 1.dp)
+                                )
+                            }
+
+                            // Playback Speed selector pill (0.5x / 0.75x / 1.0x / 1.25x)
+                            Row(
+                                verticalAlignment = Alignment.CenterVertically,
+                                horizontalArrangement = Arrangement.spacedBy(3.dp),
+                                modifier = Modifier
+                                    .clip(RoundedCornerShape(16.dp))
+                                    .background(Color(0xB81C1917))
+                                    .border(0.75.dp, Color(0x4DFFF8EB), RoundedCornerShape(16.dp))
+                                    .padding(horizontal = 4.dp, vertical = 3.dp)
+                                    .testTag("flow_speed_pill")
+                            ) {
+                                listOf(0.5f to "0.5x", 0.75f to "0.75x", 1.0f to "1x", 1.25f to "1.25x").forEach { (spd, label) ->
+                                    val selected = kotlin.math.abs(flowPlaybackSpeed - spd) < 0.05f
+                                    Box(
+                                        modifier = Modifier
+                                            .clip(RoundedCornerShape(12.dp))
+                                            .background(if (selected) TealPrimaryLight else Color.Transparent)
+                                            .clickable { onSetFlowPlaybackSpeed?.invoke(spd) }
+                                            .padding(horizontal = 8.dp, vertical = 3.dp)
+                                    ) {
+                                        Text(
+                                            text = label,
+                                            color = if (selected) Color(0xFF0F172A) else Color(0xE6FFFBF2),
+                                            style = MaterialTheme.typography.labelSmall.copy(
+                                                fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
+                                            )
+                                        )
+                                    }
+                                }
+                            }
+                        }
+                    } else if (isActivePhase && totalSegmentSeconds > 0) {
                         Spacer(modifier = Modifier.height(10.dp))
                         LinearProgressIndicator(
                             progress = { animatedProgress },

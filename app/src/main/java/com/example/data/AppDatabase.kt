@@ -62,12 +62,37 @@ abstract class AppDatabase : RoomDatabase() {
                 name = "Subah Subah",
                 description = "Complete 52-step morning full-body decompression, hip mobility, spine & neck reset.",
                 isCustom = false
+            ),
+            RoutineEntity(
+                id = 8L,
+                name = "Surya Namaskar (सूर्य नमस्कार)",
+                description = "Timer-free continuous Sun Salutation flow with adjustable Rounds (1–24) and playback speed.",
+                isCustom = false
             )
         )
 
         fun createDefaultStretchesForRoutine(routineId: Long): List<StretchEntity> {
             if (routineId == 7L) {
                 return createSubahSubahStretches(routineId)
+            }
+            if (routineId == 8L) {
+                return listOf(
+                    StretchEntity(
+                        routineId = routineId,
+                        libraryId = "surya_namaskar_flow",
+                        name = "Surya Namaskar (Sun Salutation Flow)",
+                        indianName = "सूर्य नमस्कार",
+                        category = "Yoga Asanas",
+                        preparationSeconds = 0,
+                        holdSeconds = 60,
+                        prepCue = "Stand at top of mat in Prayer Pose and prepare to flow smoothly with each breath.",
+                        holdCue = "Flow continuously through reach, fold, lunge, plank, cobra, downward dog, and return.",
+                        notes = "सूर्य नमस्कार • Continuous Flow Mode (adjustable rounds & playback speed)",
+                        enabled = true,
+                        voiceCueEnabled = true,
+                        sortOrder = 0
+                    )
+                )
             }
             val libraryIds = when (routineId) {
                 1L -> listOf(

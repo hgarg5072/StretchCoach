@@ -45,7 +45,11 @@ data class PlayerUiState(
     val remainingSeconds: Int = 0,
     val totalSegmentSeconds: Int = 0,
     val activeTransitionVideoPath: String? = null,
-    val activeTransitionCue: String? = null
+    val activeTransitionCue: String? = null,
+    val isFlowMode: Boolean = false,
+    val flowCurrentRound: Int = 1,
+    val flowTargetRounds: Int = 6,
+    val flowPlaybackSpeed: Float = 0.75f
 ) {
     val currentStretch: StretchEntity?
         get() = activeRoutine.getOrNull(currentStretchIndex)
@@ -695,6 +699,10 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
         viewModelScope.launch { settingsRepository.setStudioAromaProp(prop) }
     }
 
+    fun setCompanionPet(pet: com.example.data.CompanionPet) {
+        viewModelScope.launch { settingsRepository.setCompanionPet(pet) }
+    }
+
     fun setCompanionDogEnabled(enabled: Boolean) {
         viewModelScope.launch { settingsRepository.setCompanionDogEnabled(enabled) }
     }
@@ -899,11 +907,39 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
             return
         }
 
+        val ctx = getApplication<Application>()
+        val poseMeta = com.example.data.PoseManifestRepository.getPoseMetaForStretch(ctx, stretch.name, stretch.category)
+        if (poseMeta?.isFlowMode == true) {
+            // Timer-free Continuous Flow Mode (e.g. Surya Namaskar): no PREP/HOLD countdowns;
+            // advances round-by-round via video loop completion with adjustable speed & rounds.
+            val targetRounds = _playerUiState.value.flowTargetRounds.takeIf { it in 1..24 } ?: poseMeta.defaultRounds
+            val speed = _playerUiState.value.flowPlaybackSpeed.takeIf { it in 0.5f..1.5f } ?: poseMeta.defaultPlaybackSpeed
+            _playerUiState.update {
+                it.copy(
+                    state = PlayerState.HOLDING,
+                    activeRoutine = routine,
+                    currentStretchIndex = index,
+                    remainingSeconds = 0,
+                    totalSegmentSeconds = 0,
+                    activeTransitionVideoPath = null,
+                    activeTransitionCue = null,
+                    isFlowMode = true,
+                    flowCurrentRound = 1,
+                    flowTargetRounds = targetRounds,
+                    flowPlaybackSpeed = speed
+                )
+            }
+            if (userSettings.value.transitionChimesEnabled) {
+                ambientAudioController.playTransitionChime(isCompletion = false)
+            }
+            speechController.announceHold(stretch, userSettings.value)
+            return
+        }
+
         // Resolve PREP-only 5-hub posture transition if transitioning from a different posture hub
         val transitionRoute = if (previousStretch != null && userSettings.value.hubTransitionsEnabled && stretch.preparationSeconds > 0) {
-            val ctx = getApplication<Application>()
             val fromHub = com.example.data.PoseManifestRepository.getPoseMetaForStretch(ctx, previousStretch.name, previousStretch.category)?.postureHub
-            val toHub = com.example.data.PoseManifestRepository.getPoseMetaForStretch(ctx, stretch.name, stretch.category)?.postureHub
+            val toHub = poseMeta?.postureHub
             if (fromHub != null && toHub != null && fromHub != toHub) {
                 com.example.data.PoseManifestRepository.resolveTransitionRoute(fromHub, toHub)
             } else {
@@ -925,7 +961,8 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
                     remainingSeconds = prepTime,
                     totalSegmentSeconds = prepTime,
                     activeTransitionVideoPath = firstTransition?.assetPath,
-                    activeTransitionCue = firstTransition?.cue
+                    activeTransitionCue = firstTransition?.cue,
+                    isFlowMode = false
                 )
             }
 
@@ -1055,6 +1092,11 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
         val settings = userSettings.value
         ambientAudioController.start(settings.ambientSoundscape, settings.ambientVolume, settings.customTrackPath)
 
+        if (current.isFlowMode) {
+            _playerUiState.update { it.copy(state = PlayerState.HOLDING) }
+            return
+        }
+
         if (current.previousStateBeforePause == PlayerState.PREPARING) {
             _playerUiState.update { it.copy(state = PlayerState.PREPARING) }
             runPreparationTimer(index, routine, remaining)
@@ -1062,6 +1104,41 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
             _playerUiState.update { it.copy(state = PlayerState.HOLDING) }
             runHoldTimerResume(index, routine, remaining, current.totalSegmentSeconds)
         }
+    }
+
+    fun onFlowRoundCompleted() {
+        viewModelScope.launch {
+            val current = _playerUiState.value
+            if (!current.isFlowMode || current.state != PlayerState.HOLDING) return@launch
+            if (current.flowCurrentRound < current.flowTargetRounds) {
+                _playerUiState.update { it.copy(flowCurrentRound = it.flowCurrentRound + 1) }
+                if (userSettings.value.transitionChimesEnabled) {
+                    ambientAudioController.playTransitionChime(isCompletion = false)
+                }
+            } else {
+                val index = current.currentStretchIndex
+                if (index < current.activeRoutine.size - 1) {
+                    startStretchAtIndex(index + 1, current.activeRoutine, previousStretch = current.currentStretch)
+                } else {
+                    completeRoutine()
+                }
+            }
+        }
+    }
+
+    fun setFlowTargetRounds(rounds: Int) {
+        val clamped = rounds.coerceIn(1, 24)
+        _playerUiState.update {
+            it.copy(
+                flowTargetRounds = clamped,
+                flowCurrentRound = it.flowCurrentRound.coerceAtMost(clamped)
+            )
+        }
+    }
+
+    fun setFlowPlaybackSpeed(speed: Float) {
+        val clamped = speed.coerceIn(0.5f, 1.5f)
+        _playerUiState.update { it.copy(flowPlaybackSpeed = clamped) }
     }
 
     private fun runHoldTimerResume(index: Int, routine: List<StretchEntity>, remainingSeconds: Int, totalHold: Int) {

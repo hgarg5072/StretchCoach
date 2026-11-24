@@ -188,10 +188,13 @@ fun MainScreen(
                         onCycleAmbientSoundscape = { viewModel.cycleAmbientSoundscape() },
                         studioLightingMode = userSettings.studioLightingMode,
                         studioAromaProp = userSettings.studioAromaProp,
-                        companionDogEnabled = userSettings.companionDogEnabled,
+                        companionPet = userSettings.companionPet,
                         swayingLeavesEnabled = userSettings.swayingLeavesEnabled,
                         sunbeamsEnabled = userSettings.sunbeamsEnabled,
-                        onTransitionClipFinished = { viewModel.onTransitionClipFinished() }
+                        onTransitionClipFinished = { viewModel.onTransitionClipFinished() },
+                        onFlowRoundCompleted = { viewModel.onFlowRoundCompleted() },
+                        onSetFlowTargetRounds = { viewModel.setFlowTargetRounds(it) },
+                        onSetFlowPlaybackSpeed = { viewModel.setFlowPlaybackSpeed(it) }
                     )
                 }
                 else -> {
@@ -244,6 +247,7 @@ fun MainScreen(
             },
             onSetStudioLightingMode = { viewModel.setStudioLightingMode(it) },
             onSetStudioAromaProp = { viewModel.setStudioAromaProp(it) },
+            onSetCompanionPet = { viewModel.setCompanionPet(it) },
             onToggleCompanionDog = { viewModel.setCompanionDogEnabled(it) },
             onToggleSwayingLeaves = { viewModel.setSwayingLeavesEnabled(it) },
             onToggleSunbeams = { viewModel.setSunbeamsEnabled(it) },

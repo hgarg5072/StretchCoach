@@ -47,7 +47,9 @@ fun LoopingStretchVideo(
     isLooping: Boolean = true,
     mirrorHorizontal: Boolean = false,
     breezeEnabled: Boolean = true,
+    playbackSpeed: Float = 1f,
     onCompleted: (() -> Unit)? = null,
+    onLoopCompleted: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
     var hasRenderedFirstFrame by remember(assetPath) { mutableStateOf(false) }
@@ -55,14 +57,17 @@ fun LoopingStretchVideo(
     val currentIsLooping by rememberUpdatedState(isLooping)
     val currentMirror by rememberUpdatedState(mirrorHorizontal)
     val currentBreeze by rememberUpdatedState(breezeEnabled)
+    val currentSpeed by rememberUpdatedState(playbackSpeed)
     val currentOnCompleted by rememberUpdatedState(onCompleted)
+    val currentOnLoopCompleted by rememberUpdatedState(onLoopCompleted)
     val renderer = remember { GlBreezeVideoRenderer() }
 
-    DisposableEffect(isPlaying, mirrorHorizontal, breezeEnabled, assetPath) {
+    DisposableEffect(isPlaying, mirrorHorizontal, breezeEnabled, playbackSpeed, assetPath) {
         renderer.updateParams(
             playing = isPlaying,
             mirror = mirrorHorizontal,
-            breezeStrength = if (breezeEnabled) 1f else 0f
+            breezeStrength = if (breezeEnabled) 1f else 0f,
+            speed = playbackSpeed
         )
         onDispose {}
     }
@@ -89,8 +94,12 @@ fun LoopingStretchVideo(
                             looping = currentIsLooping,
                             mirror = currentMirror,
                             breezeStrength = if (currentBreeze) 1f else 0f,
+                            speed = currentSpeed,
                             onFirstFrame = { hasRenderedFirstFrame = true },
-                            onCompleted = { currentOnCompleted?.invoke() }
+                            onCompleted = { currentOnCompleted?.invoke() },
+                            onLoopCompleted = if (currentOnLoopCompleted != null) {
+                                { currentOnLoopCompleted?.invoke() }
+                            } else null
                         )
                     }
 
@@ -111,7 +120,8 @@ fun LoopingStretchVideo(
             renderer.updateParams(
                 playing = isPlaying,
                 mirror = mirrorHorizontal,
-                breezeStrength = if (breezeEnabled) 1f else 0f
+                breezeStrength = if (breezeEnabled) 1f else 0f,
+                speed = playbackSpeed
             )
             if (renderer.loadedAssetPath != assetPath && tv.isAvailable) {
                 hasRenderedFirstFrame = false
@@ -121,7 +131,10 @@ fun LoopingStretchVideo(
                     playing = currentIsPlaying,
                     looping = isLooping,
                     onFirstFrame = { hasRenderedFirstFrame = true },
-                    onCompleted = { currentOnCompleted?.invoke() }
+                    onCompleted = { currentOnCompleted?.invoke() },
+                    onLoopCompleted = if (currentOnLoopCompleted != null) {
+                        { currentOnLoopCompleted?.invoke() }
+                    } else null
                 )
             }
         },
@@ -160,6 +173,9 @@ private class GlBreezeVideoRenderer {
     private var breezeStrength = 1f
 
     @Volatile
+    private var playbackSpeed = 1f
+
+    @Volatile
     private var isPrepared = false
 
     @Volatile
@@ -171,6 +187,7 @@ private class GlBreezeVideoRenderer {
 
     private var onFirstFrameCb: (() -> Unit)? = null
     private var onCompletedCb: (() -> Unit)? = null
+    private var onLoopCompletedCb: (() -> Unit)? = null
 
     // Full-screen quad: (posX, posY, uvX, uvY) where uvY=0 is bottom, uvY=1 is top
     private val vertexCoords = floatArrayOf(
@@ -195,8 +212,10 @@ private class GlBreezeVideoRenderer {
         looping: Boolean,
         mirror: Boolean,
         breezeStrength: Float,
+        speed: Float = 1f,
         onFirstFrame: () -> Unit,
-        onCompleted: () -> Unit
+        onCompleted: () -> Unit,
+        onLoopCompleted: (() -> Unit)? = null
     ) {
         release()
         this.viewportW = width.coerceAtLeast(1)
@@ -204,8 +223,10 @@ private class GlBreezeVideoRenderer {
         this.desiredPlaying = playing
         this.mirrorHorizontal = mirror
         this.breezeStrength = breezeStrength
+        this.playbackSpeed = speed.coerceIn(0.5f, 1.5f)
         this.onFirstFrameCb = onFirstFrame
         this.onCompletedCb = onCompleted
+        this.onLoopCompletedCb = onLoopCompleted
         this.startTimeMs = SystemClock.uptimeMillis()
 
         val thread = HandlerThread("GlBreezeVideo_${System.nanoTime()}").apply { start() }
@@ -229,16 +250,26 @@ private class GlBreezeVideoRenderer {
         viewportH = height.coerceAtLeast(1)
     }
 
-    fun updateParams(playing: Boolean, mirror: Boolean, breezeStrength: Float) {
+    fun updateParams(playing: Boolean, mirror: Boolean, breezeStrength: Float, speed: Float = 1f) {
         this.desiredPlaying = playing
         this.mirrorHorizontal = mirror
         this.breezeStrength = breezeStrength
+        val clampedSpeed = speed.coerceIn(0.5f, 1.5f)
+        val speedChanged = kotlin.math.abs(this.playbackSpeed - clampedSpeed) > 0.01f
+        this.playbackSpeed = clampedSpeed
         glHandler?.post {
             val mp = mediaPlayer ?: return@post
             if (!isPrepared) return@post
             runCatching {
-                if (playing && !mp.isPlaying) mp.start()
-                else if (!playing && mp.isPlaying) mp.pause()
+                if (speedChanged && playing) {
+                    mp.playbackParams = mp.playbackParams.setSpeed(clampedSpeed)
+                }
+                if (playing && !mp.isPlaying) {
+                    mp.playbackParams = mp.playbackParams.setSpeed(clampedSpeed)
+                    if (!mp.isPlaying) mp.start()
+                } else if (!playing && mp.isPlaying) {
+                    mp.pause()
+                }
             }
         }
     }
@@ -249,11 +280,13 @@ private class GlBreezeVideoRenderer {
         playing: Boolean,
         looping: Boolean,
         onFirstFrame: () -> Unit,
-        onCompleted: () -> Unit
+        onCompleted: () -> Unit,
+        onLoopCompleted: (() -> Unit)? = null
     ) {
         this.desiredPlaying = playing
         this.onFirstFrameCb = onFirstFrame
         this.onCompletedCb = onCompleted
+        this.onLoopCompletedCb = onLoopCompleted
         glHandler?.post {
             loadAssetOnGlThread(context, assetPath, looping)
         }
@@ -278,7 +311,9 @@ private class GlBreezeVideoRenderer {
             mp.setDataSource(afd.fileDescriptor, afd.startOffset, afd.length)
             afd.close()
             mp.setSurface(surf)
-            mp.isLooping = looping
+            // When counting loops (Flow Mode), use OnCompletionListener to increment rounds & restart
+            val trackLoops = looping && onLoopCompletedCb != null
+            mp.isLooping = looping && !trackLoops
             mp.setVolume(0f, 0f)
             mp.setOnVideoSizeChangedListener { _, w, h ->
                 if (w > 0 && h > 0) {
@@ -293,10 +328,24 @@ private class GlBreezeVideoRenderer {
                     videoH = prepared.videoHeight
                 }
                 prepared.setVolume(0f, 0f)
-                if (desiredPlaying) prepared.start() else prepared.seekTo(1)
+                if (desiredPlaying) {
+                    runCatching { prepared.playbackParams = prepared.playbackParams.setSpeed(playbackSpeed) }
+                    if (!prepared.isPlaying) prepared.start()
+                } else {
+                    prepared.seekTo(1)
+                }
             }
-            mp.setOnCompletionListener {
-                if (!looping) {
+            mp.setOnCompletionListener { completedPlayer ->
+                if (trackLoops) {
+                    onLoopCompletedCb?.invoke()
+                    if (desiredPlaying) {
+                        runCatching {
+                            completedPlayer.seekTo(0)
+                            completedPlayer.playbackParams = completedPlayer.playbackParams.setSpeed(playbackSpeed)
+                            if (!completedPlayer.isPlaying) completedPlayer.start()
+                        }
+                    }
+                } else if (!looping) {
                     onCompletedCb?.invoke()
                 }
             }

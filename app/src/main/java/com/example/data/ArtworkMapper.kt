@@ -93,7 +93,12 @@ object ArtworkMapper {
         "standing side-bend arc (left)" to R.drawable.img_stretch_b1_standing_side_arc,
         "standing side-bend arc (right)" to R.drawable.img_stretch_b1_standing_side_arc,
         "standing side lat reach (left)" to R.drawable.img_stretch_b1_standing_side_reach_lat,
-        "standing side lat reach (right)" to R.drawable.img_stretch_b1_standing_side_reach_lat
+        "standing side lat reach (right)" to R.drawable.img_stretch_b1_standing_side_reach_lat,
+        // Surya Namaskar continuous flow
+        "surya_namaskar_flow" to R.drawable.img_stretch_surya_namaskar_flow,
+        "surya namaskar (sun salutation flow)" to R.drawable.img_stretch_surya_namaskar_flow,
+        "surya namaskar" to R.drawable.img_stretch_surya_namaskar_flow,
+        "surya namaskar (सूर्य नमस्कार)" to R.drawable.img_stretch_surya_namaskar_flow
     )
 
     @DrawableRes

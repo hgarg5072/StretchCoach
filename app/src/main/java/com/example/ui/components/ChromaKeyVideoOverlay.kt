@@ -47,6 +47,7 @@ fun ChromaKeyVideoOverlay(
     lightingMode: StudioLightingMode = StudioLightingMode.DAY,
     opacity: Float = 1f,
     isPlaying: Boolean = true,
+    mirrorX: Boolean = false,
     modifier: Modifier = Modifier
 ) {
     val currentPlaying by rememberUpdatedState(isPlaying)
@@ -104,6 +105,7 @@ fun ChromaKeyVideoOverlay(
         },
         update = { tv ->
             tv.alpha = opacity.coerceIn(0f, 1f)
+            tv.scaleX = if (mirrorX) -1f else 1f
             renderer.updateParams(
                 keyMode = keyMode,
                 lightingMode = lightingMode,

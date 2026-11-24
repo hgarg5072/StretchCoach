@@ -24,7 +24,7 @@ class PoseManifestUnitTest {
     @Test
     fun manifestLoadsCanonicalPosesAnd12Transitions() {
         PoseManifestRepository.ensureLoaded(context)
-        assertEquals(111, PoseManifestRepository.totalLoadedPoses())
+        assertEquals(112, PoseManifestRepository.totalLoadedPoses())
         assertEquals(12, PoseManifestRepository.totalLoadedTransitions())
     }
 
@@ -121,5 +121,55 @@ class PoseManifestUnitTest {
         expected.forEach { file ->
             assertTrue("Missing bundled overlay asset: $file", overlays.contains(file))
         }
+
+        // All 9 Calico Cat roaming & idle animations must also be bundled
+        val expectedCatOverlays = listOf(
+            "overlay_cat_walk_roam_chromakey.mp4",
+            "overlay_cat_idle_loaf_chromakey.mp4",
+            "overlay_cat_paw_groom_chromakey.mp4",
+            "overlay_cat_big_stretch_chromakey.mp4",
+            "overlay_cat_curious_tilt_chromakey.mp4",
+            "overlay_cat_playful_bat_chromakey.mp4",
+            "overlay_cat_yawn_sleepy_chromakey.mp4",
+            "overlay_cat_nap_curled_chromakey.mp4",
+            "overlay_cat_celebrate_chromakey.mp4"
+        )
+        expectedCatOverlays.forEach { file ->
+            assertTrue("Missing bundled calico cat overlay asset: $file", overlays.contains(file))
+        }
+    }
+
+    @Test
+    fun suryaNamaskarFlowAndPigeonDualOrientationAnchorsAndCatRoamLanesWork() {
+        PoseManifestRepository.ensureLoaded(context)
+
+        // Surya Namaskar flow routine & manifest metadata
+        val suryaRoutine = AppDatabase.createDefaultStretchesForRoutine(8L)
+        assertEquals(1, suryaRoutine.size)
+        val suryaMeta = PoseManifestRepository.getPoseMetaByStem(context, "img_stretch_surya_namaskar_flow")
+        assertTrue(suryaMeta != null)
+        assertTrue(suryaMeta!!.isFlowMode)
+        assertEquals(6, suryaMeta.defaultRounds)
+        assertTrue(suryaMeta.anchorsFor(isPortrait = false).dog.visible)
+        assertFalse(suryaMeta.anchorsFor(isPortrait = true).dog.visible)
+
+        // Fixed Pigeon pose dual-orientation anchors & wide_floor stationary roam config
+        val pigeonMeta = PoseManifestRepository.getPoseMetaByStem(context, "img_stretch_b2_pigeon_pose")
+        assertTrue(pigeonMeta != null)
+        assertTrue(pigeonMeta!!.anchorsFor(isPortrait = false).floorProp.visible)
+        assertFalse(pigeonMeta.anchorsFor(isPortrait = true).floorProp.visible)
+        val pigeonRoam = PoseManifestRepository.resolveRoamConfig(pigeonMeta)
+        assertFalse(pigeonRoam.canRoam)
+
+        // Empty Sanctuary allows full-room roaming and respects floor-prop clamping
+        val sanctuaryRoam = PoseManifestRepository.resolveRoamConfig(
+            entry = null,
+            isEmptySanctuary = true,
+            hasActiveFloorProp = true,
+            propRightPct = 2f,
+            propWidthPct = 14f
+        )
+        assertTrue(sanctuaryRoam.canRoam)
+        assertTrue(sanctuaryRoam.landscapeLanes.first().maxXPct <= 63f)
     }
 }

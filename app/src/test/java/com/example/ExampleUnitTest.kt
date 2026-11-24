@@ -252,8 +252,11 @@ class ExampleUnitTest {
             ArtworkMapper.getDrawableForStretch("Bharadvajasana (Seated Sage Twist - Left)", "Yoga Asanas")
         )
 
-        // Deferred dynamic flow remains null (zero fallbacks)
-        assertNull(ArtworkMapper.getDrawableForStretch("Surya Namaskar (Sun Salutation Flow)", "Yoga Asanas"))
+        // Surya Namaskar continuous flow is now bundled and mapped
+        assertEquals(
+            R.drawable.img_stretch_surya_namaskar_flow,
+            ArtworkMapper.getDrawableForStretch("Surya Namaskar (Sun Salutation Flow)", "Yoga Asanas")
+        )
 
         // 4. Full 150-item catalog safety & name/id agreement check
         val mappedStretches = StretchLibrary.ALL_100_STRETCHES.filter { stretch ->
@@ -262,6 +265,6 @@ class ExampleUnitTest {
             assertEquals("Name and ID mappings must agree for ${stretch.id}", byName, byId)
             byName != null
         }
-        assertEquals("Catalog must map all 149 visually-verified static stretches", 149, mappedStretches.size)
+        assertEquals("Catalog must map all 150 visually-verified stretches", 150, mappedStretches.size)
     }
 }

@@ -66,6 +66,12 @@ enum class StudioAromaProp(val displayName: String) {
     NONE("Off")
 }
 
+enum class CompanionPet(val displayName: String) {
+    OFF("Off"),
+    GOLDEN_PUPPY("Golden Puppy"),
+    STUDIO_CAT("Calico Cat")
+}
+
 data class UserSettings(
     val theme: AppTheme = AppTheme.SYSTEM,
     val voiceMode: VoiceMode = VoiceMode.BALANCED,
@@ -82,11 +88,14 @@ data class UserSettings(
     val customTrackTitle: String = "",
     val studioLightingMode: StudioLightingMode = StudioLightingMode.AUTO,
     val studioAromaProp: StudioAromaProp = StudioAromaProp.AUTO_GHIBLI,
-    val companionDogEnabled: Boolean = true,
+    val companionPet: CompanionPet = CompanionPet.GOLDEN_PUPPY,
     val swayingLeavesEnabled: Boolean = true,
     val sunbeamsEnabled: Boolean = true,
     val hubTransitionsEnabled: Boolean = true
-)
+) {
+    val companionDogEnabled: Boolean
+        get() = companionPet == CompanionPet.GOLDEN_PUPPY
+}
 
 class SettingsRepository(private val context: Context) {
 
@@ -106,6 +115,7 @@ class SettingsRepository(private val context: Context) {
         val CUSTOM_TRACK_TITLE = stringPreferencesKey("custom_track_title")
         val STUDIO_LIGHTING_MODE = stringPreferencesKey("studio_lighting_mode")
         val STUDIO_AROMA_PROP = stringPreferencesKey("studio_aroma_prop")
+        val COMPANION_PET = stringPreferencesKey("companion_pet")
         val COMPANION_DOG_ENABLED = booleanPreferencesKey("companion_dog_enabled")
         val SWAYING_LEAVES_ENABLED = booleanPreferencesKey("swaying_leaves_enabled")
         val SUNBEAMS_ENABLED = booleanPreferencesKey("sunbeams_enabled")
@@ -141,7 +151,13 @@ class SettingsRepository(private val context: Context) {
         val aromaString = preferences[PreferencesKeys.STUDIO_AROMA_PROP] ?: StudioAromaProp.AUTO_GHIBLI.name
         val studioAromaProp = runCatching { StudioAromaProp.valueOf(aromaString) }
             .getOrDefault(StudioAromaProp.AUTO_GHIBLI)
-        val companionDogEnabled = preferences[PreferencesKeys.COMPANION_DOG_ENABLED] ?: true
+        val companionPetString = preferences[PreferencesKeys.COMPANION_PET]
+        val companionPet = if (companionPetString != null) {
+            runCatching { CompanionPet.valueOf(companionPetString) }.getOrDefault(CompanionPet.GOLDEN_PUPPY)
+        } else {
+            val legacyDog = preferences[PreferencesKeys.COMPANION_DOG_ENABLED] ?: true
+            if (legacyDog) CompanionPet.GOLDEN_PUPPY else CompanionPet.OFF
+        }
         val swayingLeavesEnabled = preferences[PreferencesKeys.SWAYING_LEAVES_ENABLED] ?: true
         val sunbeamsEnabled = preferences[PreferencesKeys.SUNBEAMS_ENABLED] ?: true
         val hubTransitionsEnabled = preferences[PreferencesKeys.HUB_TRANSITIONS_ENABLED] ?: true
@@ -162,7 +178,7 @@ class SettingsRepository(private val context: Context) {
             customTrackTitle = customTrackTitle,
             studioLightingMode = studioLightingMode,
             studioAromaProp = studioAromaProp,
-            companionDogEnabled = companionDogEnabled,
+            companionPet = companionPet,
             swayingLeavesEnabled = swayingLeavesEnabled,
             sunbeamsEnabled = sunbeamsEnabled,
             hubTransitionsEnabled = hubTransitionsEnabled
@@ -253,8 +269,15 @@ class SettingsRepository(private val context: Context) {
         context.dataStore.edit { it[PreferencesKeys.STUDIO_AROMA_PROP] = prop.name }
     }
 
+    suspend fun setCompanionPet(pet: CompanionPet) {
+        context.dataStore.edit {
+            it[PreferencesKeys.COMPANION_PET] = pet.name
+            it[PreferencesKeys.COMPANION_DOG_ENABLED] = (pet == CompanionPet.GOLDEN_PUPPY)
+        }
+    }
+
     suspend fun setCompanionDogEnabled(enabled: Boolean) {
-        context.dataStore.edit { it[PreferencesKeys.COMPANION_DOG_ENABLED] = enabled }
+        setCompanionPet(if (enabled) CompanionPet.GOLDEN_PUPPY else CompanionPet.OFF)
     }
 
     suspend fun setSwayingLeavesEnabled(enabled: Boolean) {

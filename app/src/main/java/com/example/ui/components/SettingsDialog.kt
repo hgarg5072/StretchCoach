@@ -71,6 +71,7 @@ import com.example.data.AmbientSoundscape
 import com.example.data.AppTheme
 import com.example.data.AsanaPronunciationStyle
 import com.example.data.BackupStatus
+import com.example.data.CompanionPet
 import com.example.data.StudioAromaProp
 import com.example.data.StudioLightingMode
 import com.example.data.SyncState
@@ -107,6 +108,7 @@ fun SettingsDialog(
     onOpenOnlineAudioPicker: () -> Unit = {},
     onSetStudioLightingMode: (StudioLightingMode) -> Unit = {},
     onSetStudioAromaProp: (StudioAromaProp) -> Unit = {},
+    onSetCompanionPet: (CompanionPet) -> Unit = {},
     onToggleCompanionDog: (Boolean) -> Unit = {},
     onToggleSwayingLeaves: (Boolean) -> Unit = {},
     onToggleSunbeams: (Boolean) -> Unit = {},
@@ -243,7 +245,7 @@ fun SettingsDialog(
                             settings = settings,
                             onSetStudioLightingMode = onSetStudioLightingMode,
                             onSetStudioAromaProp = onSetStudioAromaProp,
-                            onToggleCompanionDog = onToggleCompanionDog,
+                            onSetCompanionPet = onSetCompanionPet,
                             onToggleSwayingLeaves = onToggleSwayingLeaves,
                             onToggleSunbeams = onToggleSunbeams,
                             onToggleHubTransitions = onToggleHubTransitions,
@@ -309,7 +311,7 @@ private fun StudioSettingsTab(
     settings: UserSettings,
     onSetStudioLightingMode: (StudioLightingMode) -> Unit,
     onSetStudioAromaProp: (StudioAromaProp) -> Unit,
-    onToggleCompanionDog: (Boolean) -> Unit,
+    onSetCompanionPet: (CompanionPet) -> Unit,
     onToggleSwayingLeaves: (Boolean) -> Unit,
     onToggleSunbeams: (Boolean) -> Unit,
     onToggleHubTransitions: (Boolean) -> Unit,
@@ -383,17 +385,49 @@ private fun StudioSettingsTab(
         }
     }
 
-    // 3. Atmosphere Toggles Card
-    SettingsSectionCard(title = "Atmosphere & Flow") {
-        SettingToggleRow(
-            title = "Companion Yoga Puppy",
-            subtitle = "Cozy buddy rests beside your mat & naps at night",
-            checked = settings.companionDogEnabled,
-            enabled = true,
-            onCheckedChange = onToggleCompanionDog,
-            tag = "toggle_companion_dog"
+    // 3. Companion Pet Selector Card (Off / Golden Puppy / Calico Cat)
+    SettingsSectionCard(title = "Studio Companion") {
+        Text(
+            text = "Golden Puppy rests beside your mat, or Calico Cat strolls safely across open studio floor",
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        HorizontalDivider(color = MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.35f))
+        Row(
+            modifier = Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(12.dp))
+                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f))
+                .padding(4.dp),
+            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        ) {
+            CompanionPet.values().forEach { pet ->
+                val selected = settings.companionPet == pet
+                Box(
+                    modifier = Modifier
+                        .weight(1f)
+                        .clip(RoundedCornerShape(9.dp))
+                        .background(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
+                        .clickable { onSetCompanionPet(pet) }
+                        .padding(vertical = 8.dp)
+                        .testTag("companion_pet_${pet.name}"),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Text(
+                        text = pet.displayName,
+                        style = MaterialTheme.typography.labelMedium.copy(
+                            fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
+                        ),
+                        color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
+                        maxLines = 1,
+                        overflow = TextOverflow.Ellipsis
+                    )
+                }
+            }
+        }
+    }
+
+    // 4. Atmosphere Toggles Card
+    SettingsSectionCard(title = "Atmosphere & Flow") {
         SettingToggleRow(
             title = "Glass Furin Wind Chime",
             subtitle = "Gentle swaying Studio Ghibli glass chime by the window",

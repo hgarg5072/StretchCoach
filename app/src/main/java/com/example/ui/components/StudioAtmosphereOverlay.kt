@@ -2,6 +2,8 @@ package com.example.ui.components
 
 import android.app.ActivityManager
 import android.content.Context
+import androidx.compose.animation.core.Animatable
+import androidx.compose.animation.core.LinearEasing
 import androidx.compose.animation.core.animateDpAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.Canvas
@@ -17,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.withFrameNanos
@@ -29,10 +32,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.example.data.CompanionPet
+import com.example.data.PoseManifestRepository
 import com.example.data.PoseOverlayAnchors
+import com.example.data.PoseRoamConfig
+import com.example.data.RoamLane
 import com.example.data.StudioAromaProp
 import com.example.data.StudioLightingMode
 import com.example.ui.PlayerState
+import kotlinx.coroutines.delay
+import kotlin.math.abs
 import kotlin.math.cos
 import kotlin.math.sin
 
@@ -55,10 +64,11 @@ fun StudioAtmosphereOverlay(
     isRestorativePose: Boolean,
     lightingMode: StudioLightingMode,
     aromaProp: StudioAromaProp,
-    dogEnabled: Boolean,
+    companionPet: CompanionPet = CompanionPet.GOLDEN_PUPPY,
     leavesEnabled: Boolean,
     sunbeamsEnabled: Boolean,
     poseAnchors: PoseOverlayAnchors = PoseOverlayAnchors(),
+    roamConfig: PoseRoamConfig = PoseManifestRepository.resolveRoamConfig(null),
     stretchIndex: Int = 0,
     totalStretches: Int = 0,
     isWidePose: Boolean = false,
@@ -208,8 +218,8 @@ fun StudioAtmosphereOverlay(
             )
         }
 
-        // --- LAYER 1C: 8-Action Golden Retriever Puppy tucked into outer bottom-left corner of videoRect ---
-        if (dogEnabled && poseAnchors.dog.visible) {
+        // --- LAYER 1C: Companion Pet (8-Action Golden Puppy OR 9-Action Roaming Calico Cat) ---
+        if (companionPet == CompanionPet.GOLDEN_PUPPY && poseAnchors.dog.visible) {
             val dogAnchor = poseAnchors.dog
             val dogWidthFrac = (dogAnchor.widthPct / 100f).coerceIn(0.12f, 0.18f)
             val targetDogWidth: Dp = if (isPortrait) {
@@ -249,6 +259,120 @@ fun StudioAtmosphereOverlay(
                 opacity = 1.0f * overlayAlpha,
                 isPlaying = isPlaying,
                 modifier = dogModifier
+            )
+        } else if (companionPet == CompanionPet.STUDIO_CAT && poseAnchors.dog.visible) {
+            val lanes = if (isPortrait) roamConfig.portraitLanes else roamConfig.landscapeLanes
+            val activeLane = lanes.firstOrNull() ?: RoamLane(4f, 14f, 3f, if (isPortrait) 24f else 18f)
+
+            val catXPct = remember { Animatable(activeLane.minXPct) }
+            var catAction by remember { mutableStateOf("stretch_overlays/overlay_cat_idle_loaf_chromakey.mp4") }
+            var catMirrorX by remember { mutableStateOf(false) }
+
+            val activeIdlePool = remember {
+                listOf(
+                    "stretch_overlays/overlay_cat_idle_loaf_chromakey.mp4",
+                    "stretch_overlays/overlay_cat_paw_groom_chromakey.mp4",
+                    "stretch_overlays/overlay_cat_curious_tilt_chromakey.mp4",
+                    "stretch_overlays/overlay_cat_playful_bat_chromakey.mp4",
+                    "stretch_overlays/overlay_cat_big_stretch_chromakey.mp4",
+                    "stretch_overlays/overlay_cat_yawn_sleepy_chromakey.mp4"
+                )
+            }
+
+            // Re-clamp immediately when orientation or pose changes so the cat never overlaps a new pose bbox
+            LaunchedEffect(activeLane) {
+                val clamped = catXPct.value.coerceIn(activeLane.minXPct, activeLane.maxXPct)
+                if (clamped != catXPct.value) {
+                    catXPct.animateTo(clamped, tween(durationMillis = 350))
+                }
+            }
+
+            LaunchedEffect(
+                playerState, isTransitioning, isRestorativePose, resolvedLighting, activeLane, roamConfig.canRoam, stretchIndex
+            ) {
+                when {
+                    playerState == PlayerState.COMPLETE -> {
+                        catAction = "stretch_overlays/overlay_cat_celebrate_chromakey.mp4"
+                        return@LaunchedEffect
+                    }
+                    isRestorativePose || resolvedLighting == StudioLightingMode.NIGHT -> {
+                        catAction = "stretch_overlays/overlay_cat_nap_curled_chromakey.mp4"
+                        return@LaunchedEffect
+                    }
+                    isTransitioning -> {
+                        catAction = "stretch_overlays/overlay_cat_big_stretch_chromakey.mp4"
+                        return@LaunchedEffect
+                    }
+                    playerState == PlayerState.PAUSED || playerState == PlayerState.IDLE -> {
+                        return@LaunchedEffect
+                    }
+                }
+
+                var variationIdx = stretchIndex % activeIdlePool.size
+                while (true) {
+                    // 1. Settle in a pose variation for ~8 seconds
+                    catAction = if (resolvedLighting == StudioLightingMode.SUNSET && variationIdx % 2 == 1) {
+                        "stretch_overlays/overlay_cat_yawn_sleepy_chromakey.mp4"
+                    } else {
+                        activeIdlePool[variationIdx % activeIdlePool.size]
+                    }
+                    variationIdx++
+                    delay(8_000L)
+
+                    // 2. If roaming is allowed and lane has room, stroll to the opposite waypoint
+                    if (roamConfig.canRoam && activeLane.spanPct >= 10f) {
+                        val currentX = catXPct.value
+                        val mid = (activeLane.minXPct + activeLane.maxXPct) / 2f
+                        val targetX = if (currentX <= mid) activeLane.maxXPct else activeLane.minXPct
+                        val distancePct = abs(targetX - currentX)
+                        if (distancePct >= 8f) {
+                            catMirrorX = targetX < currentX
+                            catAction = "stretch_overlays/overlay_cat_walk_roam_chromakey.mp4"
+                            // Gentle cat stroll speed: ~5.5% of stage width per second
+                            val durationMs = ((distancePct / 5.5f) * 1000f).toInt().coerceIn(1_400, 9_000)
+                            catXPct.animateTo(
+                                targetValue = targetX,
+                                animationSpec = tween(durationMillis = durationMs, easing = LinearEasing)
+                            )
+                        }
+                    }
+                }
+            }
+
+            val catWidthDp: Dp = if (isPortrait) {
+                (stageWidth * (activeLane.widthPct / 100f)).coerceIn(76.dp, 110.dp)
+            } else {
+                (videoWidth * (activeLane.widthPct / 100f)).coerceIn(68.dp, 114.dp)
+            }
+            val catXOffset = videoLeft + (videoWidth * (catXPct.value / 100f))
+            val catBottomPad = (stageHeight * (activeLane.bottomPct / 100f)).coerceIn(8.dp, 24.dp)
+
+            val catModifier = if (isPortrait) {
+                Modifier
+                    .align(Alignment.CenterStart)
+                    .offset(
+                        x = catXOffset.coerceIn(4.dp, (stageWidth - catWidthDp - 4.dp).coerceAtLeast(4.dp)),
+                        y = (portraitStageHeight * 0.44f) - 14.dp
+                    )
+                    .width(catWidthDp)
+                    .aspectRatio(1f)
+            } else {
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .offset(x = catXOffset)
+                    .padding(bottom = catBottomPad)
+                    .width(catWidthDp)
+                    .aspectRatio(1f)
+            }
+
+            ChromaKeyVideoOverlay(
+                assetPath = catAction,
+                keyMode = OverlayKeyMode.GREEN_KEY,
+                lightingMode = resolvedLighting,
+                opacity = 1.0f * overlayAlpha,
+                isPlaying = isPlaying,
+                mirrorX = catMirrorX,
+                modifier = catModifier
             )
         }
 

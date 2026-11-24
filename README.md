@@ -9,11 +9,11 @@ An offline-first Android yoga & mobility coaching app built with **Kotlin**, **J
 
 ## Key Features
 
-- **150-Stretch Bilingual Library & 7 Built-In Routines:** Includes English + Devanagari (`हिन्दी / संस्कृत`) names, prep/hold cues, and 7 preloaded routines — including the full **52-step *Subah Subah*** morning mobility routine with 100% verified looping pose videos.
-- **111 Canonical Looping Pose Videos & 12 Hub Transitions:** Smooth posture-hub transitions (`STANDING ↔ KNEELING ↔ SEATED ↔ PRONE ↔ SUPINE`), automatic left-side mirroring (and dedicated `_left.mp4` / `_right.mp4` clips where needed), and Smart Flow sorting.
+- **150-Stretch Bilingual Library & 8 Built-In Routines:** Includes English + Devanagari (`हिन्दी / संस्कृत`) names, prep/hold cues, and 8 preloaded routines — including the **52-step *Subah Subah*** morning mobility routine and the timer-free **Surya Namaskar (सूर्य नमस्कार)** continuous flow routine with adjustable Rounds (`1–24`) and playback speed (`0.5x`–`1.25x`).
+- **112 Canonical Looping Pose Videos & 12 Hub Transitions:** Smooth posture-hub transitions (`STANDING ↔ KNEELING ↔ SEATED ↔ PRONE ↔ SUPINE`), automatic left-side mirroring (and dedicated `_left.mp4` / `_right.mp4` clips where needed), and Smart Flow sorting.
 - **Living Studio Atmosphere (OpenGL ES 2.0):**
   - Localized Monstera plant breeze shader (`GlBreezeVideoRenderer`) running directly on the pose video texture.
-  - Real-time chroma-key studio overlays (`ChromaKeyVideoOverlay`): **8 Golden Puppy animations**, **Auto Ghibli** lighting props (`Tea Set` in Day, `Candle Warmer` in Sunset, `Washi Lantern` with warm floor glow in Night), and **Glass Furin Wind Chime** (with automatic low-RAM device guard).
+  - Real-time chroma-key studio overlays (`ChromaKeyVideoOverlay`): **3-way Studio Companion** (`Off` / **8-action Golden Puppy** / **9-action Person-Safe Roaming Calico Cat** with layout-aware floor corridors), **Auto Ghibli** lighting props (`Tea Set` in Day, `Candle Warmer` in Sunset, `Washi Lantern` with warm floor glow in Night), and **Glass Furin Wind Chime** (with automatic low-RAM device guard).
   - Event-driven `SurfaceTexture.OnFrameAvailableListener` rendering that automatically pauses decoders when the timer is paused/idle.
 - **Living Empty Sanctuary for Custom Stretches:** Custom user-created stretches without a matched pose video render the full-resolution sunlit empty yoga studio backdrop (`img_stretch_empty_studio_sanctuary.webp`) with a 4s/4s meditative breathing ring and live atmosphere overlays.
 - **Voice Coaching & Bundled Meditation Music:** Offline Google TTS prep/hold cues with a 5-second spoken countdown, 1:1 tick-locked progress animation, and bundled 9-minute ambient meditation music (`default_meditation_music.m4a`).
