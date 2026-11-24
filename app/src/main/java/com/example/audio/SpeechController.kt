@@ -548,7 +548,7 @@ class SpeechController(private val context: Context) {
 
     fun announceCountdown(secondsRemaining: Int, @Suppress("UNUSED_PARAMETER") totalSeconds: Int, settings: UserSettings, @Suppress("UNUSED_PARAMETER") isHoldPhase: Boolean) {
         if (!settings.spokenCuesEnabled || !settings.countdownAnnouncements) return
-        if (secondsRemaining !in 1..3) return
+        if (secondsRemaining !in 1..5) return
         englishTts?.setSpeechRate(DEFAULT_ENGLISH_RATE)
         speak("$secondsRemaining", TextToSpeech.QUEUE_FLUSH)
     }

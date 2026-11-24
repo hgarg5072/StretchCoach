@@ -514,7 +514,7 @@ fun SettingsDialog(
                     ) {
                         Column(modifier = Modifier.padding(10.dp)) {
                             val description = when (settings.voiceMode) {
-                                VoiceMode.QUIET -> "Quiet: Major phase cues only. Countdown only for final 3 seconds. Minimal talk."
+                                VoiceMode.QUIET -> "Quiet: Major phase cues only. Countdown only for final 5 seconds. Minimal talk."
                                 VoiceMode.BALANCED -> "Balanced: Countdown at final 5s and every 20s. Standard instructions."
                                 VoiceMode.COACH -> "Coach: Rich voice guidance, setup safety reminders, and countdown every 15s."
                             }
