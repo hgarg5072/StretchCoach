@@ -39,6 +39,7 @@ fun StudioAtmosphereOverlay(
     dogEnabled: Boolean,
     leavesEnabled: Boolean,
     sunbeamsEnabled: Boolean,
+    overlayAlpha: Float = 1f,
     modifier: Modifier = Modifier
 ) {
     val resolvedLighting = lightingMode.resolveForCurrentHour()
@@ -75,7 +76,7 @@ fun StudioAtmosphereOverlay(
                 assetPath = "stretch_overlays/overlay_leaves_sway_corner_chromakey.mp4",
                 keyMode = OverlayKeyMode.BLUE_KEY,
                 lightingMode = resolvedLighting,
-                opacity = 0.78f,
+                opacity = 0.78f * overlayAlpha,
                 isPlaying = isPlaying,
                 modifier = Modifier
                     .align(Alignment.TopStart)
@@ -92,7 +93,7 @@ fun StudioAtmosphereOverlay(
                 assetPath = aromaAssetPath,
                 keyMode = OverlayKeyMode.GREEN_KEY,
                 lightingMode = resolvedLighting,
-                opacity = 0.86f,
+                opacity = 0.86f * overlayAlpha,
                 isPlaying = isPlaying,
                 modifier = Modifier
                     .align(Alignment.CenterEnd)
@@ -102,33 +103,33 @@ fun StudioAtmosphereOverlay(
             )
         }
 
-        // 1C. Companion Dog (bottom-left above the bottom HUD bar)
+        // 1C. Companion Dog (bottom-left above the bottom HUD bar — all 4 dog MP4s are 1:1 square on blue screen)
         if (dogEnabled) {
             ChromaKeyVideoOverlay(
                 assetPath = dogAssetPath,
-                keyMode = OverlayKeyMode.GREEN_KEY,
+                keyMode = OverlayKeyMode.BLUE_KEY,
                 lightingMode = resolvedLighting,
-                opacity = 0.96f,
+                opacity = 0.96f * overlayAlpha,
                 isPlaying = isPlaying,
                 modifier = Modifier
                     .align(Alignment.BottomStart)
-                    .padding(start = 8.dp, bottom = 92.dp)
-                    .width((stageWidth * 0.21f).coerceIn(68.dp, 132.dp))
-                    .aspectRatio(16f / 9f)
+                    .padding(start = 10.dp, bottom = 92.dp)
+                    .width((stageWidth * 0.16f).coerceIn(62.dp, 108.dp))
+                    .aspectRatio(1f)
             )
         }
 
         // --- LAYER 2: Unified Day / Sunset / Night Lighting Shader Wash ---
-        if (resolvedLighting != StudioLightingMode.DAY) {
+        if (resolvedLighting != StudioLightingMode.DAY && overlayAlpha > 0.01f) {
             Canvas(modifier = Modifier.fillMaxSize()) {
                 when (resolvedLighting) {
                     StudioLightingMode.SUNSET -> {
                         // Warm golden-hour amber wash + soft window glow
-                        drawRect(color = Color(0x28FF8C32))
+                        drawRect(color = Color(0x28FF8C32).copy(alpha = 0.16f * overlayAlpha))
                         drawRect(
                             brush = Brush.radialGradient(
                                 colors = listOf(
-                                    Color(0x38FFAF50),
+                                    Color(0x38FFAF50).copy(alpha = 0.22f * overlayAlpha),
                                     Color.Transparent
                                 ),
                                 center = Offset(size.width * 0.15f, size.height * 0.25f),
@@ -138,13 +139,13 @@ fun StudioAtmosphereOverlay(
                     }
                     StudioLightingMode.NIGHT -> {
                         // Cool twilight indigo wash + warm overhead studio lamp bloom
-                        drawRect(color = Color(0x5A0F1D3A))
+                        drawRect(color = Color(0x5A0F1D3A).copy(alpha = 0.35f * overlayAlpha))
                         drawRect(
                             brush = Brush.radialGradient(
                                 colors = listOf(
-                                    Color(0x45FFBE64),
-                                    Color(0x181E293B),
-                                    Color(0x400A1020)
+                                    Color(0x45FFBE64).copy(alpha = 0.27f * overlayAlpha),
+                                    Color(0x181E293B).copy(alpha = 0.09f * overlayAlpha),
+                                    Color(0x400A1020).copy(alpha = 0.25f * overlayAlpha)
                                 ),
                                 center = Offset(size.width * 0.50f, size.height * 0.28f),
                                 radius = size.maxDimension * 0.75f
@@ -162,7 +163,7 @@ fun StudioAtmosphereOverlay(
                 assetPath = "stretch_overlays/overlay_sunbeams_motes_screen_blend.mp4",
                 keyMode = OverlayKeyMode.SCREEN_BLACK,
                 lightingMode = resolvedLighting,
-                opacity = if (resolvedLighting == StudioLightingMode.NIGHT) 0.24f else 0.42f,
+                opacity = (if (resolvedLighting == StudioLightingMode.NIGHT) 0.24f else 0.42f) * overlayAlpha,
                 isPlaying = isPlaying,
                 modifier = Modifier.fillMaxSize()
             )

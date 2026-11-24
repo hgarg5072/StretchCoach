@@ -5,6 +5,7 @@ import android.content.res.Configuration
 import android.view.WindowManager
 import androidx.compose.animation.AnimatedContent
 import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.core.animateFloatAsState
 import androidx.compose.animation.core.tween
 import androidx.compose.animation.expandHorizontally
 import androidx.compose.animation.expandVertically
@@ -28,12 +29,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableFloatStateOf
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import kotlinx.coroutines.delay
+import kotlin.math.abs
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.graphicsLayer
@@ -150,10 +154,29 @@ fun PlayerScreen(
             } ?: false
         }
 
+        // Hide studio overlays cleanly during stretch slide animations or active horizontal swipe gestures
+        val stretchSlideKey = Pair(playerState.currentStretchIndex, currentStretch?.id)
+        var lastSlideKey by remember { mutableStateOf(stretchSlideKey) }
+        var isSlidingStretch by remember { mutableStateOf(false) }
+        LaunchedEffect(stretchSlideKey) {
+            if (stretchSlideKey != lastSlideKey) {
+                lastSlideKey = stretchSlideKey
+                isSlidingStretch = true
+                delay(340L)
+                isSlidingStretch = false
+            }
+        }
+        val hideOverlaysForSlide = isSlidingStretch || abs(swipeOffsetX) > 6f
+        val overlayAlpha by animateFloatAsState(
+            targetValue = if (hideOverlaysForSlide) 0f else 1f,
+            animationSpec = tween(durationMillis = if (hideOverlaysForSlide) 60 else 220),
+            label = "studio_overlay_slide_alpha"
+        )
+
         val heroArtwork: @Composable (Modifier) -> Unit = { heroMod ->
             Box(modifier = heroMod) {
                 AnimatedContent(
-                    targetState = Pair(playerState.currentStretchIndex, currentStretch?.id),
+                    targetState = stretchSlideKey,
                     transitionSpec = {
                         val dir = if (targetState.first >= initialState.first && slideDirection >= 0) 1 else -1
                         (slideInHorizontally(animationSpec = tween(280)) { width -> dir * (width / 2) } +
@@ -193,7 +216,7 @@ fun PlayerScreen(
                 }
 
                 // Persistent Studio Overlays (Dog, Back-Right Diffuser/Incense, Corner Leaves, Lighting, Sunbeams)
-                // Mounted outside AnimatedContent so overlays never reset or blink between stretches
+                // Fades out cleanly during horizontal swipe / next-stretch slide movement
                 StudioAtmosphereOverlay(
                     playerState = playerState.state,
                     isTransitioning = playerState.state == PlayerState.PREPARING &&
@@ -204,6 +227,7 @@ fun PlayerScreen(
                     dogEnabled = companionDogEnabled,
                     leavesEnabled = swayingLeavesEnabled,
                     sunbeamsEnabled = sunbeamsEnabled,
+                    overlayAlpha = overlayAlpha,
                     modifier = Modifier.fillMaxSize()
                 )
             }

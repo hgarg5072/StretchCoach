@@ -103,6 +103,7 @@ fun ChromaKeyVideoOverlay(
             }
         },
         update = { tv ->
+            tv.alpha = opacity.coerceIn(0f, 1f)
             renderer.updateParams(
                 keyMode = keyMode,
                 lightingMode = lightingMode,
@@ -441,21 +442,19 @@ private class GlChromaKeyRenderer {
                 vec3 rgb = c.rgb;
                 float alpha = 1.0;
 
-                if (uKeyMode == 0 || uKeyMode == 1) {
-                    // Auto-detect green (#00FF00) vs blue (#0000FF) chroma background from corner pixel
-                    vec3 corner = texture2D(sTexture, vec2(0.02, 0.02)).rgb;
-                    bool isBlueScreen = (corner.b > corner.g && corner.b > corner.r + 0.15) || (uKeyMode == 1);
-                    if (isBlueScreen) {
-                        float maxRG = max(rgb.r, rgb.g);
-                        float blueExcess = rgb.b - maxRG;
-                        alpha = 1.0 - smoothstep(0.08, 0.24, blueExcess);
-                        rgb.b = min(rgb.b, maxRG * 1.04 + 0.03);
-                    } else {
-                        float maxRB = max(rgb.r, rgb.b);
-                        float greenExcess = rgb.g - maxRB;
-                        alpha = 1.0 - smoothstep(0.08, 0.24, greenExcess);
-                        rgb.g = min(rgb.g, maxRB * 1.04 + 0.03);
-                    }
+                if (uKeyMode == 0) {
+                    // Pure green screen (#00FF00) for diffuser & incense overlays
+                    float maxRB = max(rgb.r, rgb.b);
+                    float greenExcess = rgb.g - maxRB;
+                    alpha = 1.0 - smoothstep(0.08, 0.24, greenExcess);
+                    rgb.g = min(rgb.g, maxRB * 1.04 + 0.03);
+                } else if (uKeyMode == 1) {
+                    // Pure blue screen (#0000FF / #0088FF) for dog & corner leaves overlays
+                    float maxRG = max(rgb.r, rgb.g);
+                    float blueExcess = rgb.b - maxRG;
+                    alpha = 1.0 - smoothstep(0.06, 0.20, blueExcess);
+                    // Suppress blue fringe/halo along fur and leaf edges
+                    rgb.b = min(rgb.b, maxRG * 1.02 + 0.02);
                 } else {
                     // Screen/additive blend on black (#000000) for sunbeams & dust motes
                     float lum = max(rgb.r, max(rgb.g, rgb.b));
