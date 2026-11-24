@@ -674,7 +674,43 @@ fun PlayerArtworkCard(
                 }
                 }
 
-                // Bottom overlay: Stretch name (always visible; shifts down into frosted espresso pill in Zen mode) + Countdown Clock
+                // Full-Screen Zen Mode Top-Left Stretch Name Pill (shown ONLY when chrome is hidden)
+                androidx.compose.animation.AnimatedVisibility(
+                    visible = !showChrome && currentStretch != null,
+                    enter = fadeIn(tween(200)),
+                    exit = fadeOut(tween(180)),
+                    modifier = Modifier
+                        .align(Alignment.TopStart)
+                        .padding(start = 16.dp, top = 14.dp, end = 16.dp)
+                ) {
+                    if (currentStretch != null) {
+                        Box(
+                            modifier = Modifier
+                                .clip(RoundedCornerShape(14.dp))
+                                .background(Color(0xCC1C1917))
+                                .border(
+                                    width = 0.75.dp,
+                                    color = Color(0x52FFF8EB),
+                                    shape = RoundedCornerShape(14.dp)
+                                )
+                                .padding(horizontal = 12.dp, vertical = 6.dp)
+                                .testTag("zen_stretch_name_pill")
+                        ) {
+                            Text(
+                                text = currentStretch.name,
+                                style = MaterialTheme.typography.titleSmall.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    letterSpacing = (-0.2).sp
+                                ),
+                                color = Color(0xFFFFFBF2),
+                                maxLines = 1,
+                                modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE)
+                            )
+                        }
+                    }
+                }
+
+                // Bottom overlay: Stretch name + cues (hidden in Zen mode — name moves to top-left pill) + Countdown Clock (always visible)
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
@@ -692,7 +728,7 @@ fun PlayerArtworkCard(
                                 Brush.verticalGradient(
                                     colors = listOf(
                                         Color.Transparent,
-                                        Color.Black.copy(alpha = 0.24f)
+                                        Color.Black.copy(alpha = 0.20f)
                                     )
                                 )
                             }
@@ -706,31 +742,20 @@ fun PlayerArtworkCard(
                 ) {
                     Row(
                         modifier = Modifier.fillMaxWidth(),
-                        verticalAlignment = if (showChrome) Alignment.CenterVertically else Alignment.Bottom,
+                        verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Box(modifier = Modifier.weight(1f)) {
-                            Column {
-                                if (currentStretch != null) {
-                                    // High-contrast warm ivory title; in full-screen Zen mode shifts to bottom inside a warm espresso pill
-                                    Box(
-                                        modifier = if (!showChrome) {
-                                            Modifier
-                                                .clip(RoundedCornerShape(14.dp))
-                                                .background(Color(0xC41C1917))
-                                                .border(
-                                                    width = 0.75.dp,
-                                                    color = Color(0x48FFF8EB),
-                                                    shape = RoundedCornerShape(14.dp)
-                                                )
-                                                .padding(horizontal = 12.dp, vertical = 6.dp)
-                                        } else {
-                                            Modifier
-                                        }
-                                    ) {
+                            androidx.compose.animation.AnimatedVisibility(
+                                visible = showChrome,
+                                enter = fadeIn(tween(220)),
+                                exit = fadeOut(tween(220))
+                            ) {
+                                Column {
+                                    if (currentStretch != null) {
                                         Text(
                                             text = currentStretch.name,
-                                            style = (if (showChrome) MaterialTheme.typography.titleLarge else MaterialTheme.typography.titleMedium).copy(
+                                            style = MaterialTheme.typography.titleLarge.copy(
                                                 fontWeight = FontWeight.Bold,
                                                 letterSpacing = (-0.25).sp,
                                                 shadow = Shadow(
@@ -743,13 +768,6 @@ fun PlayerArtworkCard(
                                             maxLines = 1,
                                             modifier = Modifier.basicMarquee(iterations = Int.MAX_VALUE)
                                         )
-                                    }
-                                    // Coaching cue text hides cleanly in full-screen Zen mode
-                                    androidx.compose.animation.AnimatedVisibility(
-                                        visible = showChrome,
-                                        enter = fadeIn(tween(220)),
-                                        exit = fadeOut(tween(220))
-                                    ) {
                                         val cueText = when {
                                             isPlayingTransition && !activeTransitionCue.isNullOrBlank() ->
                                                 activeTransitionCue
@@ -770,13 +788,7 @@ fun PlayerArtworkCard(
                                                 modifier = Modifier.padding(top = 3.dp)
                                             )
                                         }
-                                    }
-                                } else {
-                                    androidx.compose.animation.AnimatedVisibility(
-                                        visible = showChrome,
-                                        enter = fadeIn(tween(220)),
-                                        exit = fadeOut(tween(220))
-                                    ) {
+                                    } else {
                                         Text(
                                             text = "Ready to stretch",
                                             style = MaterialTheme.typography.titleMedium.copy(fontWeight = FontWeight.Bold),

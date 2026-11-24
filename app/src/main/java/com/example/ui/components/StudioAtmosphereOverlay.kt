@@ -149,7 +149,7 @@ fun StudioAtmosphereOverlay(
             val propOnLeftWall = propAnchor.leftPct != null && propAnchor.rightPct == null
 
             val targetPropWidth: Dp = if (isPortrait) {
-                (stageWidth * 0.22f).coerceIn(74.dp, 96.dp)
+                (stageWidth * 0.20f).coerceIn(66.dp, 88.dp)
             } else {
                 (videoWidth * 0.16f).coerceIn(72.dp, 108.dp)
             }
@@ -160,7 +160,7 @@ fun StudioAtmosphereOverlay(
                 videoLeft + (videoWidth * leftFrac)
             } else {
                 val rightMargin = if (isPortrait) {
-                    (stageWidth * 0.10f).coerceIn(34.dp, 50.dp)
+                    10.dp // Keeps incense/candle/diffuser cleanly on the wooden floor outside the yoga mat in Portrait
                 } else {
                     (videoWidth * 0.105f).coerceIn(58.dp, 92.dp)
                 }
@@ -169,7 +169,8 @@ fun StudioAtmosphereOverlay(
             val animPropX by animateDpAsState(targetPropX, tween(320), label = "prop_x")
 
             val targetPropY: Dp = if (isPortrait) {
-                (portraitStageHeight * 0.29f) - 14.dp
+                // Grounded on the lower wooden studio floor right below the mat edge (matching dog's floor plane)
+                (portraitStageHeight * 0.43f) - 14.dp
             } else {
                 // Grounded on the wooden studio floor just above the circular timer ring
                 if (propOnLeftWall) (stageHeight * 0.24f) else 48.dp
@@ -180,7 +181,7 @@ fun StudioAtmosphereOverlay(
                 assetPath = resolvedPropSpec.first,
                 keyMode = resolvedPropSpec.second,
                 lightingMode = resolvedLighting,
-                opacity = 0.92f * overlayAlpha,
+                opacity = 1.0f * overlayAlpha,
                 isPlaying = isPlaying,
                 modifier = Modifier
                     .align(Alignment.CenterStart)
@@ -225,7 +226,7 @@ fun StudioAtmosphereOverlay(
                 assetPath = dogAssetPath,
                 keyMode = OverlayKeyMode.BLUE_KEY,
                 lightingMode = resolvedLighting,
-                opacity = 0.96f * overlayAlpha,
+                opacity = 1.0f * overlayAlpha,
                 isPlaying = isPlaying,
                 modifier = dogModifier
             )

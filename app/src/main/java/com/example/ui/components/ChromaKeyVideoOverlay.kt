@@ -467,8 +467,8 @@ private class GlChromaKeyRenderer {
                         // Sunset warm amber
                         rgb = clamp(rgb * vec3(1.10, 0.97, 0.78) + vec3(0.05, 0.015, -0.03), 0.0, 1.0);
                     } else if (uLightMode == 2) {
-                        // Night twilight indigo
-                        rgb = clamp(rgb * vec3(0.62, 0.68, 0.92) - vec3(0.08), 0.0, 1.0);
+                        // Night twilight indigo (gentle warm-cool blend without crushing shadows or washing out props)
+                        rgb = clamp(rgb * vec3(0.76, 0.78, 0.92) + vec3(0.01, 0.01, 0.03), 0.0, 1.0);
                     }
                 }
 
