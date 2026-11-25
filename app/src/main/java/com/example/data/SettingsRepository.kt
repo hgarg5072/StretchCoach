@@ -68,7 +68,8 @@ enum class StudioAromaProp(val displayName: String) {
 
 enum class CompanionPet(val displayName: String) {
     OFF("Off"),
-    GOLDEN_PUPPY("Golden Puppy"),
+    COZY_PUPPY("Mat Puppy"),
+    GOLDEN_PUPPY("Roam Puppy"),
     STUDIO_CAT("Calico Cat")
 }
 

@@ -131,6 +131,15 @@ class PoseManifestUnitTest {
             "overlay_cat_yawn_sleepy_chromakey.mp4",
             "overlay_cat_nap_curled_chromakey.mp4",
             "overlay_cat_celebrate_chromakey.mp4",
+            // 8 Original Cozy Mat Puppy (BLUE_KEY)
+            "overlay_cozy_dog_idle_rest_chromakey.mp4",
+            "overlay_cozy_dog_playful_stretch_chromakey.mp4",
+            "overlay_cozy_dog_nap_curled_chromakey.mp4",
+            "overlay_cozy_dog_celebrate_chromakey.mp4",
+            "overlay_cozy_dog_head_tilt_curious_chromakey.mp4",
+            "overlay_cozy_dog_yawn_sleepy_chromakey.mp4",
+            "overlay_cozy_dog_belly_roll_chromakey.mp4",
+            "overlay_cozy_dog_paw_wave_chromakey.mp4",
             // 4 Studio Ghibli Atmosphere Props & Wind Chime
             "overlay_ghibli_tea_set_chromakey.mp4",
             "overlay_ghibli_candle_warmer_chromakey.mp4",

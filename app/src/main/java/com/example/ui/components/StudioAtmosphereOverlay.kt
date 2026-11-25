@@ -194,13 +194,77 @@ fun StudioAtmosphereOverlay(
             )
         }
 
-        // --- LAYER 1C: Unified Roaming Companion Pet (12-Action Golden Puppy OR 12-Action Calico Cat) ---
-        val petVisibleForOrientation = if (isPortrait) roamConfig.visiblePortrait else roamConfig.visibleLandscape
-        val canRoamForOrientation = if (isPortrait) roamConfig.canRoamPortrait else roamConfig.canRoamLandscape
-        val lanes = if (isPortrait) roamConfig.portraitLanes else roamConfig.landscapeLanes
-        val activeLane = lanes.firstOrNull()
+        // --- LAYER 1C: Companion Pet (Cozy Mat Puppy OR 12-Action Roaming Puppy / Calico Cat) ---
+        if (companionPet == CompanionPet.COZY_PUPPY && poseAnchors.dog.visible) {
+            val cozyDogAssetPath = remember(
+                playerState, isTransitioning, isRestorativePose, resolvedLighting, stretchIndex, totalStretches
+            ) {
+                val isPenultimate = totalStretches >= 3 && stretchIndex == totalStretches - 2
+                when {
+                    playerState == PlayerState.COMPLETE ->
+                        "stretch_overlays/overlay_cozy_dog_celebrate_chromakey.mp4"
+                    playerState == PlayerState.PREPARING && stretchIndex == 0 ->
+                        "stretch_overlays/overlay_cozy_dog_paw_wave_chromakey.mp4"
+                    isTransitioning || playerState == PlayerState.PREPARING ->
+                        if (stretchIndex % 2 == 1) "stretch_overlays/overlay_cozy_dog_belly_roll_chromakey.mp4"
+                        else "stretch_overlays/overlay_cozy_dog_playful_stretch_chromakey.mp4"
+                    isRestorativePose || resolvedLighting == StudioLightingMode.NIGHT ->
+                        "stretch_overlays/overlay_cozy_dog_nap_curled_chromakey.mp4"
+                    isPenultimate ->
+                        "stretch_overlays/overlay_cozy_dog_yawn_sleepy_chromakey.mp4"
+                    stretchIndex % 3 == 1 ->
+                        "stretch_overlays/overlay_cozy_dog_head_tilt_curious_chromakey.mp4"
+                    else ->
+                        "stretch_overlays/overlay_cozy_dog_idle_rest_chromakey.mp4"
+                }
+            }
+            val dogAnchor = poseAnchors.dog
+            val dogWidthFrac = (dogAnchor.widthPct / 100f).coerceIn(0.12f, 0.18f)
+            val targetDogWidth: Dp = if (isPortrait) {
+                (stageWidth * 0.25f).coerceIn(84.dp, 112.dp)
+            } else {
+                (videoWidth * dogWidthFrac).coerceIn(70.dp, 110.dp)
+            }
+            val animDogWidth by animateDpAsState(targetDogWidth, tween(360), label = "cozy_dog_w")
 
-        if (companionPet != CompanionPet.OFF && petVisibleForOrientation && activeLane != null) {
+            val dogLeftFrac = (dogAnchor.leftPct ?: 2f).coerceIn(1f, 6f) / 100f
+            val dogLeftDp = if (isPortrait) {
+                8.dp
+            } else {
+                videoLeft + (videoWidth * dogLeftFrac).coerceIn(8.dp, 24.dp)
+            }
+            val animDogX by animateDpAsState(dogLeftDp, tween(360), label = "cozy_dog_x")
+
+            val cozyDogModifier = if (isPortrait) {
+                Modifier
+                    .align(Alignment.CenterStart)
+                    .offset(x = animDogX, y = (portraitStageHeight * 0.44f) - 14.dp)
+                    .width(animDogWidth)
+                    .aspectRatio(1f)
+            } else {
+                Modifier
+                    .align(Alignment.BottomStart)
+                    .offset(x = animDogX)
+                    .padding(bottom = 16.dp)
+                    .width(animDogWidth)
+                    .aspectRatio(1f)
+            }
+
+            ChromaKeyVideoOverlay(
+                assetPath = cozyDogAssetPath,
+                keyMode = OverlayKeyMode.BLUE_KEY,
+                lightingMode = resolvedLighting,
+                opacity = 1.0f * overlayAlpha,
+                isPlaying = isPlaying,
+                modifier = cozyDogModifier
+            )
+        } else {
+            val petVisibleForOrientation = if (isPortrait) roamConfig.visiblePortrait else roamConfig.visibleLandscape
+            val canRoamForOrientation = if (isPortrait) roamConfig.canRoamPortrait else roamConfig.canRoamLandscape
+            val lanes = if (isPortrait) roamConfig.portraitLanes else roamConfig.landscapeLanes
+            val activeLane = lanes.firstOrNull()
+
+            if (companionPet != CompanionPet.OFF && petVisibleForOrientation && activeLane != null) {
             val isCat = companionPet == CompanionPet.STUDIO_CAT
             val walkClip = if (isCat) "stretch_overlays/overlay_cat_walk_roam_chromakey.mp4"
             else "stretch_overlays/overlay_dog_walk_roam_chromakey.mp4"
@@ -337,6 +401,7 @@ fun StudioAtmosphereOverlay(
                 mirrorX = petMirrorX,
                 modifier = petModifier
             )
+            }
         }
 
         // --- LAYER 2: Unified Day / Sunset / Night Lighting Shader Wash ---

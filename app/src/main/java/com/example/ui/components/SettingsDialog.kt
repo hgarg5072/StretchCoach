@@ -389,41 +389,35 @@ private fun StudioSettingsTab(
         }
     }
 
-    // 3. Companion Pet Selector Card (Off / Golden Puppy / Calico Cat)
+    // 3. Companion Pet Selector Card (Off / Mat Puppy / Roam Puppy / Calico Cat)
     SettingsSectionCard(title = "Studio Companion") {
         Text(
-            text = "Both Golden Puppy and Calico Cat feature 12 animations and stroll safely across open studio floor",
+            text = "Choose the cozy Mat Puppy resting beside you, or let Roam Puppy / Calico Cat stroll across open floor",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )
-        Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clip(RoundedCornerShape(12.dp))
-                .background(MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.55f))
-                .padding(4.dp),
-            horizontalArrangement = Arrangement.spacedBy(4.dp)
+        FlowRow(
+            modifier = Modifier.fillMaxWidth(),
+            horizontalArrangement = Arrangement.spacedBy(8.dp),
+            verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
             CompanionPet.values().forEach { pet ->
                 val selected = settings.companionPet == pet
-                Box(
+                Surface(
+                    shape = RoundedCornerShape(10.dp),
+                    color = if (selected) MaterialTheme.colorScheme.primary else MaterialTheme.colorScheme.surfaceVariant.copy(alpha = 0.6f),
                     modifier = Modifier
-                        .weight(1f)
-                        .clip(RoundedCornerShape(9.dp))
-                        .background(if (selected) MaterialTheme.colorScheme.primary else Color.Transparent)
+                        .clip(RoundedCornerShape(10.dp))
                         .clickable { onSetCompanionPet(pet) }
-                        .padding(vertical = 8.dp)
-                        .testTag("companion_pet_${pet.name}"),
-                    contentAlignment = Alignment.Center
+                        .testTag("companion_pet_${pet.name}")
                 ) {
                     Text(
                         text = pet.displayName,
+                        modifier = Modifier.padding(horizontal = 12.dp, vertical = 7.dp),
                         style = MaterialTheme.typography.labelMedium.copy(
                             fontWeight = if (selected) FontWeight.Bold else FontWeight.Medium
                         ),
-                        color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant,
-                        maxLines = 1,
-                        overflow = TextOverflow.Ellipsis
+                        color = if (selected) MaterialTheme.colorScheme.onPrimary else MaterialTheme.colorScheme.onSurfaceVariant
                     )
                 }
             }
