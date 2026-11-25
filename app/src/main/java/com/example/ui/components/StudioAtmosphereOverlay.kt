@@ -219,11 +219,11 @@ fun StudioAtmosphereOverlay(
                 }
             }
             val dogAnchor = poseAnchors.dog
-            val dogWidthFrac = (dogAnchor.widthPct / 100f).coerceIn(0.12f, 0.18f)
+            val dogWidthFrac = ((dogAnchor.widthPct / 100f) * 1.28f).coerceIn(0.16f, 0.24f)
             val targetDogWidth: Dp = if (isPortrait) {
-                (stageWidth * 0.25f).coerceIn(84.dp, 112.dp)
+                (stageWidth * 0.33f).coerceIn(112.dp, 148.dp)
             } else {
-                (videoWidth * dogWidthFrac).coerceIn(70.dp, 110.dp)
+                (videoWidth * dogWidthFrac).coerceIn(96.dp, 148.dp)
             }
             val animDogWidth by animateDpAsState(targetDogWidth, tween(360), label = "cozy_dog_w")
 
@@ -368,12 +368,13 @@ fun StudioAtmosphereOverlay(
             }
 
             val petWidthDp: Dp = if (isPortrait) {
-                (stageWidth * (activeLane.widthPct / 100f)).coerceIn(72.dp, 110.dp)
+                (stageWidth * ((activeLane.widthPct * 1.30f) / 100f)).coerceIn(98.dp, 148.dp)
             } else {
-                (videoWidth * (activeLane.widthPct / 100f)).coerceIn(66.dp, 114.dp)
+                (videoWidth * ((activeLane.widthPct * 1.30f) / 100f)).coerceIn(92.dp, 152.dp)
             }
-            val petXOffset = videoLeft + (videoWidth * (petXPct.value / 100f))
-            val petBottomPad = (stageHeight * (activeLane.bottomPct / 100f)).coerceIn(6.dp, 24.dp)
+            val maxSafeVideoX = (videoLeft + videoWidth - petWidthDp - 4.dp).coerceAtLeast(videoLeft + 4.dp)
+            val petXOffset = (videoLeft + (videoWidth * (petXPct.value / 100f))).coerceIn(videoLeft + 2.dp, maxSafeVideoX)
+            val petBottomPad = (stageHeight * (activeLane.bottomPct / 100f)).coerceIn(4.dp, 20.dp)
 
             val petModifier = if (isPortrait) {
                 Modifier
