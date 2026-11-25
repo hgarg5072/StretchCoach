@@ -78,7 +78,7 @@ fun PlayerScreen(
     onCycleAmbientSoundscape: () -> Unit = {},
     studioLightingMode: StudioLightingMode = StudioLightingMode.AUTO,
     studioAromaProp: StudioAromaProp = StudioAromaProp.AUTO_GHIBLI,
-    companionPet: com.example.data.CompanionPet = com.example.data.CompanionPet.GOLDEN_PUPPY,
+    companionPet: com.example.data.CompanionPet = com.example.data.CompanionPet.COZY_MAT_PUPPY,
     swayingLeavesEnabled: Boolean = true,
     sunbeamsEnabled: Boolean = true,
     onTransitionClipFinished: () -> Unit = {},

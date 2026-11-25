@@ -64,7 +64,7 @@ fun StudioAtmosphereOverlay(
     isRestorativePose: Boolean,
     lightingMode: StudioLightingMode,
     aromaProp: StudioAromaProp,
-    companionPet: CompanionPet = CompanionPet.GOLDEN_PUPPY,
+    companionPet: CompanionPet = CompanionPet.COZY_MAT_PUPPY,
     leavesEnabled: Boolean,
     sunbeamsEnabled: Boolean,
     poseAnchors: PoseOverlayAnchors = PoseOverlayAnchors(),
@@ -195,27 +195,27 @@ fun StudioAtmosphereOverlay(
         }
 
         // --- LAYER 1C: Companion Pet (Cozy Mat Puppy OR 12-Action Roaming Puppy / Calico Cat) ---
-        if (companionPet == CompanionPet.COZY_PUPPY && poseAnchors.dog.visible) {
+        if (companionPet == CompanionPet.COZY_MAT_PUPPY && poseAnchors.dog.visible) {
             val cozyDogAssetPath = remember(
                 playerState, isTransitioning, isRestorativePose, resolvedLighting, stretchIndex, totalStretches
             ) {
                 val isPenultimate = totalStretches >= 3 && stretchIndex == totalStretches - 2
                 when {
                     playerState == PlayerState.COMPLETE ->
-                        "stretch_overlays/overlay_cozy_dog_celebrate_chromakey.mp4"
+                        "stretch_overlays/overlay_dog_celebrate_chromakey.mp4"
                     playerState == PlayerState.PREPARING && stretchIndex == 0 ->
-                        "stretch_overlays/overlay_cozy_dog_paw_wave_chromakey.mp4"
+                        "stretch_overlays/overlay_dog_paw_wave_chromakey.mp4"
                     isTransitioning || playerState == PlayerState.PREPARING ->
-                        if (stretchIndex % 2 == 1) "stretch_overlays/overlay_cozy_dog_belly_roll_chromakey.mp4"
-                        else "stretch_overlays/overlay_cozy_dog_playful_stretch_chromakey.mp4"
+                        if (stretchIndex % 2 == 1) "stretch_overlays/overlay_dog_belly_roll_chromakey.mp4"
+                        else "stretch_overlays/overlay_dog_playful_stretch_chromakey.mp4"
                     isRestorativePose || resolvedLighting == StudioLightingMode.NIGHT ->
-                        "stretch_overlays/overlay_cozy_dog_nap_curled_chromakey.mp4"
+                        "stretch_overlays/overlay_dog_nap_curled_chromakey.mp4"
                     isPenultimate ->
-                        "stretch_overlays/overlay_cozy_dog_yawn_sleepy_chromakey.mp4"
+                        "stretch_overlays/overlay_dog_yawn_sleepy_chromakey.mp4"
                     stretchIndex % 3 == 1 ->
-                        "stretch_overlays/overlay_cozy_dog_head_tilt_curious_chromakey.mp4"
+                        "stretch_overlays/overlay_dog_head_tilt_curious_chromakey.mp4"
                     else ->
-                        "stretch_overlays/overlay_cozy_dog_idle_rest_chromakey.mp4"
+                        "stretch_overlays/overlay_dog_idle_rest_chromakey.mp4"
                 }
             }
             val dogAnchor = poseAnchors.dog
@@ -265,41 +265,42 @@ fun StudioAtmosphereOverlay(
             val activeLane = lanes.firstOrNull()
 
             if (companionPet != CompanionPet.OFF && petVisibleForOrientation && activeLane != null) {
-            val isCat = companionPet == CompanionPet.STUDIO_CAT
-            val walkClip = if (isCat) "stretch_overlays/overlay_cat_walk_roam_chromakey.mp4"
-            else "stretch_overlays/overlay_dog_walk_roam_chromakey.mp4"
-            val napClip = if (isCat) "stretch_overlays/overlay_cat_nap_curled_chromakey.mp4"
-            else "stretch_overlays/overlay_dog_nap_curled_chromakey.mp4"
-            val celebrateClip = if (isCat) "stretch_overlays/overlay_cat_celebrate_chromakey.mp4"
-            else "stretch_overlays/overlay_dog_celebrate_chromakey.mp4"
-            val transitionClip = if (isCat) "stretch_overlays/overlay_cat_big_stretch_chromakey.mp4"
-            else "stretch_overlays/overlay_dog_play_bow_chromakey.mp4"
-            val sunsetClip = if (isCat) "stretch_overlays/overlay_cat_yawn_sleepy_chromakey.mp4"
-            else "stretch_overlays/overlay_dog_yawn_stretch_chromakey.mp4"
+                val isCat = companionPet == CompanionPet.STUDIO_CAT
+                val petKeyMode = if (isCat) OverlayKeyMode.GREEN_KEY else OverlayKeyMode.BLUE_KEY
+                val walkClip = if (isCat) "stretch_overlays/overlay_cat_walk_roam_chromakey.mp4"
+                else "stretch_overlays/overlay_dog_roam_walk_chromakey.mp4"
+                val napClip = if (isCat) "stretch_overlays/overlay_cat_nap_curled_chromakey.mp4"
+                else "stretch_overlays/overlay_dog_roam_nap_curled_chromakey.mp4"
+                val celebrateClip = if (isCat) "stretch_overlays/overlay_cat_celebrate_chromakey.mp4"
+                else "stretch_overlays/overlay_dog_roam_celebrate_chromakey.mp4"
+                val transitionClip = if (isCat) "stretch_overlays/overlay_cat_big_stretch_chromakey.mp4"
+                else "stretch_overlays/overlay_dog_roam_play_bow_chromakey.mp4"
+                val sunsetClip = if (isCat) "stretch_overlays/overlay_cat_yawn_sleepy_chromakey.mp4"
+                else "stretch_overlays/overlay_dog_roam_yawn_stretch_chromakey.mp4"
 
-            val activeIdlePool = remember(isCat) {
-                if (isCat) listOf(
-                    "stretch_overlays/overlay_cat_idle_loaf_chromakey.mp4",
-                    "stretch_overlays/overlay_cat_paw_groom_chromakey.mp4",
-                    "stretch_overlays/overlay_cat_curious_tilt_chromakey.mp4",
-                    "stretch_overlays/overlay_cat_playful_bat_chromakey.mp4",
-                    "stretch_overlays/overlay_cat_chase_butterfly_chromakey.mp4",
-                    "stretch_overlays/overlay_cat_knead_paws_chromakey.mp4",
-                    "stretch_overlays/overlay_cat_belly_flop_chromakey.mp4",
-                    "stretch_overlays/overlay_cat_big_stretch_chromakey.mp4",
-                    "stretch_overlays/overlay_cat_yawn_sleepy_chromakey.mp4"
-                ) else listOf(
-                    "stretch_overlays/overlay_dog_idle_sit_chromakey.mp4",
-                    "stretch_overlays/overlay_dog_play_bow_chromakey.mp4",
-                    "stretch_overlays/overlay_dog_belly_roll_chromakey.mp4",
-                    "stretch_overlays/overlay_dog_sniff_explore_chromakey.mp4",
-                    "stretch_overlays/overlay_dog_tail_chase_chromakey.mp4",
-                    "stretch_overlays/overlay_dog_ear_scratch_chromakey.mp4",
-                    "stretch_overlays/overlay_dog_head_tilt_chromakey.mp4",
-                    "stretch_overlays/overlay_dog_paw_shake_chromakey.mp4",
-                    "stretch_overlays/overlay_dog_yawn_stretch_chromakey.mp4"
-                )
-            }
+                val activeIdlePool = remember(isCat) {
+                    if (isCat) listOf(
+                        "stretch_overlays/overlay_cat_idle_loaf_chromakey.mp4",
+                        "stretch_overlays/overlay_cat_paw_groom_chromakey.mp4",
+                        "stretch_overlays/overlay_cat_curious_tilt_chromakey.mp4",
+                        "stretch_overlays/overlay_cat_playful_bat_chromakey.mp4",
+                        "stretch_overlays/overlay_cat_chase_butterfly_chromakey.mp4",
+                        "stretch_overlays/overlay_cat_knead_paws_chromakey.mp4",
+                        "stretch_overlays/overlay_cat_belly_flop_chromakey.mp4",
+                        "stretch_overlays/overlay_cat_big_stretch_chromakey.mp4",
+                        "stretch_overlays/overlay_cat_yawn_sleepy_chromakey.mp4"
+                    ) else listOf(
+                        "stretch_overlays/overlay_dog_roam_idle_sit_chromakey.mp4",
+                        "stretch_overlays/overlay_dog_roam_play_bow_chromakey.mp4",
+                        "stretch_overlays/overlay_dog_roam_belly_roll_chromakey.mp4",
+                        "stretch_overlays/overlay_dog_roam_sniff_explore_chromakey.mp4",
+                        "stretch_overlays/overlay_dog_roam_tail_chase_chromakey.mp4",
+                        "stretch_overlays/overlay_dog_roam_ear_scratch_chromakey.mp4",
+                        "stretch_overlays/overlay_dog_roam_head_tilt_chromakey.mp4",
+                        "stretch_overlays/overlay_dog_roam_paw_shake_chromakey.mp4",
+                        "stretch_overlays/overlay_dog_roam_yawn_stretch_chromakey.mp4"
+                    )
+                }
 
             val petXPct = remember(companionPet) { Animatable(activeLane.minXPct) }
             var petAction by remember(companionPet) { mutableStateOf(activeIdlePool.first()) }
@@ -394,7 +395,7 @@ fun StudioAtmosphereOverlay(
 
             ChromaKeyVideoOverlay(
                 assetPath = petAction,
-                keyMode = OverlayKeyMode.GREEN_KEY,
+                keyMode = petKeyMode,
                 lightingMode = resolvedLighting,
                 opacity = 1.0f * overlayAlpha,
                 isPlaying = isPlaying,
