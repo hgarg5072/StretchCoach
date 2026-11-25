@@ -36,6 +36,7 @@ import com.example.data.RoutineEntity
 import com.example.data.StretchEntity
 import com.example.ui.StretchViewModel
 import com.example.ui.components.AddFromLibraryDialog
+import com.example.ui.components.AiRoutineBuilderDialog
 import com.example.ui.components.CreateRoutineDialog
 import com.example.ui.components.DuplicateRoutineDialog
 import com.example.ui.components.EditRoutineDialog
@@ -73,8 +74,11 @@ fun RoutineScreen(
     val smartFlowActiveRoutineIds by viewModel.smartFlowActiveRoutineIds.collectAsState()
     val libraryStretches by viewModel.libraryStretches.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
+    val aiRoutineState by viewModel.aiRoutineBuilderState.collectAsState()
+    val onDeviceAiCapability by viewModel.onDeviceAiCapability.collectAsState()
 
     var showCreateRoutineDialog by remember { mutableStateOf(false) }
+    var showAiRoutineDialog by remember { mutableStateOf(false) }
     var showLibraryDialog by remember { mutableStateOf(false) }
     var editingStretch by remember { mutableStateOf<StretchEntity?>(null) }
     var showEditDialog by remember { mutableStateOf(false) }
@@ -113,6 +117,10 @@ fun RoutineScreen(
                         selectedRoutineId = selectedRoutineId,
                         onSelectRoutine = { viewModel.selectRoutine(it) },
                         onCreateNewRoutine = { showCreateRoutineDialog = true },
+                        onOpenAiRoutineBuilder = {
+                            viewModel.resetAiRoutineBuilder()
+                            showAiRoutineDialog = true
+                        },
                         onDeleteRoutine = { routineToDelete = it },
                         onDuplicateRoutine = { routineToDuplicate = it },
                         onLongPressRoutine = { longPressedRoutine = it }
@@ -346,6 +354,27 @@ fun RoutineScreen(
             onDismiss = { showCreateRoutineDialog = false },
             onCreate = { name, description ->
                 viewModel.createCustomRoutine(name, description)
+            }
+        )
+    }
+
+    // 3-Tier Hybrid AI Routine Builder Dialog (On-Device NPU -> Cloud Gemini -> Offline Smart Flow)
+    if (showAiRoutineDialog) {
+        AiRoutineBuilderDialog(
+            state = aiRoutineState,
+            capability = onDeviceAiCapability,
+            onGenerate = { prompt, targetMinutes, posture ->
+                viewModel.generateAiRoutine(prompt, targetMinutes, posture)
+            },
+            onSavePlan = { plan ->
+                viewModel.saveGeneratedAiRoutine(plan) {
+                    showAiRoutineDialog = false
+                }
+            },
+            onReset = { viewModel.resetAiRoutineBuilder() },
+            onDismiss = {
+                viewModel.resetAiRoutineBuilder()
+                showAiRoutineDialog = false
             }
         )
     }

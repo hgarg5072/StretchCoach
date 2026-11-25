@@ -1,0 +1,548 @@
+package com.example.ai
+
+import android.content.Context
+import android.util.Log
+import com.example.data.LibraryStretch
+import com.example.data.PoseManifestRepository
+import com.example.data.PostureHub
+import com.example.data.StretchCategory
+import com.example.data.StretchEntity
+import com.example.data.StretchLibrary
+import com.google.firebase.Firebase
+import com.google.firebase.ai.InferenceMode
+import com.google.firebase.ai.InferenceSource
+import com.google.firebase.ai.OnDeviceConfig
+import com.google.firebase.ai.OnDeviceModelStatus
+import com.google.firebase.ai.ai
+import com.google.firebase.ai.type.GenerativeBackend
+import com.google.firebase.ai.type.PublicPreviewAPI
+import com.google.firebase.ai.type.generationConfig
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeout
+import org.json.JSONObject
+import kotlin.math.roundToInt
+
+enum class PosturePreference(val label: String) {
+    ANY("Any Posture"),
+    FLOOR_ONLY("Floor Only"),
+    SEATED("Seated Only"),
+    STANDING("Standing Only")
+}
+
+enum class InferenceTier(val badgeLabel: String, val detailLabel: String) {
+    ON_DEVICE_NPU(
+        badgeLabel = "On-Device NPU",
+        detailLabel = "Generated privately on your device NPU/TPU (Gemini Nano)"
+    ),
+    CLOUD_GEMINI(
+        badgeLabel = "Cloud Gemini",
+        detailLabel = "Generated via Firebase AI Logic (Gemini Flash)"
+    ),
+    LOCAL_SMART_FLOW(
+        badgeLabel = "Offline Smart Flow",
+        detailLabel = "Generated offline with Smart Flow posture sequencing"
+    )
+}
+
+data class OnDeviceCapability(
+    val isAvailable: Boolean = false,
+    val isDownloadable: Boolean = false,
+    val modelName: String? = null,
+    val statusLabel: String = "Hybrid AI + Offline Smart Flow"
+)
+
+data class GeneratedRoutinePlan(
+    val name: String,
+    val description: String,
+    val stretches: List<StretchEntity>,
+    val inferenceTier: InferenceTier,
+    val rationale: String = ""
+) {
+    val totalDurationSeconds: Int
+        get() = stretches.sumOf { it.preparationSeconds + it.holdSeconds }
+}
+
+/**
+ * 3-Tier Hybrid AI Routine Builder:
+ * - Tier 1: On-Device NPU/TPU (Pixel Tensor TPU, Snapdragon Hexagon NPU, MediaTek Dimensity APU)
+ *           via Firebase AI Logic + AICore Gemini Nano (~0 MB APK impact, 100% offline).
+ * - Tier 2: Cloud Gemini Flash fallback via Firebase AI Logic when AICore is unavailable & online.
+ * - Tier 3: Deterministic Offline Smart-Flow Matcher so 100% of Android devices work offline.
+ */
+object HybridRoutineGenerator {
+
+    private const val TAG = "HybridRoutineGenerator"
+    private const val CLOUD_FALLBACK_MODEL = "gemini-2.5-flash"
+    private const val AI_TIMEOUT_MS = 18_000L
+
+    @OptIn(PublicPreviewAPI::class)
+    private fun createHybridModel() = Firebase.ai(
+        backend = GenerativeBackend.googleAI()
+    ).generativeModel(
+        modelName = CLOUD_FALLBACK_MODEL,
+        generationConfig = generationConfig {
+            temperature = 0.35f
+            maxOutputTokens = 400
+        },
+        onDeviceConfig = OnDeviceConfig(
+            mode = InferenceMode.PREFER_ON_DEVICE,
+            maxOutputTokens = 384,
+            temperature = 0.35f
+        )
+    )
+
+    /**
+     * Checks whether the current device supports AICore / Gemini Nano on its NPU/TPU.
+     * Never throws — returns a graceful fallback status on unsupported devices or unit tests.
+     */
+    @OptIn(PublicPreviewAPI::class)
+    suspend fun checkOnDeviceCapability(): OnDeviceCapability = withContext(Dispatchers.IO) {
+        try {
+            val model = createHybridModel()
+            val extension = model.onDeviceExtension
+            if (extension == null) {
+                return@withContext OnDeviceCapability(
+                    isAvailable = false,
+                    statusLabel = "Cloud Gemini + Offline Smart Flow"
+                )
+            }
+            val status = extension.checkStatus()
+            val modelName = runCatching { extension.getModelName() }.getOrNull()
+            when (status) {
+                OnDeviceModelStatus.AVAILABLE -> OnDeviceCapability(
+                    isAvailable = true,
+                    modelName = modelName,
+                    statusLabel = "On-Device NPU Ready (${modelName ?: "Gemini Nano"})"
+                )
+                OnDeviceModelStatus.DOWNLOADABLE, OnDeviceModelStatus.DOWNLOADING -> OnDeviceCapability(
+                    isAvailable = false,
+                    isDownloadable = true,
+                    modelName = modelName,
+                    statusLabel = "On-Device NPU Preparing • Hybrid Ready"
+                )
+                else -> OnDeviceCapability(
+                    isAvailable = false,
+                    statusLabel = "Hybrid AI + Offline Smart Flow"
+                )
+            }
+        } catch (t: Throwable) {
+            Log.d(TAG, "On-device AI check fell back cleanly: ${t.message}")
+            OnDeviceCapability(
+                isAvailable = false,
+                statusLabel = "Hybrid AI + Offline Smart Flow"
+            )
+        }
+    }
+
+    /**
+     * Generates a personalized routine from a natural-language goal using the 3-tier hybrid pipeline.
+     */
+    @OptIn(PublicPreviewAPI::class)
+    suspend fun generateRoutine(
+        context: Context,
+        userPrompt: String,
+        targetMinutes: Int = 10,
+        posturePreference: PosturePreference = PosturePreference.ANY
+    ): GeneratedRoutinePlan = withContext(Dispatchers.IO) {
+        val cleanPrompt = userPrompt.trim().ifBlank { "Balanced full-body mobility and relaxation" }
+        val resolvedMinutes = extractTargetMinutes(cleanPrompt, targetMinutes)
+        val resolvedPosture = extractPosturePreference(cleanPrompt, posturePreference)
+
+        val allLibrary = StretchLibrary.ALL_100_STRETCHES
+        val hubById = buildHubMap(context, allLibrary)
+
+        // Pre-rank candidates so the prompt fits comfortably inside Gemini Nano's on-device context window
+        val candidates = selectCandidatePool(
+            prompt = cleanPrompt,
+            posturePreference = resolvedPosture,
+            allLibrary = allLibrary,
+            hubById = hubById,
+            maxCandidates = 34
+        )
+
+        val aiPlan = try {
+            val model = createHybridModel()
+            val llmPrompt = buildCompactPrompt(
+                userGoal = cleanPrompt,
+                targetMinutes = resolvedMinutes,
+                posturePreference = resolvedPosture,
+                candidates = candidates,
+                hubById = hubById
+            )
+            val response = withTimeout(AI_TIMEOUT_MS) {
+                model.generateContent(llmPrompt)
+            }
+            val rawText = response.text.orEmpty()
+            val tier = if (response.inferenceSource == InferenceSource.ON_DEVICE) {
+                InferenceTier.ON_DEVICE_NPU
+            } else {
+                InferenceTier.CLOUD_GEMINI
+            }
+            parseModelResponseToPlan(
+                rawText = rawText,
+                inferenceTier = tier,
+                targetMinutes = resolvedMinutes,
+                allLibrary = allLibrary,
+                context = context
+            )
+        } catch (t: Throwable) {
+            Log.i(TAG, "Hybrid AI unavailable or offline (${t.javaClass.simpleName}: ${t.message}); using Offline Smart Flow.")
+            null
+        }
+
+        aiPlan ?: buildLocalSmartFlowRoutine(
+            userPrompt = cleanPrompt,
+            targetMinutes = resolvedMinutes,
+            posturePreference = resolvedPosture,
+            allLibrary = allLibrary,
+            hubById = hubById,
+            context = context
+        )
+    }
+
+    internal fun buildHubMap(
+        context: Context?,
+        allLibrary: List<LibraryStretch>
+    ): Map<String, PostureHub> {
+        return allLibrary.associate { stretch ->
+            val manifestHub = context?.let { ctx ->
+                PoseManifestRepository.getPoseMetaForStretch(ctx, stretch.name, stretch.category.title)?.postureHub
+            }
+            stretch.id to (manifestHub ?: inferHubFromText(stretch))
+        }
+    }
+
+    internal fun inferHubFromText(stretch: LibraryStretch): PostureHub {
+        val text = "${stretch.name} ${stretch.prepCue} ${stretch.holdCue}".lowercase()
+        return when {
+            listOf("lie on your back", "supine", "savasana", "reclining", "happy baby", "bridge", "wind-relieving", "legs up").any { it in text } -> PostureHub.SUPINE
+            listOf("lie on your stomach", "prone", "cobra", "sphinx", "locust", "bow pose", "bhujangasana").any { it in text } -> PostureHub.PRONE
+            listOf("kneel", "all fours", "tabletop", "child's pose", "cat-cow", "puppy pose", "pigeon", "lunge").any { it in text } -> PostureHub.KNEELING
+            listOf("sit", "seated", "cross-legged", "sukhasana", "padmasana", "butterfly", "baddha konasana", "boat", "passthrough").any { it in text } -> PostureHub.SEATED
+            else -> PostureHub.STANDING
+        }
+    }
+
+    internal fun extractTargetMinutes(prompt: String, fallbackMinutes: Int): Int {
+        val regex = Regex("""(\d{1,2})\s*(min|mins|minute|minutes|m)\b""", RegexOption.IGNORE_CASE)
+        val match = regex.find(prompt)
+        val parsed = match?.groupValues?.getOrNull(1)?.toIntOrNull()
+        return (parsed ?: fallbackMinutes).coerceIn(3, 45)
+    }
+
+    internal fun extractPosturePreference(prompt: String, explicit: PosturePreference): PosturePreference {
+        if (explicit != PosturePreference.ANY) return explicit
+        val lower = prompt.lowercase()
+        return when {
+            listOf("floor only", "on the floor", "mat only", "no standing", "bedtime", "before sleep", "in bed").any { it in lower } ->
+                PosturePreference.FLOOR_ONLY
+            listOf("seated only", "at my desk", "desk break", "office chair", "sitting only").any { it in lower } ->
+                PosturePreference.SEATED
+            listOf("standing only", "no floor", "stay standing").any { it in lower } ->
+                PosturePreference.STANDING
+            else -> PosturePreference.ANY
+        }
+    }
+
+    internal fun matchesPosture(hub: PostureHub, pref: PosturePreference): Boolean = when (pref) {
+        PosturePreference.ANY -> true
+        PosturePreference.FLOOR_ONLY -> hub != PostureHub.STANDING
+        PosturePreference.SEATED -> hub == PostureHub.SEATED
+        PosturePreference.STANDING -> hub == PostureHub.STANDING
+    }
+
+    internal fun selectCandidatePool(
+        prompt: String,
+        posturePreference: PosturePreference,
+        allLibrary: List<LibraryStretch>,
+        hubById: Map<String, PostureHub>,
+        maxCandidates: Int = 34
+    ): List<LibraryStretch> {
+        val postureFiltered = allLibrary.filter { s ->
+            matchesPosture(hubById[s.id] ?: PostureHub.STANDING, posturePreference)
+        }.ifEmpty { allLibrary }
+
+        val scored = postureFiltered.map { stretch ->
+            stretch to scoreStretchForPrompt(stretch, prompt, hubById[stretch.id] ?: PostureHub.STANDING)
+        }.sortedByDescending { it.second }
+
+        val top = scored.take(maxCandidates).map { it.first }.toMutableList()
+        // Ensure bilateral partners are present in the candidate pool
+        val topIds = top.map { it.id }.toMutableSet()
+        val byId = allLibrary.associateBy { it.id }
+        top.toList().forEach { s ->
+            val partnerId = findBilateralPartnerId(s.id)
+            if (partnerId != null && partnerId !in topIds && byId.containsKey(partnerId)) {
+                top.add(byId.getValue(partnerId))
+                topIds.add(partnerId)
+            }
+        }
+        return top
+    }
+
+    internal fun scoreStretchForPrompt(
+        stretch: LibraryStretch,
+        prompt: String,
+        hub: PostureHub
+    ): Int {
+        val lowerPrompt = prompt.lowercase()
+        val haystack = "${stretch.name} ${stretch.category.title} ${stretch.benefits} ${stretch.prepCue} ${stretch.holdCue} ${stretch.indianName.orEmpty()}".lowercase()
+        var score = 0
+
+        val keywordGroups = listOf(
+            listOf("neck", "cervical", "headache", "jaw") to listOf("neck", "cervical", "trapezius", "levator", "scm"),
+            listOf("shoulder", "shoulders", "rotator", "scapula") to listOf("shoulder", "deltoid", "scapula", "trapezius", "rotator", "eagle arms"),
+            listOf("desk", "office", "computer", "work", "posture", "slouch") to listOf("desk", "slouch", "neck", "shoulder", "chest", "wrist", "thoracic", "forward head"),
+            listOf("chest", "upper back", "thoracic", "hunch") to listOf("chest", "pectoral", "thoracic", "upper back", "rhomboid", "heart"),
+            listOf("lower back", "back pain", "spine", "lumbar", "sciatica") to listOf("lower back", "lumbar", "spine", "spinal", "cat-cow", "child", "twist", "cobra", "bridge"),
+            listOf("hip", "hips", "glute", "glutes", "groin", "piriformis", "pelvis") to listOf("hip", "glute", "piriformis", "pigeon", "butterfly", "lunge", "groin", "figure-4"),
+            listOf("hamstring", "hamstrings", "leg", "legs", "run", "running", "runner", "post-run") to listOf("hamstring", "quad", "calf", "calves", "leg", "hip flexor", "lunge", "forward fold"),
+            listOf("quad", "quads", "thigh", "knee") to listOf("quad", "thigh", "hip flexor", "lunge"),
+            listOf("calf", "calves", "ankle", "foot", "feet", "plantar") to listOf("calf", "calves", "achilles", "ankle", "foot", "feet"),
+            listOf("wrist", "wrists", "arm", "arms", "forearm", "hand", "typing") to listOf("wrist", "forearm", "arm", "triceps", "biceps"),
+            listOf("morning", "wake", "energy", "energize", "sun", "surya") to listOf("morning", "spine", "chest", "standing", "cat-cow", "cobra", "sun", "reach"),
+            listOf("sleep", "bedtime", "night", "relax", "calm", "stress", "anxiety", "unwind") to listOf("relax", "calm", "restorative", "savasana", "child", "supine", "breathe", "gentle", "twist", "pranayama"),
+            listOf("yoga", "asana", "pranayama", "breath", "meditation") to listOf("asana", "yoga", "pranayama", "breath", "warrior", "cobra", "lotus", "tree")
+        )
+
+        keywordGroups.forEach { (triggers, targets) ->
+            if (triggers.any { it in lowerPrompt }) {
+                targets.forEach { target ->
+                    if (target in haystack) score += 12
+                }
+            }
+        }
+
+        // Direct token overlap
+        val promptTokens = lowerPrompt.split(Regex("[^a-z0-9]+")).filter { it.length >= 3 }
+        promptTokens.forEach { token ->
+            if (token in stretch.name.lowercase()) score += 15
+            else if (token in stretch.category.title.lowercase()) score += 10
+            else if (token in haystack) score += 4
+        }
+
+        // Restorative/sleep boost for floor poses
+        if (listOf("sleep", "bedtime", "night", "relax", "unwind").any { it in lowerPrompt }) {
+            if (hub == PostureHub.SUPINE || hub == PostureHub.SEATED || hub == PostureHub.KNEELING) score += 8
+        }
+
+        // Gentle baseline diversity so empty/generic prompts pick well-rounded poses
+        if (score == 0) {
+            score = when (stretch.category) {
+                StretchCategory.LOWER_BACK_CORE, StretchCategory.HIPS_GLUTES -> 5
+                StretchCategory.NECK_SHOULDERS, StretchCategory.HAMSTRINGS_QUADS -> 4
+                else -> 3
+            }
+        }
+        return score
+    }
+
+    internal fun buildCompactPrompt(
+        userGoal: String,
+        targetMinutes: Int,
+        posturePreference: PosturePreference,
+        candidates: List<LibraryStretch>,
+        hubById: Map<String, PostureHub>
+    ): String {
+        val targetCount = ((targetMinutes * 60) / 48).coerceIn(4, 18)
+        val catalogLines = candidates.joinToString("\n") { s ->
+            val hub = hubById[s.id]?.name ?: "STANDING"
+            val sec = s.defaultPrepSeconds + s.defaultHoldSeconds
+            "${s.id}|${s.name}|${s.category.title}|$hub|${sec}s"
+        }
+        return """
+            You are Stretch Coach, an expert yoga & mobility coach.
+            Build a routine for: "$userGoal"
+            Target duration: ~$targetMinutes minutes (~$targetCount stretches).
+            Posture filter: ${posturePreference.label}.
+            Rules:
+            - Choose ONLY stretch IDs from the catalog below.
+            - If you pick a Right-side stretch, also include its Left-side pair.
+            - Output ONLY valid compact JSON with keys: name, description, rationale, stretch_ids.
+            Example: {"name":"Evening Spine Unwind","description":"Gentle floor mobility for lower back relief","rationale":"Focuses on seated and supine decompression","stretch_ids":["child_pose_lat_reach","cat_cow_flow"]}
+            Catalog (id|name|category|hub|duration):
+            $catalogLines
+        """.trimIndent()
+    }
+
+    internal fun parseModelResponseToPlan(
+        rawText: String,
+        inferenceTier: InferenceTier,
+        targetMinutes: Int,
+        allLibrary: List<LibraryStretch>,
+        context: Context?
+    ): GeneratedRoutinePlan? {
+        val jsonStart = rawText.indexOf('{')
+        val jsonEnd = rawText.lastIndexOf('}')
+        if (jsonStart < 0 || jsonEnd <= jsonStart) return null
+
+        val jsonStr = rawText.substring(jsonStart, jsonEnd + 1)
+        val obj = runCatching { JSONObject(jsonStr) }.getOrNull() ?: return null
+
+        val idsArray = obj.optJSONArray("stretch_ids") ?: return null
+        val byId = allLibrary.associateBy { it.id }
+        val picked = mutableListOf<LibraryStretch>()
+        val seenIds = mutableSetOf<String>()
+
+        for (i in 0 until idsArray.length()) {
+            val id = idsArray.optString(i).trim()
+            val match = byId[id] ?: continue
+            if (seenIds.add(match.id)) {
+                picked.add(match)
+            }
+            val partnerId = findBilateralPartnerId(match.id)
+            if (partnerId != null && seenIds.add(partnerId)) {
+                byId[partnerId]?.let { picked.add(it) }
+            }
+        }
+
+        if (picked.size < 2) return null
+
+        val name = obj.optString("name").trim().ifBlank { "AI Custom Flow ($targetMinutes min)" }.take(80)
+        val description = obj.optString("description").trim()
+            .ifBlank { "Personalized $targetMinutes-minute mobility sequence." }
+            .take(240)
+        val rationale = obj.optString("rationale").trim().take(200)
+
+        val entities = buildSmartFlowEntities(picked, targetMinutes, context)
+        return GeneratedRoutinePlan(
+            name = name,
+            description = description,
+            stretches = entities,
+            inferenceTier = inferenceTier,
+            rationale = rationale
+        )
+    }
+
+    /**
+     * Tier 3: 100% offline deterministic Smart-Flow routine builder.
+     * Guarantees every Android device gets a balanced, bilateral, smoothly sequenced routine
+     * even with zero network and no AICore support.
+     */
+    internal fun buildLocalSmartFlowRoutine(
+        userPrompt: String,
+        targetMinutes: Int,
+        posturePreference: PosturePreference,
+        allLibrary: List<LibraryStretch>,
+        hubById: Map<String, PostureHub>,
+        context: Context?
+    ): GeneratedRoutinePlan {
+        val targetSeconds = targetMinutes * 60
+        val postureFiltered = allLibrary.filter { s ->
+            matchesPosture(hubById[s.id] ?: PostureHub.STANDING, posturePreference)
+        }.ifEmpty { allLibrary }
+
+        val ranked = postureFiltered
+            .map { it to scoreStretchForPrompt(it, userPrompt, hubById[it.id] ?: PostureHub.STANDING) }
+            .sortedByDescending { it.second }
+
+        val byId = allLibrary.associateBy { it.id }
+        val selected = mutableListOf<LibraryStretch>()
+        val seenIds = mutableSetOf<String>()
+        var accumulatedSec = 0
+
+        for ((stretch, _) in ranked) {
+            if (stretch.id in seenIds) continue
+            val partner = findBilateralPartnerId(stretch.id)?.let { byId[it] }
+            val stepCost = (stretch.defaultPrepSeconds + stretch.defaultHoldSeconds) +
+                if (partner != null && partner.id !in seenIds) (partner.defaultPrepSeconds + partner.defaultHoldSeconds) else 0
+
+            if (selected.isNotEmpty() && accumulatedSec + stepCost > targetSeconds + 35 && selected.size >= 4) {
+                continue
+            }
+
+            selected.add(stretch)
+            seenIds.add(stretch.id)
+            accumulatedSec += stretch.defaultPrepSeconds + stretch.defaultHoldSeconds
+
+            if (partner != null && partner.id !in seenIds) {
+                selected.add(partner)
+                seenIds.add(partner.id)
+                accumulatedSec += partner.defaultPrepSeconds + partner.defaultHoldSeconds
+            }
+
+            if (accumulatedSec >= targetSeconds - 20 || selected.size >= 18) break
+        }
+
+        val finalSelected = selected.ifEmpty { postureFiltered.take(6) }
+        val entities = buildSmartFlowEntities(finalSelected, targetMinutes, context)
+
+        val title = buildFriendlyRoutineTitle(userPrompt, targetMinutes, posturePreference)
+        val desc = "Offline Smart Flow routine tailored for: ${userPrompt.trim().take(120)}"
+        val rationale = "Matched ${entities.size} stretches to your focus areas and ordered them by posture hub for smooth transitions."
+
+        return GeneratedRoutinePlan(
+            name = title,
+            description = desc,
+            stretches = entities,
+            inferenceTier = InferenceTier.LOCAL_SMART_FLOW,
+            rationale = rationale
+        )
+    }
+
+    private fun buildSmartFlowEntities(
+        selected: List<LibraryStretch>,
+        targetMinutes: Int,
+        context: Context?
+    ): List<StretchEntity> {
+        val rawTotal = selected.sumOf { it.defaultPrepSeconds + it.defaultHoldSeconds }.coerceAtLeast(1)
+        val targetSec = targetMinutes * 60
+        val holdScale = (targetSec.toFloat() / rawTotal.toFloat()).coerceIn(0.75f, 1.35f)
+
+        val rawEntities = selected.mapIndexed { idx, lib ->
+            val scaledHold = ((lib.defaultHoldSeconds * holdScale) / 5f).roundToInt() * 5
+            StretchEntity(
+                routineId = 0L,
+                libraryId = lib.id,
+                name = lib.name,
+                indianName = lib.indianName,
+                category = lib.category.title,
+                preparationSeconds = lib.defaultPrepSeconds,
+                holdSeconds = scaledHold.coerceIn(15, 90),
+                prepCue = lib.prepCue,
+                holdCue = lib.holdCue,
+                notes = lib.benefits,
+                enabled = true,
+                voiceCueEnabled = true,
+                sortOrder = idx
+            )
+        }
+
+        val ordered = if (context != null) {
+            PoseManifestRepository.sortStretchesBySmartFlow(context, rawEntities)
+        } else {
+            rawEntities
+        }
+        return ordered.mapIndexed { idx, entity -> entity.copy(sortOrder = idx) }
+    }
+
+    internal fun findBilateralPartnerId(id: String): String? = when {
+        id.endsWith("_right") -> id.removeSuffix("_right") + "_left"
+        id.endsWith("_left") -> id.removeSuffix("_left") + "_right"
+        else -> null
+    }
+
+    private fun buildFriendlyRoutineTitle(
+        prompt: String,
+        targetMinutes: Int,
+        posturePreference: PosturePreference
+    ): String {
+        val lower = prompt.lowercase()
+        val theme = when {
+            "desk" in lower || "office" in lower -> "Desk Reset Flow"
+            "neck" in lower && "shoulder" in lower -> "Neck & Shoulder Relief"
+            "neck" in lower -> "Neck Tension Release"
+            "lower back" in lower || "back" in lower || "spine" in lower -> "Spine & Back Relief"
+            "hip" in lower || "glute" in lower -> "Deep Hip Opener"
+            "run" in lower || "hamstring" in lower || "leg" in lower -> "Runner's Leg Recovery"
+            "sleep" in lower || "bedtime" in lower || "night" in lower -> "Bedtime Unwind"
+            "morning" in lower || "wake" in lower -> "Morning Mobility"
+            posturePreference == PosturePreference.FLOOR_ONLY -> "Floor Sanctuary Flow"
+            posturePreference == PosturePreference.SEATED -> "Seated Mobility Flow"
+            posturePreference == PosturePreference.STANDING -> "Standing Energy Flow"
+            else -> "Custom Mobility Flow"
+        }
+        return "$theme (${targetMinutes}m)"
+    }
+}

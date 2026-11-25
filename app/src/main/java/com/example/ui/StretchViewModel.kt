@@ -36,6 +36,13 @@ enum class PlayerState {
     COMPLETE
 }
 
+sealed class AiRoutineBuilderState {
+    data object Idle : AiRoutineBuilderState()
+    data object Generating : AiRoutineBuilderState()
+    data class Preview(val plan: com.example.ai.GeneratedRoutinePlan) : AiRoutineBuilderState()
+    data class Error(val message: String) : AiRoutineBuilderState()
+}
+
 data class PlayerUiState(
     val state: PlayerState = PlayerState.IDLE,
     val previousStateBeforePause: PlayerState = PlayerState.PREPARING,
@@ -102,6 +109,13 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
         com.example.update.AppUpdateState.Idle
     )
     val appUpdateState: StateFlow<com.example.update.AppUpdateState> = _appUpdateState.asStateFlow()
+
+    // --- 3-Tier Hybrid AI Routine Builder (On-Device NPU/TPU -> Cloud Gemini -> Offline Smart Flow) ---
+    private val _onDeviceAiCapability = MutableStateFlow(com.example.ai.OnDeviceCapability())
+    val onDeviceAiCapability: StateFlow<com.example.ai.OnDeviceCapability> = _onDeviceAiCapability.asStateFlow()
+
+    private val _aiRoutineBuilderState = MutableStateFlow<AiRoutineBuilderState>(AiRoutineBuilderState.Idle)
+    val aiRoutineBuilderState: StateFlow<AiRoutineBuilderState> = _aiRoutineBuilderState.asStateFlow()
 
     // Persisted pre-Flow stretch order per routine so pressing "Flow" toggles cleanly back to original order
     private val smartFlowPrefs = application.getSharedPreferences(
@@ -268,6 +282,9 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
             refreshDownloadedTracks()
         }
         viewModelScope.launch {
+            _onDeviceAiCapability.value = com.example.ai.HybridRoutineGenerator.checkOnDeviceCapability()
+        }
+        viewModelScope.launch {
             userSettings.collect { settings ->
                 val state = _playerUiState.value.state
                 val isActivelyPlaying = state == PlayerState.PREPARING || state == PlayerState.HOLDING
@@ -367,6 +384,46 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
             val newId = stretchRepository.createRoutine(name, description, initialStretchIds)
             _selectedRoutineId.value = newId
         }
+    }
+
+    fun generateAiRoutine(
+        prompt: String,
+        targetMinutes: Int,
+        posturePreference: com.example.ai.PosturePreference
+    ) {
+        viewModelScope.launch {
+            _aiRoutineBuilderState.value = AiRoutineBuilderState.Generating
+            try {
+                val plan = com.example.ai.HybridRoutineGenerator.generateRoutine(
+                    context = getApplication(),
+                    userPrompt = prompt,
+                    targetMinutes = targetMinutes,
+                    posturePreference = posturePreference
+                )
+                _aiRoutineBuilderState.value = AiRoutineBuilderState.Preview(plan)
+            } catch (e: Exception) {
+                _aiRoutineBuilderState.value = AiRoutineBuilderState.Error(
+                    e.message ?: "Could not generate routine. Please try again."
+                )
+            }
+        }
+    }
+
+    fun saveGeneratedAiRoutine(plan: com.example.ai.GeneratedRoutinePlan, onSaved: () -> Unit = {}) {
+        viewModelScope.launch {
+            val newId = stretchRepository.createRoutineWithStretches(
+                name = plan.name,
+                description = plan.description,
+                stretches = plan.stretches
+            )
+            _selectedRoutineId.value = newId
+            _aiRoutineBuilderState.value = AiRoutineBuilderState.Idle
+            onSaved()
+        }
+    }
+
+    fun resetAiRoutineBuilder() {
+        _aiRoutineBuilderState.value = AiRoutineBuilderState.Idle
     }
 
     fun duplicateRoutine(sourceRoutineId: Long, newName: String, newDescription: String = "") {

@@ -219,11 +219,11 @@ fun StudioAtmosphereOverlay(
                 }
             }
             val dogAnchor = poseAnchors.dog
-            val dogWidthFrac = ((dogAnchor.widthPct / 100f) * 1.28f).coerceIn(0.16f, 0.24f)
+            val dogWidthFrac = ((dogAnchor.widthPct / 100f) * 1.15f).coerceIn(0.14f, 0.21f)
             val targetDogWidth: Dp = if (isPortrait) {
-                (stageWidth * 0.33f).coerceIn(112.dp, 148.dp)
+                (stageWidth * 0.29f).coerceIn(100.dp, 132.dp)
             } else {
-                (videoWidth * dogWidthFrac).coerceIn(96.dp, 148.dp)
+                (videoWidth * dogWidthFrac).coerceIn(86.dp, 132.dp)
             }
             val animDogWidth by animateDpAsState(targetDogWidth, tween(360), label = "cozy_dog_w")
 
@@ -260,11 +260,24 @@ fun StudioAtmosphereOverlay(
             )
         } else {
             val petVisibleForOrientation = if (isPortrait) roamConfig.visiblePortrait else roamConfig.visibleLandscape
-            val canRoamForOrientation = if (isPortrait) roamConfig.canRoamPortrait else roamConfig.canRoamLandscape
+            val canRoamForOrientation = petVisibleForOrientation &&
+                (if (isPortrait) roamConfig.canRoamPortrait else roamConfig.canRoamLandscape)
             val lanes = if (isPortrait) roamConfig.portraitLanes else roamConfig.landscapeLanes
-            val activeLane = lanes.firstOrNull()
+            // Always show the chosen pet: roam along exact lane when open, or rest quietly in bottom-left corner on wide poses
+            val fallbackCornerLane = RoamLane(
+                minXPct = 1.5f,
+                maxXPct = 1.5f,
+                bottomPct = 2.0f,
+                widthPct = if (isPortrait) 19f else 14f,
+                side = "left"
+            )
+            val activeLane = if (petVisibleForOrientation) {
+                lanes.firstOrNull() ?: fallbackCornerLane
+            } else {
+                fallbackCornerLane
+            }
 
-            if (companionPet != CompanionPet.OFF && petVisibleForOrientation && activeLane != null) {
+            if (companionPet != CompanionPet.OFF && (petVisibleForOrientation || poseAnchors.dog.visible)) {
                 val isCat = companionPet == CompanionPet.STUDIO_CAT
                 val petKeyMode = if (isCat) OverlayKeyMode.GREEN_KEY else OverlayKeyMode.BLUE_KEY
                 val walkClip = if (isCat) "stretch_overlays/overlay_cat_walk_roam_chromakey.mp4"
@@ -368,9 +381,9 @@ fun StudioAtmosphereOverlay(
             }
 
             val petWidthDp: Dp = if (isPortrait) {
-                (stageWidth * ((activeLane.widthPct * 1.30f) / 100f)).coerceIn(98.dp, 148.dp)
+                (stageWidth * ((activeLane.widthPct * 1.17f) / 100f)).coerceIn(88.dp, 132.dp)
             } else {
-                (videoWidth * ((activeLane.widthPct * 1.30f) / 100f)).coerceIn(92.dp, 152.dp)
+                (videoWidth * ((activeLane.widthPct * 1.17f) / 100f)).coerceIn(82.dp, 136.dp)
             }
             val maxSafeVideoX = (videoLeft + videoWidth - petWidthDp - 4.dp).coerceAtLeast(videoLeft + 4.dp)
             val petXOffset = (videoLeft + (videoWidth * (petXPct.value / 100f))).coerceIn(videoLeft + 2.dp, maxSafeVideoX)
@@ -394,15 +407,17 @@ fun StudioAtmosphereOverlay(
                     .aspectRatio(1f)
             }
 
-            ChromaKeyVideoOverlay(
-                assetPath = petAction,
-                keyMode = petKeyMode,
-                lightingMode = resolvedLighting,
-                opacity = 1.0f * overlayAlpha,
-                isPlaying = isPlaying,
-                mirrorX = petMirrorX,
-                modifier = petModifier
-            )
+            androidx.compose.runtime.key(companionPet) {
+                ChromaKeyVideoOverlay(
+                    assetPath = petAction,
+                    keyMode = petKeyMode,
+                    lightingMode = resolvedLighting,
+                    opacity = 1.0f * overlayAlpha,
+                    isPlaying = isPlaying,
+                    mirrorX = petMirrorX,
+                    modifier = petModifier
+                )
+            }
             }
         }
 
