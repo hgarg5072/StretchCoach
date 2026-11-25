@@ -59,6 +59,7 @@ fun RoutineSummaryCard(
     onDuplicateRoutine: () -> Unit,
     onEditRoutine: () -> Unit = {},
     onOptimizeFlow: (() -> Unit)? = null,
+    isFlowOptimized: Boolean = false,
     onShareToCommunity: (() -> Unit)? = null,
     modifier: Modifier = Modifier
 ) {
@@ -170,17 +171,25 @@ fun RoutineSummaryCard(
                             Surface(
                                 onClick = onOptimizeFlow,
                                 shape = RoundedCornerShape(10.dp),
-                                color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
-                                border = androidx.compose.foundation.BorderStroke(
+                                color = if (isFlowOptimized) {
+                                    MaterialTheme.colorScheme.primary
+                                } else {
+                                    MaterialTheme.colorScheme.surface.copy(alpha = 0.85f)
+                                },
+                                border = if (isFlowOptimized) null else androidx.compose.foundation.BorderStroke(
                                     1.dp,
                                     MaterialTheme.colorScheme.outline.copy(alpha = 0.25f)
                                 ),
                                 modifier = Modifier.testTag("optimize_flow_button")
                             ) {
                                 Text(
-                                    text = "Flow",
+                                    text = if (isFlowOptimized) "Flow ✓" else "Flow",
                                     style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.SemiBold),
-                                    color = MaterialTheme.colorScheme.primary,
+                                    color = if (isFlowOptimized) {
+                                        MaterialTheme.colorScheme.onPrimary
+                                    } else {
+                                        MaterialTheme.colorScheme.primary
+                                    },
                                     modifier = Modifier.padding(horizontal = 9.dp, vertical = 4.dp)
                                 )
                             }

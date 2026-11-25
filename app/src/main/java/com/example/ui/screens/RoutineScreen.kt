@@ -70,6 +70,7 @@ fun RoutineScreen(
     val routines by viewModel.allRoutines.collectAsState()
     val selectedRoutineId by viewModel.selectedRoutineId.collectAsState()
     val stretches by viewModel.currentRoutineStretches.collectAsState()
+    val smartFlowActiveRoutineIds by viewModel.smartFlowActiveRoutineIds.collectAsState()
     val libraryStretches by viewModel.libraryStretches.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
 
@@ -139,7 +140,8 @@ fun RoutineScreen(
                     },
                     onOptimizeFlow = if (localStretches.size >= 2) {
                         { viewModel.optimizeCurrentRoutineFlow() }
-                    } else null
+                    } else null,
+                    isFlowOptimized = activeRoutine?.id in smartFlowActiveRoutineIds
                 )
             }
 

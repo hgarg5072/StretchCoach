@@ -103,6 +103,18 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
     )
     val appUpdateState: StateFlow<com.example.update.AppUpdateState> = _appUpdateState.asStateFlow()
 
+    // Persisted pre-Flow stretch order per routine so pressing "Flow" toggles cleanly back to original order
+    private val smartFlowPrefs = application.getSharedPreferences(
+        "smart_flow_original_orders",
+        android.content.Context.MODE_PRIVATE
+    )
+    private val _smartFlowActiveRoutineIds = MutableStateFlow<Set<Long>>(
+        smartFlowPrefs.all.keys
+            .mapNotNull { it.removePrefix("routine_").toLongOrNull() }
+            .toSet()
+    )
+    val smartFlowActiveRoutineIds: StateFlow<Set<Long>> = _smartFlowActiveRoutineIds.asStateFlow()
+
     // --- Free Online & Local Relaxation Audio Library ---
     private val _downloadedTracks = MutableStateFlow<List<com.example.audio.DownloadedAudioTrack>>(emptyList())
     val downloadedTracks: StateFlow<List<com.example.audio.DownloadedAudioTrack>> = _downloadedTracks.asStateFlow()
@@ -727,15 +739,69 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
     }
 
     /**
-     * 1-tap Smart Flow Order: sorts the active routine's stretches by
-     * STANDING -> KNEELING -> PRONE -> SUPINE -> SEATED to minimize awkward floor/standing hopping.
+     * 2-way Smart Flow toggle:
+     * - Press once: saves the routine's current order and sorts by STANDING -> KNEELING -> PRONE -> SUPINE -> SEATED.
+     * - Press again: restores the exact saved original order (or canonical built-in default order if the user had
+     *   already pressed Flow on a built-in routine like "Subah Subah" before this toggle existed).
      */
     fun optimizeCurrentRoutineFlow() {
         viewModelScope.launch {
+            val routineId = _selectedRoutineId.value
             val stretches = currentRoutineStretches.value
             if (stretches.size < 2) return@launch
+
+            val prefKey = "routine_$routineId"
+            val savedOrderRaw = smartFlowPrefs.getString(prefKey, null)
+
+            if (!savedOrderRaw.isNullOrBlank()) {
+                // Toggle OFF -> restore saved pre-Flow order
+                val savedIds = savedOrderRaw.split(",").mapNotNull { it.trim().toLongOrNull() }
+                val byId = stretches.associateBy { it.id }
+                val restored = buildList {
+                    savedIds.forEach { id -> byId[id]?.let { add(it) } }
+                    // Preserve any stretches added while Flow was active
+                    val addedSet = savedIds.toSet()
+                    stretches.filter { it.id !in addedSet }.forEach { add(it) }
+                }
+                stretchRepository.updateSortOrders(restored.map { it.id })
+                smartFlowPrefs.edit().remove(prefKey).apply()
+                _smartFlowActiveRoutineIds.update { it - routineId }
+                return@launch
+            }
+
             val sorted = com.example.data.PoseManifestRepository.sortStretchesBySmartFlow(getApplication(), stretches)
-            stretchRepository.updateSortOrders(sorted.map { it.id })
+            val currentIds = stretches.map { it.id }
+            val sortedIds = sorted.map { it.id }
+
+            if (currentIds == sortedIds) {
+                // Already in Smart Flow order (e.g. pressed before this toggle existed) ->
+                // restore canonical built-in default order if this is a built-in routine.
+                val activeRoutine = allRoutines.value.find { it.id == routineId }
+                val matchingDefault = activeRoutine?.let { r ->
+                    AppDatabase.DEFAULT_ROUTINES.find { it.name.equals(r.name, ignoreCase = true) }
+                }
+                if (matchingDefault != null) {
+                    val canonicalDefaults = AppDatabase.createDefaultStretchesForRoutine(matchingDefault.id)
+                    val rankByLibId = canonicalDefaults
+                        .mapIndexedNotNull { idx, s -> s.libraryId?.let { it to idx } }
+                        .toMap()
+                    val rankByName = canonicalDefaults
+                        .mapIndexed { idx, s -> s.name.trim().lowercase() to idx }
+                        .toMap()
+                    val restored = stretches.sortedBy { s ->
+                        s.libraryId?.let { rankByLibId[it] }
+                            ?: rankByName[s.name.trim().lowercase()]
+                            ?: Int.MAX_VALUE
+                    }
+                    stretchRepository.updateSortOrders(restored.map { it.id })
+                }
+                return@launch
+            }
+
+            // Toggle ON -> save original order and apply Smart Flow
+            smartFlowPrefs.edit().putString(prefKey, currentIds.joinToString(",")).apply()
+            _smartFlowActiveRoutineIds.update { it + routineId }
+            stretchRepository.updateSortOrders(sortedIds)
         }
     }
 
