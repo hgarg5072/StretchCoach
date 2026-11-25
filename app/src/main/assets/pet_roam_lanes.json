@@ -1,0 +1,3459 @@
+{
+  "version": 1,
+  "total_poses": 125,
+  "poses": {
+    "img_stretch_b1_cat_cow_flow": {
+      "person_x_min_pct": 14.9,
+      "person_x_max_pct": 73.6,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 75.1,
+          "max_x_pct": 75.1,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b1_child_pose_lat_reach": {
+      "person_x_min_pct": 21.4,
+      "person_x_max_pct": 85.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 3.4,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b1_chin_tuck_levator": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_cobra_gentle": {
+      "person_x_min_pct": 8.3,
+      "person_x_max_pct": 74.8,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 76.3,
+          "max_x_pct": 76.3,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b1_cross_body_shoulder": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_doorway_chest_opener": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 67.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_eagle_arms": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_interlaced_chest_expansion": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 56.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 57.9,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_neck_side": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_overhead_triceps_lat": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_puppy_pose_melting_heart": {
+      "person_x_min_pct": 12.1,
+      "person_x_max_pct": 77.6,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 79.1,
+          "max_x_pct": 79.1,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b1_reclining_spinal_twist": {
+      "person_x_min_pct": 7.7,
+      "person_x_max_pct": 79.8,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 81.3,
+          "max_x_pct": 81.3,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b1_restorative_child_pose": {
+      "person_x_min_pct": 10.5,
+      "person_x_max_pct": 72.6,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 74.1,
+          "max_x_pct": 74.1,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b1_scm_neck_turn": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_seated_spinal_twist": {
+      "person_x_min_pct": 24.2,
+      "person_x_max_pct": 73.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 6.2,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b1_single_knee_to_chest": {
+      "person_x_min_pct": 7.1,
+      "person_x_max_pct": 94.5,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": false,
+      "visible_portrait": false
+    },
+    "img_stretch_b1_sphinx_pose": {
+      "person_x_min_pct": 7.4,
+      "person_x_max_pct": 71.7,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 73.2,
+          "max_x_pct": 73.2,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b1_standing_side_arc": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_standing_side_reach_lat": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 56.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 57.9,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_supine_knees_to_chest": {
+      "person_x_min_pct": 34.2,
+      "person_x_max_pct": 84.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 16.2,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 3.2,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_thread_the_needle": {
+      "person_x_min_pct": 17.4,
+      "person_x_max_pct": 73.9,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b1_wrist_extensor": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.0,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.5,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_wrist_flexor": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.0,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.5,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b1_wrist_rotations": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b2_downward_dog_pedal": {
+      "person_x_min_pct": 17.7,
+      "person_x_max_pct": 93.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b2_figure_four_glute": {
+      "person_x_min_pct": 20.8,
+      "person_x_max_pct": 83.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b2_hip_flexor_lunge": {
+      "person_x_min_pct": 23.0,
+      "person_x_max_pct": 73.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 5.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b2_lizard_lunge_hip": {
+      "person_x_min_pct": 8.6,
+      "person_x_max_pct": 73.9,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 75.4,
+          "max_x_pct": 75.4,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b2_ninety_ninety_hip": {
+      "person_x_min_pct": 27.7,
+      "person_x_max_pct": 75.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 9.7,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b2_pigeon_pose": {
+      "person_x_min_pct": 31.8,
+      "person_x_max_pct": 95.1,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 13.8,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b2_plantar_fascia_toe_tuck": {
+      "person_x_min_pct": 38.3,
+      "person_x_max_pct": 66.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 20.3,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 67.9,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 9.4,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": true,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b2_pyramid_pose_stretch": {
+      "person_x_min_pct": 24.9,
+      "person_x_max_pct": 72.9,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 6.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b2_seated_butterfly": {
+      "person_x_min_pct": 29.9,
+      "person_x_max_pct": 70.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 11.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b2_seated_single_leg_fold": {
+      "person_x_min_pct": 22.4,
+      "person_x_max_pct": 82.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 4.4,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b2_side_lying_quad": {
+      "person_x_min_pct": 7.1,
+      "person_x_max_pct": 93.9,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": false,
+      "visible_portrait": false
+    },
+    "img_stretch_b2_single_leg_hamstring_heel": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 74.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b2_standing_hamstring_fold": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 62.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 63.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b2_standing_quad": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 56.1,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 57.6,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b2_wall_calf_gastrocnemius": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 84.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b2_wall_soleus_bent_knee": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 64.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 65.7,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b2_wide_legged_straddle_fold": {
+      "person_x_min_pct": 28.0,
+      "person_x_max_pct": 78.9,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 10.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_ananda_balasana_happy_baby": {
+      "person_x_min_pct": 22.1,
+      "person_x_max_pct": 66.7,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 4.1,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 76.7,
+          "max_x_pct": 76.7,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b3_anjaneyasana_low_lunge": {
+      "person_x_min_pct": 13.6,
+      "person_x_max_pct": 73.2,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 74.7,
+          "max_x_pct": 74.7,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_ardha_matsyendrasana": {
+      "person_x_min_pct": 22.7,
+      "person_x_max_pct": 71.1,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 4.7,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_baddha_konasana_butterfly": {
+      "person_x_min_pct": 29.6,
+      "person_x_max_pct": 71.1,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 11.6,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_bhujangasana_cobra": {
+      "person_x_min_pct": 9.2,
+      "person_x_max_pct": 78.2,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 79.7,
+          "max_x_pct": 79.7,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_bitilasana_cow": {
+      "person_x_min_pct": 13.0,
+      "person_x_max_pct": 72.6,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 74.1,
+          "max_x_pct": 74.1,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_dhanurasana_bow": {
+      "person_x_min_pct": 26.1,
+      "person_x_max_pct": 70.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 8.1,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_garudasana_eagle": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b3_goddess_pose": {
+      "person_x_min_pct": 33.3,
+      "person_x_max_pct": 68.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.3,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b3_gomukhasana_arms": {
+      "person_x_min_pct": 33.3,
+      "person_x_max_pct": 66.7,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.3,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b3_halasana_plow": {
+      "person_x_min_pct": 36.1,
+      "person_x_max_pct": 86.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 18.1,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 6.1,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b3_janu_sirsasana": {
+      "person_x_min_pct": 24.9,
+      "person_x_max_pct": 82.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 6.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_malasana_squat": {
+      "person_x_min_pct": 32.4,
+      "person_x_max_pct": 68.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 14.4,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b3_marjaryasana_cat_pose": {
+      "person_x_min_pct": 14.2,
+      "person_x_max_pct": 74.5,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 76.0,
+          "max_x_pct": 76.0,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_matsyasana_fish": {
+      "person_x_min_pct": 8.0,
+      "person_x_max_pct": 89.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": false,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_parsvottanasana_pyramid": {
+      "person_x_min_pct": 28.0,
+      "person_x_max_pct": 72.0,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 10.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_paschimottanasana_forward_fold": {
+      "person_x_min_pct": 26.4,
+      "person_x_max_pct": 82.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 8.4,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_prasarita_padottanasana": {
+      "person_x_min_pct": 27.4,
+      "person_x_max_pct": 74.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 9.4,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_salabhasana_locust": {
+      "person_x_min_pct": 8.0,
+      "person_x_max_pct": 70.8,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 72.3,
+          "max_x_pct": 72.3,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_setu_bandhasana_bridge": {
+      "person_x_min_pct": 8.0,
+      "person_x_max_pct": 82.6,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 84.1,
+          "max_x_pct": 84.1,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_shavasana_corpse": {
+      "person_x_min_pct": 8.0,
+      "person_x_max_pct": 86.1,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": false,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_supta_baddha_konasana": {
+      "person_x_min_pct": 10.5,
+      "person_x_max_pct": 84.5,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 86.0,
+          "max_x_pct": 86.0,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_supta_matsyendrasana": {
+      "person_x_min_pct": 8.0,
+      "person_x_max_pct": 79.5,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 81.0,
+          "max_x_pct": 81.0,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_supta_padangusthasana": {
+      "person_x_min_pct": 8.0,
+      "person_x_max_pct": 89.5,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": false,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_trikonasana_triangle": {
+      "person_x_min_pct": 25.5,
+      "person_x_max_pct": 73.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 7.5,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_urdhva_mukha_svanasana": {
+      "person_x_min_pct": 9.2,
+      "person_x_max_pct": 76.1,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 77.6,
+          "max_x_pct": 77.6,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_ustrasana_camel": {
+      "person_x_min_pct": 38.3,
+      "person_x_max_pct": 72.9,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 20.3,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 9.4,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": true,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b3_utkatasana_chair": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 57.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b3_uttanasana_forward_fold": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 60.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 62.3,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b3_viparita_karani": {
+      "person_x_min_pct": 24.9,
+      "person_x_max_pct": 79.5,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 6.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b3_virabhadrasana_one": {
+      "person_x_min_pct": 24.2,
+      "person_x_max_pct": 72.9,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 6.2,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_anulom_vilom_pranayama": {
+      "person_x_min_pct": 30.5,
+      "person_x_max_pct": 69.5,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 12.5,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_ardha_chandrasana_half_moon": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 69.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_ardha_padmasana_half_lotus": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 66.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 67.9,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_bakasana_crow": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 69.5,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_bharadvajasana_twist": {
+      "person_x_min_pct": 23.3,
+      "person_x_max_pct": 79.5,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 5.3,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_bhramari_pranayama": {
+      "person_x_min_pct": 24.2,
+      "person_x_max_pct": 71.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 6.2,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_chakrasana_wheel": {
+      "person_x_min_pct": 22.7,
+      "person_x_max_pct": 73.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 4.7,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_chaturanga_dandasana": {
+      "person_x_min_pct": 7.1,
+      "person_x_max_pct": 64.8,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 66.3,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 73.8,
+          "max_x_pct": 73.8,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_dandasana_staff": {
+      "person_x_min_pct": 12.4,
+      "person_x_max_pct": 67.0,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 68.5,
+          "max_x_pct": 68.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 77.1,
+          "max_x_pct": 77.1,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_hanumanasana_split": {
+      "person_x_min_pct": 8.0,
+      "person_x_max_pct": 96.7,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": false,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_kurmasana_tortoise": {
+      "person_x_min_pct": 13.3,
+      "person_x_max_pct": 88.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": false,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_makarasana_crocodile": {
+      "person_x_min_pct": 8.0,
+      "person_x_max_pct": 81.7,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 83.2,
+          "max_x_pct": 83.2,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_mandukasana_frog": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 79.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_mayurasana_peacock": {
+      "person_x_min_pct": 39.9,
+      "person_x_max_pct": 70.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 21.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 11.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": true,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_natarajasana_dancer": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 55.1,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 56.6,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_naukasana_boat": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 70.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_padahastasana_hand_to_foot": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 65.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 67.3,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_padmasana_lotus": {
+      "person_x_min_pct": 31.4,
+      "person_x_max_pct": 68.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 13.4,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_parighasana_gate": {
+      "person_x_min_pct": 38.3,
+      "person_x_max_pct": 79.5,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 20.3,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 9.4,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": true,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_parivrtta_trikonasana": {
+      "person_x_min_pct": 10.5,
+      "person_x_max_pct": 70.4,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 71.9,
+          "max_x_pct": 71.9,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_pavanamuktasana_wind_relieving": {
+      "person_x_min_pct": 17.7,
+      "person_x_max_pct": 69.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 81.3,
+          "max_x_pct": 81.3,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_phalakasana_plank": {
+      "person_x_min_pct": 14.2,
+      "person_x_max_pct": 56.7,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 58.2,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 61.6,
+          "max_x_pct": 61.6,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_purvottanasana_upward_plank": {
+      "person_x_min_pct": 30.2,
+      "person_x_max_pct": 82.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 12.2,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_sarvangasana_shoulderstand": {
+      "person_x_min_pct": 34.6,
+      "person_x_max_pct": 61.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 16.6,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 62.9,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 3.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_siddhasana_accomplished": {
+      "person_x_min_pct": 32.4,
+      "person_x_max_pct": 68.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 14.4,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_simhasana_lion": {
+      "person_x_min_pct": 27.1,
+      "person_x_max_pct": 80.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 9.1,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_sirsasana_headstand": {
+      "person_x_min_pct": 41.8,
+      "person_x_max_pct": 57.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 23.8,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 59.1,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 14.7,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": true,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_skandasana_side_lunge": {
+      "person_x_min_pct": 33.6,
+      "person_x_max_pct": 83.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.6,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.3,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_sukhasana_easy_pose": {
+      "person_x_min_pct": 33.0,
+      "person_x_max_pct": 67.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_supta_virasana_reclining_hero": {
+      "person_x_min_pct": 23.9,
+      "person_x_max_pct": 85.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 5.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_tolasana_scale": {
+      "person_x_min_pct": 31.8,
+      "person_x_max_pct": 69.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 13.8,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_ujjayi_pranayama": {
+      "person_x_min_pct": 29.2,
+      "person_x_max_pct": 70.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 11.2,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_upavistha_konasana_wide_angle": {
+      "person_x_min_pct": 16.4,
+      "person_x_max_pct": 74.5,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_utthita_parsvakonasana": {
+      "person_x_min_pct": 23.9,
+      "person_x_max_pct": 83.9,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 5.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b4_vajrasana_thunderbolt": {
+      "person_x_min_pct": 33.3,
+      "person_x_max_pct": 65.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.3,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 67.3,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_vasisthasana_side_plank": {
+      "person_x_min_pct": 40.5,
+      "person_x_max_pct": 77.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 22.5,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 12.7,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": true,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_virabhadrasana_three": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 64.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 66.3,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b4_virasana_hero": {
+      "person_x_min_pct": 33.3,
+      "person_x_max_pct": 65.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.3,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 66.9,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b5_ardha_pavanmuktasana_diagonal": {
+      "person_x_min_pct": 4.9,
+      "person_x_max_pct": 96.4,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": false,
+      "visible_portrait": false
+    },
+    "img_stretch_b5_parvatasana_seated_mountain": {
+      "person_x_min_pct": 32.4,
+      "person_x_max_pct": 67.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 14.4,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b5_scapula_stretch": {
+      "person_x_min_pct": 18.3,
+      "person_x_max_pct": 70.8,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_b5_spine_alignment": {
+      "person_x_min_pct": 31.8,
+      "person_x_max_pct": 68.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 13.8,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_b5_worlds_greatest_stretch": {
+      "person_x_min_pct": 9.9,
+      "person_x_max_pct": 69.2,
+      "landscape_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 70.7,
+          "max_x_pct": 70.7,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "right",
+          "min_x_pct": 80.4,
+          "max_x_pct": 80.4,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_bridge": {
+      "person_x_min_pct": 22.1,
+      "person_x_max_pct": 78.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 4.1,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_child": {
+      "person_x_min_pct": 21.8,
+      "person_x_max_pct": 72.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 3.8,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_downward_dog": {
+      "person_x_min_pct": 17.4,
+      "person_x_max_pct": 93.2,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 13.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_empty_studio_sanctuary": {
+      "person_x_min_pct": null,
+      "person_x_max_pct": null,
+      "landscape_lanes": [
+        {
+          "side": "full",
+          "min_x_pct": 3.0,
+          "max_x_pct": 76.0,
+          "bottom_pct": 2.5,
+          "width_pct": 18.0
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "full",
+          "min_x_pct": 3.0,
+          "max_x_pct": 70.0,
+          "bottom_pct": 2.5,
+          "width_pct": 24.0
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": true,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_lotus": {
+      "person_x_min_pct": 26.1,
+      "person_x_max_pct": 73.6,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 8.1,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_neck": {
+      "person_x_min_pct": 30.5,
+      "person_x_max_pct": 68.9,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 12.5,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_standing": {
+      "person_x_min_pct": 33.9,
+      "person_x_max_pct": 56.7,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 15.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 58.2,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 2.8,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_tree": {
+      "person_x_min_pct": 43.6,
+      "person_x_max_pct": 63.3,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 25.6,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        },
+        {
+          "side": "right",
+          "min_x_pct": 64.8,
+          "max_x_pct": 68.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 17.4,
+          "bottom_pct": 2.5,
+          "width_pct": 21.5
+        }
+      ],
+      "can_roam_landscape": true,
+      "can_roam_portrait": true,
+      "visible_landscape": true,
+      "visible_portrait": true
+    },
+    "img_stretch_warrior": {
+      "person_x_min_pct": 23.9,
+      "person_x_max_pct": 72.9,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 5.9,
+          "bottom_pct": 2.5,
+          "width_pct": 16.5
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    },
+    "img_stretch_surya_namaskar_flow": {
+      "person_x_min_pct": 24.0,
+      "person_x_max_pct": 76.0,
+      "landscape_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 6.0,
+          "bottom_pct": 2.5,
+          "width_pct": 16.0
+        }
+      ],
+      "portrait_lanes": [
+        {
+          "side": "left",
+          "min_x_pct": 1.5,
+          "max_x_pct": 1.5,
+          "bottom_pct": 2.0,
+          "width_pct": 17.5
+        }
+      ],
+      "can_roam_landscape": false,
+      "can_roam_portrait": false,
+      "visible_landscape": true,
+      "visible_portrait": false
+    }
+  }
+}

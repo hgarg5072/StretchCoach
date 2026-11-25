@@ -45,25 +45,36 @@ data class PoseOverlayAnchors(
 }
 
 data class RoamLane(
-    val minXPct: Float,     // Left edge of cat's anchor in % of videoWidth (0..100)
-    val maxXPct: Float,     // Right edge of cat's anchor in % of videoWidth (0..100)
+    val minXPct: Float,     // Left edge of pet's anchor in % of videoWidth (0..100)
+    val maxXPct: Float,     // Right edge of pet's anchor in % of videoWidth (0..100)
     val bottomPct: Float,   // Distance from bottom of video stage in %
-    val widthPct: Float     // Cat sprite width in % of videoWidth
+    val widthPct: Float,    // Pet sprite width in % of videoWidth
+    val side: String = "left"
 ) {
     val spanPct: Float get() = (maxXPct - minXPct).coerceAtLeast(0f)
 
     fun mirroredHorizontally(): RoamLane {
         val newMin = (100f - maxXPct - widthPct).coerceIn(1f, 95f)
         val newMax = (100f - minXPct - widthPct).coerceIn(newMin, 96f)
-        return copy(minXPct = newMin, maxXPct = newMax)
+        val flippedSide = when (side.lowercase()) {
+            "left" -> "right"
+            "right" -> "left"
+            else -> side
+        }
+        return copy(minXPct = newMin, maxXPct = newMax, side = flippedSide)
     }
 }
 
 data class PoseRoamConfig(
     val landscapeLanes: List<RoamLane>,
     val portraitLanes: List<RoamLane>,
-    val canRoam: Boolean = true
-)
+    val canRoamLandscape: Boolean = true,
+    val canRoamPortrait: Boolean = true,
+    val visibleLandscape: Boolean = true,
+    val visiblePortrait: Boolean = true
+) {
+    val canRoam: Boolean get() = canRoamLandscape || canRoamPortrait
+}
 
 data class PoseManifestEntry(
     val id: String,
@@ -113,12 +124,14 @@ object PoseManifestRepository {
 
     private const val TAG = "PoseManifestRepo"
     private const val MANIFEST_ASSET = "pose_manifest.json"
+    private const val ROAM_LANES_ASSET = "pet_roam_lanes.json"
     private const val TRANSITIONS_DIR = "stretch_transitions"
 
     @Volatile
     private var loaded = false
     private var posesByStem: Map<String, PoseManifestEntry> = emptyMap()
     private var transitionsByKey: Map<String, HubTransitionSpec> = emptyMap()
+    private var roamLanesByStem: Map<String, PoseRoamConfig> = emptyMap()
 
     fun ensureLoaded(context: Context) {
         if (loaded) return
@@ -127,12 +140,33 @@ object PoseManifestRepository {
             runCatching {
                 val jsonText = context.assets.open(MANIFEST_ASSET).bufferedReader().use { it.readText() }
                 parseManifestJson(jsonText)
+                runCatching {
+                    val roamText = context.assets.open(ROAM_LANES_ASSET).bufferedReader().use { it.readText() }
+                    parsePetRoamLanesJson(roamText)
+                }.onFailure { e ->
+                    Log.w(TAG, "Failed to load pet_roam_lanes.json: ${e.message}")
+                }
                 loaded = true
             }.onFailure { e ->
                 Log.w(TAG, "Failed to load pose_manifest.json: ${e.message}")
             }
         }
     }
+
+    internal fun parsePetRoamLanesJson(jsonText: String) {
+        val root = JSONObject(jsonText)
+        val posesObj = root.optJSONObject("poses") ?: return
+        val map = mutableMapOf<String, PoseRoamConfig>()
+        val keys = posesObj.keys()
+        while (keys.hasNext()) {
+            val stem = keys.next()
+            val item = posesObj.optJSONObject(stem) ?: continue
+            map[stem] = parseRoamConfig(item)
+        }
+        roamLanesByStem = map
+    }
+
+    fun totalLoadedRoamLanes(): Int = roamLanesByStem.size
 
     internal fun parseManifestJson(jsonText: String) {
         val root = JSONObject(jsonText)
@@ -230,8 +264,8 @@ object PoseManifestRepository {
     }
 
     private fun parseRoamConfig(obj: JSONObject): PoseRoamConfig {
-        fun parseLaneArray(key: String): List<RoamLane> {
-            val arr = obj.optJSONArray(key) ?: return emptyList()
+        fun parseLaneArray(vararg keys: String): List<RoamLane> {
+            val arr = keys.firstNotNullOfOrNull { obj.optJSONArray(it) } ?: return emptyList()
             val out = mutableListOf<RoamLane>()
             for (i in 0 until arr.length()) {
                 val item = arr.optJSONObject(i) ?: continue
@@ -239,26 +273,31 @@ object PoseManifestRepository {
                     RoamLane(
                         minXPct = item.optDouble("min_x_pct", 3.0).toFloat(),
                         maxXPct = item.optDouble("max_x_pct", 16.0).toFloat(),
-                        bottomPct = item.optDouble("bottom_pct", 3.0).toFloat(),
-                        widthPct = item.optDouble("width_pct", 18.0).toFloat()
+                        bottomPct = item.optDouble("bottom_pct", 2.5).toFloat(),
+                        widthPct = item.optDouble("width_pct", 18.0).toFloat(),
+                        side = item.optString("side", "left").trim()
                     )
                 )
             }
             return out
         }
-        val landscape = parseLaneArray("landscape")
-        val portrait = parseLaneArray("portrait")
+        val landscape = parseLaneArray("landscape_lanes", "landscape")
+        val portrait = parseLaneArray("portrait_lanes", "portrait")
+        val legacyCanRoam = obj.optBoolean("can_roam", true)
         return PoseRoamConfig(
             landscapeLanes = landscape,
-            portraitLanes = portrait.ifEmpty { landscape },
-            canRoam = obj.optBoolean("can_roam", true)
+            portraitLanes = portrait,
+            canRoamLandscape = obj.optBoolean("can_roam_landscape", legacyCanRoam),
+            canRoamPortrait = obj.optBoolean("can_roam_portrait", legacyCanRoam),
+            visibleLandscape = obj.optBoolean("visible_landscape", landscape.isNotEmpty()),
+            visiblePortrait = obj.optBoolean("visible_portrait", portrait.isNotEmpty())
         )
     }
 
     /**
-     * Resolves person-safe horizontal cat roaming corridors from [entry]'s `room_layout` and
-     * `posture_hub`, clamping against the active floor prop and mirroring asymmetric layouts
-     * when Layer 0 is horizontally flipped for a Left-side unilateral pose.
+     * Resolves exact pixel-measured person-safe roaming corridors from `pet_roam_lanes.json`
+     * (falling back to layout/hub rules), clamping right/full lanes against the active floor prop
+     * and mirroring horizontal coordinates when Layer 0 is flipped for Left-side unilateral poses.
      */
     fun resolveRoamConfig(
         entry: PoseManifestEntry?,
@@ -268,61 +307,58 @@ object PoseManifestRepository {
         propRightPct: Float = 2f,
         propWidthPct: Float = 14f
     ): PoseRoamConfig {
-        val base = when {
+        val exactFromJson = when {
+            isEmptySanctuary -> roamLanesByStem["img_stretch_empty_studio_sanctuary"]
+            entry != null -> roamLanesByStem[entry.id]
+            else -> null
+        }
+
+        val base = exactFromJson ?: when {
             isEmptySanctuary -> PoseRoamConfig(
-                landscapeLanes = listOf(RoamLane(minXPct = 6f, maxXPct = 72f, bottomPct = 4f, widthPct = 19f)),
-                portraitLanes = listOf(RoamLane(minXPct = 6f, maxXPct = 66f, bottomPct = 4f, widthPct = 25f)),
-                canRoam = true
+                landscapeLanes = listOf(RoamLane(minXPct = 3f, maxXPct = 76f, bottomPct = 2.5f, widthPct = 18f, side = "full")),
+                portraitLanes = listOf(RoamLane(minXPct = 3f, maxXPct = 70f, bottomPct = 2.5f, widthPct = 24f, side = "full")),
+                canRoamLandscape = true,
+                canRoamPortrait = true,
+                visibleLandscape = true,
+                visiblePortrait = true
             )
             entry?.customRoamConfig != null -> entry.customRoamConfig
             entry == null -> PoseRoamConfig(
-                landscapeLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 16f, bottomPct = 3f, widthPct = 18f)),
-                portraitLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 14f, bottomPct = 3f, widthPct = 24f)),
-                canRoam = true
+                landscapeLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 16f, bottomPct = 2.5f, widthPct = 18f)),
+                portraitLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 14f, bottomPct = 2.5f, widthPct = 24f))
             )
             entry.roomLayout.equals("wide_floor", ignoreCase = true) -> PoseRoamConfig(
                 landscapeLanes = listOf(RoamLane(minXPct = 2f, maxXPct = 9f, bottomPct = 2f, widthPct = 15f)),
                 portraitLanes = listOf(RoamLane(minXPct = 3f, maxXPct = 3f, bottomPct = 2f, widthPct = 20f)),
-                canRoam = false
+                canRoamLandscape = false,
+                canRoamPortrait = false
             )
             entry.roomLayout.equals("right_wall", ignoreCase = true) -> PoseRoamConfig(
-                landscapeLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 34f, bottomPct = 3f, widthPct = 18f)),
-                portraitLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 26f, bottomPct = 3f, widthPct = 24f)),
-                canRoam = true
+                landscapeLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 34f, bottomPct = 2.5f, widthPct = 18f)),
+                portraitLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 26f, bottomPct = 2.5f, widthPct = 24f))
             )
-            entry.roomLayout.equals("overhead_mat", ignoreCase = true) -> {
-                val dogX = (entry.overlayAnchors.dog.leftPct ?: 3f).coerceIn(2f, 12f)
-                PoseRoamConfig(
-                    landscapeLanes = listOf(RoamLane(minXPct = dogX, maxXPct = dogX, bottomPct = 2f, widthPct = 15f)),
-                    portraitLanes = listOf(RoamLane(minXPct = dogX, maxXPct = dogX, bottomPct = 2f, widthPct = 20f)),
-                    canRoam = false
-                )
-            }
             entry.postureHub == PostureHub.STANDING -> PoseRoamConfig(
-                landscapeLanes = listOf(RoamLane(minXPct = 3f, maxXPct = 26f, bottomPct = 2f, widthPct = 18f)),
-                portraitLanes = listOf(RoamLane(minXPct = 3f, maxXPct = 16f, bottomPct = 2f, widthPct = 24f)),
-                canRoam = true
+                landscapeLanes = listOf(RoamLane(minXPct = 3f, maxXPct = 26f, bottomPct = 2.5f, widthPct = 18f)),
+                portraitLanes = listOf(RoamLane(minXPct = 3f, maxXPct = 16f, bottomPct = 2.5f, widthPct = 24f))
             )
-            entry.postureHub == PostureHub.KNEELING || entry.postureHub == PostureHub.SEATED -> PoseRoamConfig(
-                landscapeLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 16f, bottomPct = 3f, widthPct = 18f)),
-                portraitLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 14f, bottomPct = 3f, widthPct = 24f)),
-                canRoam = true
-            )
-            else -> PoseRoamConfig( // SUPINE / PRONE on standard_center
-                landscapeLanes = listOf(RoamLane(minXPct = 3f, maxXPct = 12f, bottomPct = 3f, widthPct = 16f)),
-                portraitLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 4f, bottomPct = 3f, widthPct = 22f)),
-                canRoam = true
+            else -> PoseRoamConfig(
+                landscapeLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 16f, bottomPct = 2.5f, widthPct = 18f)),
+                portraitLanes = listOf(RoamLane(minXPct = 4f, maxXPct = 14f, bottomPct = 2.5f, widthPct = 24f))
             )
         }
 
         val shouldMirror = mirroredLeft && (
-            entry?.roomLayout.equals("right_wall", ignoreCase = true) ||
+            exactFromJson != null ||
+                entry?.roomLayout.equals("right_wall", ignoreCase = true) ||
                 entry?.customRoamConfig != null
         )
 
         fun adjustLane(lane: RoamLane): RoamLane {
             val oriented = if (shouldMirror) lane.mirroredHorizontally() else lane
             if (!hasActiveFloorProp) return oriented
+            val needsRightClamp = oriented.side.equals("right", ignoreCase = true) ||
+                oriented.side.equals("full", ignoreCase = true)
+            if (!needsRightClamp) return oriented
             val maxSafeX = (100f - propRightPct - propWidthPct - oriented.widthPct - 2f)
                 .coerceAtLeast(oriented.minXPct)
             return oriented.copy(maxXPct = oriented.maxXPct.coerceAtMost(maxSafeX))

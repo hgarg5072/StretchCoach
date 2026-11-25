@@ -392,7 +392,7 @@ private fun StudioSettingsTab(
     // 3. Companion Pet Selector Card (Off / Golden Puppy / Calico Cat)
     SettingsSectionCard(title = "Studio Companion") {
         Text(
-            text = "Golden Puppy rests beside your mat, or Calico Cat strolls safely across open studio floor",
+            text = "Both Golden Puppy and Calico Cat feature 12 animations and stroll safely across open studio floor",
             style = MaterialTheme.typography.bodySmall,
             color = MaterialTheme.colorScheme.onSurfaceVariant
         )

@@ -105,14 +105,33 @@ class PoseManifestUnitTest {
 
         val overlays = context.assets.list("stretch_overlays")?.toSet().orEmpty()
         val expected = listOf(
-            "overlay_dog_idle_rest_chromakey.mp4",
-            "overlay_dog_playful_stretch_chromakey.mp4",
+            // 12 Roaming Golden Retriever Puppy V2 (GREEN_KEY)
+            "overlay_dog_walk_roam_chromakey.mp4",
+            "overlay_dog_idle_sit_chromakey.mp4",
+            "overlay_dog_play_bow_chromakey.mp4",
+            "overlay_dog_belly_roll_chromakey.mp4",
+            "overlay_dog_sniff_explore_chromakey.mp4",
+            "overlay_dog_tail_chase_chromakey.mp4",
+            "overlay_dog_ear_scratch_chromakey.mp4",
+            "overlay_dog_head_tilt_chromakey.mp4",
+            "overlay_dog_paw_shake_chromakey.mp4",
+            "overlay_dog_yawn_stretch_chromakey.mp4",
             "overlay_dog_nap_curled_chromakey.mp4",
             "overlay_dog_celebrate_chromakey.mp4",
-            "overlay_dog_head_tilt_curious_chromakey.mp4",
-            "overlay_dog_yawn_sleepy_chromakey.mp4",
-            "overlay_dog_belly_roll_chromakey.mp4",
-            "overlay_dog_paw_wave_chromakey.mp4",
+            // 12 Roaming Calico Cat V2 (GREEN_KEY)
+            "overlay_cat_walk_roam_chromakey.mp4",
+            "overlay_cat_idle_loaf_chromakey.mp4",
+            "overlay_cat_paw_groom_chromakey.mp4",
+            "overlay_cat_big_stretch_chromakey.mp4",
+            "overlay_cat_curious_tilt_chromakey.mp4",
+            "overlay_cat_playful_bat_chromakey.mp4",
+            "overlay_cat_chase_butterfly_chromakey.mp4",
+            "overlay_cat_knead_paws_chromakey.mp4",
+            "overlay_cat_belly_flop_chromakey.mp4",
+            "overlay_cat_yawn_sleepy_chromakey.mp4",
+            "overlay_cat_nap_curled_chromakey.mp4",
+            "overlay_cat_celebrate_chromakey.mp4",
+            // 4 Studio Ghibli Atmosphere Props & Wind Chime
             "overlay_ghibli_tea_set_chromakey.mp4",
             "overlay_ghibli_candle_warmer_chromakey.mp4",
             "overlay_ghibli_washi_lantern_chromakey.mp4",
@@ -121,27 +140,12 @@ class PoseManifestUnitTest {
         expected.forEach { file ->
             assertTrue("Missing bundled overlay asset: $file", overlays.contains(file))
         }
-
-        // All 9 Calico Cat roaming & idle animations must also be bundled
-        val expectedCatOverlays = listOf(
-            "overlay_cat_walk_roam_chromakey.mp4",
-            "overlay_cat_idle_loaf_chromakey.mp4",
-            "overlay_cat_paw_groom_chromakey.mp4",
-            "overlay_cat_big_stretch_chromakey.mp4",
-            "overlay_cat_curious_tilt_chromakey.mp4",
-            "overlay_cat_playful_bat_chromakey.mp4",
-            "overlay_cat_yawn_sleepy_chromakey.mp4",
-            "overlay_cat_nap_curled_chromakey.mp4",
-            "overlay_cat_celebrate_chromakey.mp4"
-        )
-        expectedCatOverlays.forEach { file ->
-            assertTrue("Missing bundled calico cat overlay asset: $file", overlays.contains(file))
-        }
     }
 
     @Test
-    fun suryaNamaskarFlowAndPigeonDualOrientationAnchorsAndCatRoamLanesWork() {
+    fun suryaNamaskarFlowAndPigeonDualOrientationAnchorsAndPetRoamLanesWork() {
         PoseManifestRepository.ensureLoaded(context)
+        assertEquals(125, PoseManifestRepository.totalLoadedRoamLanes())
 
         // Surya Namaskar flow routine & manifest metadata
         val suryaRoutine = AppDatabase.createDefaultStretchesForRoutine(8L)
@@ -153,15 +157,15 @@ class PoseManifestUnitTest {
         assertTrue(suryaMeta.anchorsFor(isPortrait = false).dog.visible)
         assertFalse(suryaMeta.anchorsFor(isPortrait = true).dog.visible)
 
-        // Fixed Pigeon pose dual-orientation anchors & wide_floor stationary roam config
-        val pigeonMeta = PoseManifestRepository.getPoseMetaByStem(context, "img_stretch_b2_pigeon_pose")
-        assertTrue(pigeonMeta != null)
-        assertTrue(pigeonMeta!!.anchorsFor(isPortrait = false).floorProp.visible)
-        assertFalse(pigeonMeta.anchorsFor(isPortrait = true).floorProp.visible)
-        val pigeonRoam = PoseManifestRepository.resolveRoamConfig(pigeonMeta)
-        assertFalse(pigeonRoam.canRoam)
+        // Exact pixel-measured roam lanes for Tree Pose (landscape & portrait)
+        val treeMeta = PoseManifestRepository.getPoseMetaByStem(context, "img_stretch_tree")
+        assertTrue(treeMeta != null)
+        val treeRoam = PoseManifestRepository.resolveRoamConfig(treeMeta)
+        assertTrue(treeRoam.visibleLandscape)
+        assertTrue(treeRoam.canRoamLandscape)
+        assertTrue(treeRoam.landscapeLanes.first().spanPct >= 20f)
 
-        // Empty Sanctuary allows full-room roaming and respects floor-prop clamping
+        // Empty Sanctuary uses exact pet_roam_lanes.json full-room corridor & clamps for floor prop
         val sanctuaryRoam = PoseManifestRepository.resolveRoamConfig(
             entry = null,
             isEmptySanctuary = true,
@@ -169,7 +173,7 @@ class PoseManifestUnitTest {
             propRightPct = 2f,
             propWidthPct = 14f
         )
-        assertTrue(sanctuaryRoam.canRoam)
-        assertTrue(sanctuaryRoam.landscapeLanes.first().maxXPct <= 63f)
+        assertTrue(sanctuaryRoam.canRoamLandscape)
+        assertTrue(sanctuaryRoam.landscapeLanes.first().maxXPct <= 64f)
     }
 }
