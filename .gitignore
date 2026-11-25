@@ -17,4 +17,7 @@ app/build
 local.properties
 .env
 debug.keystore
+keystore/
+*.jks
+keystore.properties
 *-debug.log

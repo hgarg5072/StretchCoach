@@ -1,4 +1,5 @@
 import com.google.gms.googleservices.GoogleServicesPlugin.MissingGoogleServicesStrategy
+import java.util.Properties
 
 plugins {
   alias(libs.plugins.android.application)
@@ -18,7 +19,7 @@ android {
     minSdk = 26
     targetSdk = 36
     versionCode = 1
-    versionName = "1.0"
+    versionName = "1.0.0"
 
     testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
@@ -29,12 +30,20 @@ android {
   }
 
   signingConfigs {
+    val keystorePropsFile = rootProject.file("keystore.properties")
+    val keystoreProps = Properties().apply {
+      if (keystorePropsFile.exists()) {
+        keystorePropsFile.inputStream().use { load(it) }
+      }
+    }
     create("release") {
-      val keystorePath = System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks"
+      val keystorePath = System.getenv("KEYSTORE_PATH")
+        ?: keystoreProps.getProperty("storeFile")?.let { "${rootDir}/$it" }
+        ?: "${rootDir}/my-upload-key.jks"
       storeFile = file(keystorePath)
-      storePassword = System.getenv("STORE_PASSWORD")
-      keyAlias = "upload"
-      keyPassword = System.getenv("KEY_PASSWORD")
+      storePassword = System.getenv("STORE_PASSWORD") ?: keystoreProps.getProperty("storePassword")
+      keyAlias = System.getenv("KEY_ALIAS") ?: keystoreProps.getProperty("keyAlias") ?: "upload"
+      keyPassword = System.getenv("KEY_PASSWORD") ?: keystoreProps.getProperty("keyPassword")
     }
     create("debugConfig") {
       storeFile = file("${rootDir}/debug.keystore")
@@ -50,9 +59,11 @@ android {
       isMinifyEnabled = true
       isShrinkResources = true
       proguardFiles(getDefaultProguardFile("proguard-android-optimize.txt"), "proguard-rules.pro")
-      val releaseKeystore = file(System.getenv("KEYSTORE_PATH") ?: "${rootDir}/my-upload-key.jks")
+      val releaseSigning = signingConfigs.getByName("release")
+      val hasReleaseKeystore = releaseSigning.storeFile?.exists() == true &&
+        !releaseSigning.storePassword.isNullOrBlank()
       signingConfig = when {
-        releaseKeystore.exists() -> signingConfigs.getByName("release")
+        hasReleaseKeystore -> releaseSigning
         file("${rootDir}/debug.keystore").exists() -> signingConfigs.getByName("debugConfig")
         else -> signingConfigs.getByName("debug")
       }

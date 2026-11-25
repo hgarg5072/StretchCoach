@@ -61,15 +61,25 @@ fun MainScreen(
     val syncState by viewModel.syncState.collectAsStateWithLifecycle()
     val authLoading by viewModel.authLoading.collectAsStateWithLifecycle()
     val authError by viewModel.authError.collectAsStateWithLifecycle()
+    val appUpdateState by viewModel.appUpdateState.collectAsStateWithLifecycle()
     val context = androidx.compose.ui.platform.LocalContext.current
     val activity = context as? android.app.Activity
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
+    var canInstallPackages by remember {
+        mutableStateOf(viewModel.appUpdateManager.canRequestPackageInstalls())
+    }
 
-    // Re-scan TTS voices when returning from Android TTS Settings
+    // Silent background update check on launch (throttled to once every 12 hours)
+    androidx.compose.runtime.LaunchedEffect(Unit) {
+        viewModel.checkForAppUpdates(manual = false)
+    }
+
+    // Re-scan TTS voices & install-permission state when returning from Android Settings
     androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
         val observer = androidx.lifecycle.LifecycleEventObserver { _, event ->
             if (event == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
                 viewModel.refreshVoiceEngine()
+                canInstallPackages = viewModel.appUpdateManager.canRequestPackageInstalls()
             }
         }
         lifecycleOwner.lifecycle.addObserver(observer)
@@ -258,12 +268,28 @@ fun MainScreen(
                     userSettings.asanaPronunciationStyle
                 )
             },
+            appUpdateState = appUpdateState,
+            onCheckForUpdates = { viewModel.checkForAppUpdates(manual = true) },
             onDismiss = {
                 viewModel.clearAuthError()
                 showSettingsDialog = false
             }
         )
     }
+
+    // 1-Tap SHA-256 Verified In-App Update Dialog
+    com.example.ui.components.AppUpdateDialog(
+        updateState = appUpdateState,
+        canInstallPackages = canInstallPackages,
+        onStartDownload = { info -> viewModel.downloadAppUpdate(info) },
+        onInstallApk = { apkFile -> viewModel.installDownloadedUpdate(apkFile) },
+        onOpenInstallPermissionSettings = {
+            runCatching {
+                context.startActivity(viewModel.appUpdateManager.createUnknownSourcesSettingsIntent())
+            }
+        },
+        onDismiss = { viewModel.dismissAppUpdateDialog() }
+    )
 
     if (showOnlineAudioDialog) {
         com.example.ui.components.OnlineAudioPickerDialog(

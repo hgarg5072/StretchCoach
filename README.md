@@ -2,8 +2,9 @@
 
 An offline-first Android yoga & mobility coaching app built with **Kotlin**, **Jetpack Compose**, **Room**, **DataStore**, **Google TTS**, and **OpenGL ES 2.0**, featuring a hand-painted Studio Ghibli-inspired sunlit yoga sanctuary.
 
-- **Latest Release APK (`45.0 MB`):** [Download StretchCoach.apk on Google Drive](https://drive.google.com/file/d/1WrBxwvdn5Y5nSB6_kRWsR5ddq8TgpP4u/view?usp=drivesdk)
-- **Shared Studio Assets & Releases Folder:** [Google Drive Folder](https://drive.google.com/drive/folders/1K8UG0yUtaxtDtEzZj4VGnCrVHo4nXhe-)
+- **Official Download Page (GitHub Pages + 1-Tap In-App Updates):** [https://hgarg5072.github.io/StretchCoach-Releases/](https://hgarg5072.github.io/StretchCoach-Releases/)
+- **Direct Verified APK (`v1.0.0`, `47 MB`):** [GitHub Releases](https://github.com/hgarg5072/StretchCoach-Releases/releases/latest)
+- **Shared Studio Assets & Reference Folder:** [Google Drive Folder](https://drive.google.com/drive/folders/1K8UG0yUtaxtDtEzZj4VGnCrVHo4nXhe-)
 
 ---
 
@@ -69,6 +70,9 @@ app/src/main/
 
 # Install Release APK onto a connected Android device
 adb install -r app/build/outputs/apk/release/app-release.apk
+
+# Publish a new SHA-256 verified release to GitHub Releases & GitHub Pages (1-tap in-app update for all users)
+./scripts/publish_release.sh 1.1.0 2 "Release notes here"
 ```
 
 Optional: copy `.env.example` to `.env` if configuring Firebase/Google Sign-In cloud backup locally.

@@ -114,6 +114,8 @@ fun SettingsDialog(
     onToggleSunbeams: (Boolean) -> Unit = {},
     onToggleHubTransitions: (Boolean) -> Unit = {},
     onTestVoice: () -> Unit = {},
+    appUpdateState: com.example.update.AppUpdateState = com.example.update.AppUpdateState.Idle,
+    onCheckForUpdates: () -> Unit = {},
     onDismiss: () -> Unit
 ) {
     val context = LocalContext.current
@@ -275,7 +277,9 @@ fun SettingsDialog(
 
                         else -> BackupSettingsTab(
                             backupStatus = backupStatus,
-                            onOpenBackupSafeguard = onOpenBackupSafeguard
+                            onOpenBackupSafeguard = onOpenBackupSafeguard,
+                            appUpdateState = appUpdateState,
+                            onCheckForUpdates = onCheckForUpdates
                         )
                     }
                 }
@@ -779,7 +783,9 @@ private fun SoundAndVoiceSettingsTab(
 @Composable
 private fun BackupSettingsTab(
     backupStatus: BackupStatus,
-    onOpenBackupSafeguard: () -> Unit
+    onOpenBackupSafeguard: () -> Unit,
+    appUpdateState: com.example.update.AppUpdateState,
+    onCheckForUpdates: () -> Unit
 ) {
     SettingsSectionCard(
         title = "Your Custom Routines",
@@ -807,6 +813,38 @@ private fun BackupSettingsTab(
             )
             Spacer(modifier = Modifier.size(6.dp))
             Text("Backup, Export & Restore", style = MaterialTheme.typography.labelLarge)
+        }
+    }
+
+    val isChecking = appUpdateState is com.example.update.AppUpdateState.Checking
+    val statusNote = when (appUpdateState) {
+        is com.example.update.AppUpdateState.Checking -> "Checking for updates..."
+        is com.example.update.AppUpdateState.UpToDate -> "You're on the latest version (v${appUpdateState.currentVersion})."
+        is com.example.update.AppUpdateState.Available -> "Update v${appUpdateState.info.versionName} is ready to install."
+        else -> "Verified SHA-256 updates delivered directly in-app."
+    }
+
+    SettingsSectionCard(
+        title = "App Updates",
+        subtitle = "Installed version: v${com.example.BuildConfig.VERSION_NAME}"
+    ) {
+        Text(
+            text = statusNote,
+            style = MaterialTheme.typography.bodySmall,
+            color = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+        OutlinedButton(
+            onClick = onCheckForUpdates,
+            enabled = !isChecking,
+            modifier = Modifier
+                .fillMaxWidth()
+                .testTag("check_updates_button"),
+            shape = RoundedCornerShape(12.dp)
+        ) {
+            Text(
+                text = if (isChecking) "Checking..." else "Check for Updates",
+                style = MaterialTheme.typography.labelLarge
+            )
         }
     }
 }

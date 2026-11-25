@@ -96,6 +96,13 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
     private val _backupStatus = MutableStateFlow(com.example.data.BackupStatus())
     val backupStatus: StateFlow<com.example.data.BackupStatus> = _backupStatus.asStateFlow()
 
+    // --- 1-Tap SHA-256 Verified In-App Updater (GitHub Pages + GitHub Releases) ---
+    val appUpdateManager = com.example.update.AppUpdateManager(application)
+    private val _appUpdateState = MutableStateFlow<com.example.update.AppUpdateState>(
+        com.example.update.AppUpdateState.Idle
+    )
+    val appUpdateState: StateFlow<com.example.update.AppUpdateState> = _appUpdateState.asStateFlow()
+
     // --- Free Online & Local Relaxation Audio Library ---
     private val _downloadedTracks = MutableStateFlow<List<com.example.audio.DownloadedAudioTrack>>(emptyList())
     val downloadedTracks: StateFlow<List<com.example.audio.DownloadedAudioTrack>> = _downloadedTracks.asStateFlow()
@@ -1139,6 +1146,91 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
     fun setFlowPlaybackSpeed(speed: Float) {
         val clamped = speed.coerceIn(0.5f, 1.5f)
         _playerUiState.update { it.copy(flowPlaybackSpeed = clamped) }
+    }
+
+    // --- 1-Tap In-App Update Flow ---
+
+    fun checkForAppUpdates(manual: Boolean = false) {
+        if (!manual && (!appUpdateManager.shouldRunAutoCheck() || _playerUiState.value.isRunning)) {
+            return
+        }
+        val current = _appUpdateState.value
+        if (current is com.example.update.AppUpdateState.Checking ||
+            current is com.example.update.AppUpdateState.Downloading ||
+            current is com.example.update.AppUpdateState.Verifying
+        ) {
+            return
+        }
+        viewModelScope.launch {
+            if (manual) {
+                _appUpdateState.value = com.example.update.AppUpdateState.Checking
+            }
+            val result = appUpdateManager.checkForUpdate()
+            appUpdateManager.markAutoCheckDone()
+            result.onSuccess { updateInfo ->
+                if (updateInfo != null) {
+                    _appUpdateState.value = com.example.update.AppUpdateState.Available(updateInfo)
+                } else if (manual) {
+                    _appUpdateState.value = com.example.update.AppUpdateState.UpToDate(
+                        com.example.BuildConfig.VERSION_NAME
+                    )
+                }
+            }.onFailure { err ->
+                if (manual) {
+                    _appUpdateState.value = com.example.update.AppUpdateState.Error(
+                        err.message ?: "Could not check for updates."
+                    )
+                }
+            }
+        }
+    }
+
+    fun downloadAppUpdate(info: com.example.update.UpdateInfo) {
+        viewModelScope.launch {
+            _appUpdateState.value = com.example.update.AppUpdateState.Downloading(
+                info = info,
+                progress = 0f,
+                downloadedBytes = 0L,
+                totalBytes = info.sizeBytes
+            )
+            val result = appUpdateManager.downloadAndVerifyApk(
+                info = info,
+                onProgress = { progress, downloaded, total ->
+                    _appUpdateState.value = com.example.update.AppUpdateState.Downloading(
+                        info = info,
+                        progress = progress,
+                        downloadedBytes = downloaded,
+                        totalBytes = total
+                    )
+                },
+                onVerifying = {
+                    _appUpdateState.value = com.example.update.AppUpdateState.Verifying(info)
+                }
+            )
+            result.onSuccess { apkFile ->
+                _appUpdateState.value = com.example.update.AppUpdateState.ReadyToInstall(info, apkFile)
+                if (appUpdateManager.canRequestPackageInstalls()) {
+                    appUpdateManager.launchApkInstaller(apkFile)
+                }
+            }.onFailure { err ->
+                _appUpdateState.value = com.example.update.AppUpdateState.Error(
+                    message = err.message ?: "Update download failed.",
+                    info = info
+                )
+            }
+        }
+    }
+
+    fun installDownloadedUpdate(apkFile: java.io.File) {
+        if (!appUpdateManager.launchApkInstaller(apkFile)) {
+            _appUpdateState.value = com.example.update.AppUpdateState.Error(
+                "Could not launch Android installer. Please allow installs from Stretch Coach in Settings."
+            )
+        }
+    }
+
+    fun dismissAppUpdateDialog() {
+        _appUpdateState.value = com.example.update.AppUpdateState.Idle
     }
 
     private fun runHoldTimerResume(index: Int, routine: List<StretchEntity>, remainingSeconds: Int, totalHold: Int) {
