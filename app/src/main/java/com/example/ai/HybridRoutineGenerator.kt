@@ -1,6 +1,7 @@
 package com.example.ai
 
 import android.content.Context
+import android.os.Build
 import android.util.Log
 import com.example.data.LibraryStretch
 import com.example.data.PoseManifestRepository
@@ -49,7 +50,8 @@ data class OnDeviceCapability(
     val isAvailable: Boolean = false,
     val isDownloadable: Boolean = false,
     val modelName: String? = null,
-    val statusLabel: String = "Hybrid AI + Offline Smart Flow"
+    val hardwareAccelerator: String = HybridRoutineGenerator.detectDeviceAcceleratorName(),
+    val statusLabel: String = "Using ${HybridRoutineGenerator.detectDeviceAcceleratorName()} • Hybrid AI"
 )
 
 data class GeneratedRoutinePlan(
@@ -57,7 +59,8 @@ data class GeneratedRoutinePlan(
     val description: String,
     val stretches: List<StretchEntity>,
     val inferenceTier: InferenceTier,
-    val rationale: String = ""
+    val rationale: String = "",
+    val hardwareAccelerator: String = HybridRoutineGenerator.detectDeviceAcceleratorName()
 ) {
     val totalDurationSeconds: Int
         get() = stretches.sumOf { it.preparationSeconds + it.holdSeconds }
@@ -93,18 +96,103 @@ object HybridRoutineGenerator {
     )
 
     /**
+     * Detects the actual Android device NPU / TPU / SoC hardware name (e.g. "Google Tensor G4 TPU",
+     * "Snapdragon 8 Gen 3 Hexagon NPU", "Samsung Exynos 9810 NPU", "Dimensity 9300 APU").
+     */
+    fun detectDeviceAcceleratorName(): String {
+        val socModel = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            runCatching { Build.SOC_MODEL }.getOrNull().orEmpty().trim()
+        } else ""
+        val socMfg = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            runCatching { Build.SOC_MANUFACTURER }.getOrNull().orEmpty().trim()
+        } else ""
+        val hw = runCatching { Build.HARDWARE }.getOrNull().orEmpty().trim()
+        val board = runCatching { Build.BOARD }.getOrNull().orEmpty().trim()
+        val combined = "$socMfg $socModel $hw $board".lowercase()
+
+        // Google Tensor TPU
+        if ("tensor" in combined || "gs101" in combined || "gs201" in combined ||
+            "zuma" in combined || "laguna" in combined || "cloudripper" in combined
+        ) {
+            val gen = when {
+                "g5" in combined || "laguna" in combined -> "G5"
+                "g4" in combined || "zumapro" in combined -> "G4"
+                "g3" in combined || "zuma" in combined -> "G3"
+                "g2" in combined || "gs201" in combined || "cloudripper" in combined -> "G2"
+                "gs101" in combined -> "G1"
+                else -> ""
+            }
+            return listOf("Google Tensor", gen, "TPU").filter { it.isNotBlank() }.joinToString(" ")
+        }
+
+        // Qualcomm Snapdragon Hexagon NPU
+        if ("qualcomm" in combined || "qcom" in combined || "snapdragon" in combined ||
+            socModel.startsWith("SM", ignoreCase = true) || socModel.startsWith("SDM", ignoreCase = true)
+        ) {
+            val friendly = when {
+                "sm8750" in combined -> "Snapdragon 8 Elite"
+                "sm8650" in combined -> "Snapdragon 8 Gen 3"
+                "sm8550" in combined -> "Snapdragon 8 Gen 2"
+                "sm8475" in combined -> "Snapdragon 8+ Gen 1"
+                "sm8450" in combined -> "Snapdragon 8 Gen 1"
+                "sm8350" in combined -> "Snapdragon 888"
+                "sm8250" in combined -> "Snapdragon 865"
+                "sm7675" in combined -> "Snapdragon 7+ Gen 3"
+                "sm7550" in combined -> "Snapdragon 7 Gen 3"
+                socModel.isNotBlank() -> "Qualcomm $socModel"
+                else -> "Snapdragon"
+            }
+            return "$friendly Hexagon NPU"
+        }
+
+        // Samsung Exynos NPU
+        if ("exynos" in combined || "s5e" in combined || "universal98" in combined || "samsung" in socMfg.lowercase()) {
+            val friendly = when {
+                "s5e9955" in combined || "2500" in combined -> "Exynos 2500"
+                "s5e9945" in combined || "2400" in combined -> "Exynos 2400"
+                "s5e9925" in combined || "2200" in combined -> "Exynos 2200"
+                "exynos2100" in combined || "2100" in combined -> "Exynos 2100"
+                "9810" in combined -> "Exynos 9810"
+                "9820" in combined || "9825" in combined -> "Exynos 9820"
+                socModel.isNotBlank() -> socModel
+                hw.isNotBlank() -> hw.replaceFirstChar { it.uppercase() }
+                else -> "Exynos"
+            }
+            return "Samsung $friendly NPU"
+        }
+
+        // MediaTek Dimensity APU
+        if ("mediatek" in combined || "dimensity" in combined || socModel.startsWith("MT", ignoreCase = true)) {
+            val friendly = when {
+                "mt6991" in combined -> "Dimensity 9400"
+                "mt6989" in combined -> "Dimensity 9300"
+                "mt6985" in combined -> "Dimensity 9200"
+                "mt6983" in combined -> "Dimensity 9000"
+                socModel.isNotBlank() -> "MediaTek $socModel"
+                else -> "MediaTek Dimensity"
+            }
+            return "$friendly APU"
+        }
+
+        val fallbackChip = socModel.ifBlank { hw.ifBlank { Build.MODEL.orEmpty() } }.ifBlank { "Device" }
+        return "$fallbackChip On-Device NPU/CPU"
+    }
+
+    /**
      * Checks whether the current device supports AICore / Gemini Nano on its NPU/TPU.
      * Never throws — returns a graceful fallback status on unsupported devices or unit tests.
      */
     @OptIn(PublicPreviewAPI::class)
     suspend fun checkOnDeviceCapability(): OnDeviceCapability = withContext(Dispatchers.IO) {
+        val hwName = detectDeviceAcceleratorName()
         try {
             val model = createHybridModel()
             val extension = model.onDeviceExtension
             if (extension == null) {
                 return@withContext OnDeviceCapability(
                     isAvailable = false,
-                    statusLabel = "Cloud Gemini + Offline Smart Flow"
+                    hardwareAccelerator = hwName,
+                    statusLabel = "Using $hwName • Hybrid AI"
                 )
             }
             val status = extension.checkStatus()
@@ -113,24 +201,28 @@ object HybridRoutineGenerator {
                 OnDeviceModelStatus.AVAILABLE -> OnDeviceCapability(
                     isAvailable = true,
                     modelName = modelName,
-                    statusLabel = "On-Device NPU Ready (${modelName ?: "Gemini Nano"})"
+                    hardwareAccelerator = hwName,
+                    statusLabel = "Using $hwName (${modelName ?: "Gemini Nano"})"
                 )
                 OnDeviceModelStatus.DOWNLOADABLE, OnDeviceModelStatus.DOWNLOADING -> OnDeviceCapability(
                     isAvailable = false,
                     isDownloadable = true,
                     modelName = modelName,
-                    statusLabel = "On-Device NPU Preparing • Hybrid Ready"
+                    hardwareAccelerator = hwName,
+                    statusLabel = "$hwName • Preparing Gemini Nano"
                 )
                 else -> OnDeviceCapability(
                     isAvailable = false,
-                    statusLabel = "Hybrid AI + Offline Smart Flow"
+                    hardwareAccelerator = hwName,
+                    statusLabel = "Using $hwName • Hybrid AI"
                 )
             }
         } catch (t: Throwable) {
             Log.d(TAG, "On-device AI check fell back cleanly: ${t.message}")
             OnDeviceCapability(
                 isAvailable = false,
-                statusLabel = "Hybrid AI + Offline Smart Flow"
+                hardwareAccelerator = hwName,
+                statusLabel = "Using $hwName • Hybrid AI"
             )
         }
     }

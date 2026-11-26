@@ -66,9 +66,27 @@ class StretchRepository(
                 }
             }
         } else {
+            // Migrate existing installs: remove demo "Quick Verify (30)" and rename "Subah Subah" -> "Nisha's Custom Stretch"
+            val refreshedRoutines = existingRoutines.toMutableList()
+            refreshedRoutines
+                .filter { !it.isCustom && it.name.equals("Quick Verify (30)", ignoreCase = true) }
+                .forEach { demoRoutine ->
+                    stretchDao.deleteAllStretchesForRoutine(demoRoutine.id)
+                    stretchDao.deleteRoutine(demoRoutine)
+                    refreshedRoutines.remove(demoRoutine)
+                }
+            refreshedRoutines
+                .filter { it.name.equals("Subah Subah", ignoreCase = true) }
+                .forEach { oldSubah ->
+                    val renamed = oldSubah.copy(name = "Nisha's Custom Stretch")
+                    stretchDao.updateRoutine(renamed)
+                    val idx = refreshedRoutines.indexOf(oldSubah)
+                    if (idx >= 0) refreshedRoutines[idx] = renamed
+                }
+
             // Check if any default routine is missing or missing stretches
             AppDatabase.DEFAULT_ROUTINES.forEach { defaultRoutine ->
-                val existing = existingRoutines.find { it.name.equals(defaultRoutine.name, ignoreCase = true) }
+                val existing = refreshedRoutines.find { it.name.equals(defaultRoutine.name, ignoreCase = true) }
                 if (existing == null) {
                     val insertedId = stretchDao.insertRoutine(defaultRoutine)
                     val stretches = AppDatabase.createDefaultStretchesForRoutine(defaultRoutine.id)

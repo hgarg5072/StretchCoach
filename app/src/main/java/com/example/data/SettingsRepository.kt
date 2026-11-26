@@ -78,7 +78,7 @@ data class UserSettings(
     val voiceMode: VoiceMode = VoiceMode.BALANCED,
     val asanaPronunciationStyle: AsanaPronunciationStyle = AsanaPronunciationStyle.BILINGUAL,
     val spokenCuesEnabled: Boolean = true,
-    val coachingCuesEnabled: Boolean = true,
+    val coachingCuesEnabled: Boolean = false,
     val countdownAnnouncements: Boolean = true,
     val halfwayCue: Boolean = true,
     val nextStretchCue: Boolean = true,
@@ -87,7 +87,7 @@ data class UserSettings(
     val transitionChimesEnabled: Boolean = true,
     val customTrackPath: String = "",
     val customTrackTitle: String = "",
-    val studioLightingMode: StudioLightingMode = StudioLightingMode.AUTO,
+    val studioLightingMode: StudioLightingMode = StudioLightingMode.DAY,
     val studioAromaProp: StudioAromaProp = StudioAromaProp.AUTO_GHIBLI,
     val companionPet: CompanionPet = CompanionPet.COZY_MAT_PUPPY,
     val swayingLeavesEnabled: Boolean = true,
@@ -134,7 +134,7 @@ class SettingsRepository(private val context: Context) {
         val asanaStyle = runCatching { AsanaPronunciationStyle.valueOf(asanaStyleString) }.getOrDefault(AsanaPronunciationStyle.BILINGUAL)
 
         val spokenCuesEnabled = preferences[PreferencesKeys.SPOKEN_CUES_ENABLED] ?: true
-        val coachingCuesEnabled = preferences[PreferencesKeys.COACHING_CUES_ENABLED] ?: true
+        val coachingCuesEnabled = preferences[PreferencesKeys.COACHING_CUES_ENABLED] ?: false
         val countdownAnnouncements = preferences[PreferencesKeys.COUNTDOWN_ANNOUNCEMENTS] ?: true
         val halfwayCue = preferences[PreferencesKeys.HALFWAY_CUE] ?: true
         val nextStretchCue = preferences[PreferencesKeys.NEXT_STRETCH_CUE] ?: true
@@ -146,9 +146,9 @@ class SettingsRepository(private val context: Context) {
         val transitionChimesEnabled = preferences[PreferencesKeys.TRANSITION_CHIMES_ENABLED] ?: true
         val customTrackPath = preferences[PreferencesKeys.CUSTOM_TRACK_PATH] ?: ""
         val customTrackTitle = preferences[PreferencesKeys.CUSTOM_TRACK_TITLE] ?: ""
-        val lightingString = preferences[PreferencesKeys.STUDIO_LIGHTING_MODE] ?: StudioLightingMode.AUTO.name
+        val lightingString = preferences[PreferencesKeys.STUDIO_LIGHTING_MODE] ?: StudioLightingMode.DAY.name
         val studioLightingMode = runCatching { StudioLightingMode.valueOf(lightingString) }
-            .getOrDefault(StudioLightingMode.AUTO)
+            .getOrDefault(StudioLightingMode.DAY)
         val aromaString = preferences[PreferencesKeys.STUDIO_AROMA_PROP] ?: StudioAromaProp.AUTO_GHIBLI.name
         val studioAromaProp = runCatching { StudioAromaProp.valueOf(aromaString) }
             .getOrDefault(StudioAromaProp.AUTO_GHIBLI)

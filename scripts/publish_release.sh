@@ -65,10 +65,13 @@ latest = {
 
 idx = repo_dir / "index.html"
 if idx.exists():
+    import html as html_lib
     html = idx.read_text()
-    html = re.sub(r'<!--VERSION-->.*?<!--/VERSION-->', f'<!--VERSION-->v$VERSION_NAME<!--/VERSION-->', html)
-    html = re.sub(r'<!--SIZE-->.*?<!--/SIZE-->', f'<!--SIZE-->$SIZE_MB MB<!--/SIZE-->', html)
-    html = re.sub(r'<!--SHA256-->.*?<!--/SHA256-->', f'<!--SHA256-->$SHA256<!--/SHA256-->', html)
+    html = re.sub(r'<!--VERSION-->.*?<!--/VERSION-->', f'<!--VERSION-->v$VERSION_NAME<!--/VERSION-->', html, flags=re.S)
+    html = re.sub(r'<!--SIZE-->.*?<!--/SIZE-->', f'<!--SIZE-->$SIZE_MB MB<!--/SIZE-->', html, flags=re.S)
+    html = re.sub(r'<!--SHA256-->.*?<!--/SHA256-->', f'<!--SHA256-->$SHA256<!--/SHA256-->', html, flags=re.S)
+    escaped_notes = html_lib.escape("""$RELEASE_NOTES""".strip())
+    html = re.sub(r'<!--NOTES-->.*?<!--/NOTES-->', f'<!--NOTES-->{escaped_notes}<!--/NOTES-->', html, flags=re.S)
     html = re.sub(r'href="https://github\.com/hgarg5072/StretchCoach-Releases/releases/download/[^"]+"', f'href="$APK_URL"', html)
     idx.write_text(html)
 EOF

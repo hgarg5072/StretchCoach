@@ -149,9 +149,9 @@ fun AiRoutineBuilderDialog(
                         )
                         Text(
                             text = if (capability.isAvailable) {
-                                "Running Gemini Nano on your device NPU..."
+                                "Running Gemini Nano on ${capability.hardwareAccelerator}..."
                             } else {
-                                "Crafting your Smart Flow routine..."
+                                "Crafting your routine on ${capability.hardwareAccelerator}..."
                             },
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                             color = MaterialTheme.colorScheme.onSurface
@@ -195,7 +195,10 @@ fun AiRoutineBuilderDialog(
                                         overflow = TextOverflow.Ellipsis
                                     )
                                     Spacer(modifier = Modifier.width(6.dp))
-                                    InferenceTierBadge(tier = plan.inferenceTier)
+                                    InferenceTierBadge(
+                                        tier = plan.inferenceTier,
+                                        hardwareName = plan.hardwareAccelerator
+                                    )
                                 }
 
                                 Text(
@@ -430,11 +433,16 @@ fun AiRoutineBuilderDialog(
 }
 
 @Composable
-private fun InferenceTierBadge(tier: InferenceTier) {
+private fun InferenceTierBadge(tier: InferenceTier, hardwareName: String = "") {
     val icon = when (tier) {
         InferenceTier.ON_DEVICE_NPU -> Icons.Default.Memory
         InferenceTier.CLOUD_GEMINI -> Icons.Default.Cloud
         InferenceTier.LOCAL_SMART_FLOW -> Icons.Default.OfflineBolt
+    }
+    val label = when (tier) {
+        InferenceTier.ON_DEVICE_NPU -> if (hardwareName.isNotBlank()) "Using $hardwareName" else tier.badgeLabel
+        InferenceTier.CLOUD_GEMINI -> tier.badgeLabel
+        InferenceTier.LOCAL_SMART_FLOW -> if (hardwareName.isNotBlank()) "On-Device • $hardwareName" else tier.badgeLabel
     }
     Surface(
         shape = RoundedCornerShape(999.dp),
@@ -452,9 +460,11 @@ private fun InferenceTierBadge(tier: InferenceTier) {
                 modifier = Modifier.size(12.dp)
             )
             Text(
-                text = tier.badgeLabel,
+                text = label,
                 style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.Bold),
-                color = MaterialTheme.colorScheme.onSecondaryContainer
+                color = MaterialTheme.colorScheme.onSecondaryContainer,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis
             )
         }
     }

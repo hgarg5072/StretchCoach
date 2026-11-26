@@ -52,14 +52,8 @@ abstract class AppDatabase : RoomDatabase() {
                 isCustom = false
             ),
             RoutineEntity(
-                id = 6L,
-                name = "Quick Verify (30)",
-                description = "Fast 30-pose showcase (5s prep / 6s hold) covering all 5 posture hubs, L/R mirroring, transitions, and restorative poses.",
-                isCustom = false
-            ),
-            RoutineEntity(
                 id = 7L,
-                name = "Subah Subah",
+                name = "Nisha's Custom Stretch",
                 description = "Complete 52-step morning full-body decompression, hip mobility, spine & neck reset.",
                 isCustom = false
             ),

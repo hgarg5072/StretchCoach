@@ -1,5 +1,6 @@
 package com.example.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -48,6 +49,7 @@ import com.example.ui.components.StretchItemCard
 import android.app.Activity
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.AutoAwesome
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.CloudQueue
@@ -279,6 +281,67 @@ fun RoutineScreen(
                             }
                         }
                     )
+                }
+            }
+        }
+
+        // Prominent WhatsApp Meta AI–style floating AI Coach button on bottom-right
+        Surface(
+            onClick = {
+                viewModel.resetAiRoutineBuilder()
+                showAiRoutineDialog = true
+            },
+            shape = androidx.compose.foundation.shape.CircleShape,
+            shadowElevation = 10.dp,
+            tonalElevation = 6.dp,
+            color = androidx.compose.ui.graphics.Color.Transparent,
+            modifier = Modifier
+                .align(Alignment.BottomEnd)
+                .padding(end = 16.dp, bottom = 74.dp)
+                .size(62.dp)
+                .testTag("floating_ai_coach_fab")
+        ) {
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(
+                        brush = androidx.compose.ui.graphics.Brush.linearGradient(
+                            colors = listOf(
+                                androidx.compose.ui.graphics.Color(0xFF0EA5E9), // Vibrant Sky
+                                androidx.compose.ui.graphics.Color(0xFF14B8A6), // Teal
+                                androidx.compose.ui.graphics.Color(0xFF8B5CF6)  // Iris Violet
+                            )
+                        ),
+                        shape = androidx.compose.foundation.shape.CircleShape
+                    )
+                    .padding(3.5.dp),
+                contentAlignment = Alignment.Center
+            ) {
+                Box(
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .background(
+                            color = MaterialTheme.colorScheme.surface.copy(alpha = 0.94f),
+                            shape = androidx.compose.foundation.shape.CircleShape
+                        ),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(
+                        horizontalAlignment = Alignment.CenterHorizontally,
+                        verticalArrangement = Arrangement.Center
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.AutoAwesome,
+                            contentDescription = "AI Routine Coach",
+                            tint = androidx.compose.ui.graphics.Color(0xFF0D9488),
+                            modifier = Modifier.size(26.dp)
+                        )
+                        Text(
+                            text = "AI",
+                            style = MaterialTheme.typography.labelSmall.copy(fontWeight = FontWeight.ExtraBold),
+                            color = androidx.compose.ui.graphics.Color(0xFF0D9488)
+                        )
+                    }
                 }
             }
         }
