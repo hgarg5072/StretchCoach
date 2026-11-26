@@ -721,8 +721,8 @@ fun PlayerArtworkCard(
                     enter = fadeIn(tween(200)),
                     exit = fadeOut(tween(180)),
                     modifier = Modifier
-                        .align(Alignment.TopCenter)
-                        .padding(horizontal = 20.dp, vertical = 14.dp)
+                        .align(Alignment.TopStart)
+                        .padding(start = 14.dp, top = 14.dp, end = 96.dp)
                 ) {
                     if (currentStretch != null) {
                         val zenLabel = if (!currentStretch.indianName.isNullOrBlank()) {
