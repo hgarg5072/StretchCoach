@@ -38,7 +38,7 @@ enum class InferenceTier(val badgeLabel: String, val detailLabel: String) {
     ),
     CLOUD_GEMINI(
         badgeLabel = "Cloud Gemini",
-        detailLabel = "Generated via Firebase AI Logic (Gemini 2.5 Flash)"
+        detailLabel = "Generated via Firebase AI Logic (Gemini 3.8 Flash)"
     )
 }
 
@@ -47,7 +47,7 @@ data class OnDeviceCapability(
     val isDownloadable: Boolean = false,
     val modelName: String? = null,
     val hardwareAccelerator: String = HybridRoutineGenerator.detectDeviceAcceleratorName(),
-    val statusLabel: String = "Cloud Gemini 2.5 Flash • ${HybridRoutineGenerator.detectDeviceAcceleratorName()}"
+    val statusLabel: String = "Cloud Gemini 3.8 Flash • ${HybridRoutineGenerator.detectDeviceAcceleratorName()}"
 )
 
 data class GeneratedRoutinePlan(
@@ -57,7 +57,7 @@ data class GeneratedRoutinePlan(
     val inferenceTier: InferenceTier,
     val rationale: String = "",
     val hardwareAccelerator: String = HybridRoutineGenerator.detectDeviceAcceleratorName(),
-    val modelName: String = "Gemini 2.5 Flash",
+    val modelName: String = "Gemini 3.8 Flash",
     val latencyMs: Long = 0L,
     val thinkingSteps: List<String> = emptyList()
 ) {
@@ -75,7 +75,7 @@ data class GeneratedRoutinePlan(
 object HybridRoutineGenerator {
 
     private const val TAG = "HybridRoutineGenerator"
-    private const val CLOUD_FALLBACK_MODEL = "gemini-2.5-flash"
+    private const val CLOUD_FALLBACK_MODEL = "gemini-3.8-flash"
     private const val AI_TIMEOUT_MS = 18_000L
 
     @OptIn(PublicPreviewAPI::class)
@@ -191,7 +191,7 @@ object HybridRoutineGenerator {
             return@withContext OnDeviceCapability(
                 isAvailable = false,
                 hardwareAccelerator = hwName,
-                statusLabel = "Cloud Gemini 2.5 Flash (no AICore on $hwName)"
+                statusLabel = "Cloud Gemini 3.8 Flash (no AICore on $hwName)"
             )
         }
         val status = extension.checkStatus()
@@ -217,7 +217,7 @@ object HybridRoutineGenerator {
             else -> OnDeviceCapability(
                 isAvailable = false,
                 hardwareAccelerator = hwName,
-                statusLabel = "Cloud Gemini 2.5 Flash • $hwName"
+                statusLabel = "Cloud Gemini 3.8 Flash • $hwName"
             )
         }
     } catch (t: Throwable) {
@@ -225,7 +225,7 @@ object HybridRoutineGenerator {
         OnDeviceCapability(
             isAvailable = false,
             hardwareAccelerator = hwName,
-            statusLabel = "Cloud Gemini 2.5 Flash • $hwName"
+            statusLabel = "Cloud Gemini 3.8 Flash • $hwName"
         )
     }
 }
@@ -287,7 +287,7 @@ object HybridRoutineGenerator {
         val rawText = response.text.orEmpty()
         val isOnDevice = response.inferenceSource == InferenceSource.ON_DEVICE
         val tier = if (isOnDevice) InferenceTier.ON_DEVICE_NPU else InferenceTier.CLOUD_GEMINI
-        val modelLabel = if (isOnDevice) "Gemini Nano" else "Gemini 2.5 Flash"
+        val modelLabel = if (isOnDevice) "Gemini Nano" else "Gemini 3.8 Flash"
 
         parseModelResponseToPlan(
             rawText = rawText,
@@ -478,7 +478,7 @@ object HybridRoutineGenerator {
         allLibrary: List<LibraryStretch>,
         context: Context?,
         hardwareAccelerator: String = detectDeviceAcceleratorName(),
-        modelName: String = if (inferenceTier == InferenceTier.ON_DEVICE_NPU) "Gemini Nano" else "Gemini 2.5 Flash",
+        modelName: String = if (inferenceTier == InferenceTier.ON_DEVICE_NPU) "Gemini Nano" else "Gemini 3.8 Flash",
         latencyMs: Long = 0L,
         candidateCount: Int = 34
     ): GeneratedRoutinePlan? {

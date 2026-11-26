@@ -153,7 +153,7 @@ fun AiRoutineBuilderDialog(
                             text = if (capability.isAvailable) {
                                 "Thinking with Gemini Nano on ${capability.hardwareAccelerator}..."
                             } else {
-                                "Thinking with Cloud Gemini 2.5 Flash..."
+                                "Thinking with Cloud Gemini 3.8 Flash..."
                             },
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                             color = MaterialTheme.colorScheme.onSurface
@@ -311,7 +311,7 @@ fun AiRoutineBuilderDialog(
                         verticalArrangement = Arrangement.spacedBy(10.dp)
                     ) {
                         Text(
-                            text = "Describe how your body feels or your goal. Uses your NPU on-device when available, with automatic cloud & offline Smart Flow fallback.",
+                            text = "Describe how your body feels or your goal. Uses your device NPU (Gemini Nano) when available, or Cloud Gemini 3.8 Flash.",
                             style = MaterialTheme.typography.bodySmall,
                             color = MaterialTheme.colorScheme.onSurfaceVariant
                         )
