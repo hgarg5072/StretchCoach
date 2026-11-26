@@ -485,10 +485,12 @@ private fun InferenceTierBadge(tier: InferenceTier, hardwareName: String = "") {
     val icon = when (tier) {
         InferenceTier.ON_DEVICE_NPU -> Icons.Default.Memory
         InferenceTier.CLOUD_GEMINI -> Icons.Default.Cloud
+        InferenceTier.LOCAL_SMART_FLOW -> Icons.Default.OfflineBolt
     }
     val label = when (tier) {
         InferenceTier.ON_DEVICE_NPU -> if (hardwareName.isNotBlank()) "Using $hardwareName" else tier.badgeLabel
         InferenceTier.CLOUD_GEMINI -> tier.badgeLabel
+        InferenceTier.LOCAL_SMART_FLOW -> tier.badgeLabel
     }
     Surface(
         shape = RoundedCornerShape(999.dp),

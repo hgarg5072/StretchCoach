@@ -42,6 +42,10 @@ enum class InferenceTier(val badgeLabel: String, val detailLabel: String) {
     CLOUD_GEMINI(
         badgeLabel = "Cloud Gemini",
         detailLabel = "Generated via Firebase AI Logic (Gemini 3.8 Flash)"
+    ),
+    LOCAL_SMART_FLOW(
+        badgeLabel = "Instant Smart Flow",
+        detailLabel = "Built instantly offline with Smart Flow posture matching"
     )
 }
 
@@ -81,9 +85,7 @@ object HybridRoutineGenerator {
     private const val PRIMARY_CLOUD_MODEL = "gemini-3.8-flash-lite"
     private const val SECONDARY_CLOUD_MODEL = "gemini-3.8-flash"
     private const val LATEST_CLOUD_ALIAS = "gemini-flash-latest"
-    private const val ON_DEVICE_TIMEOUT_MS = 15_000L
-    private const val CLOUD_FAST_TIMEOUT_MS = 20_000L
-    private const val CLOUD_FALLBACK_TIMEOUT_MS = 25_000L
+    private const val AI_TOTAL_DEADLINE_MS = 3_000L
 
     @Volatile
     private var cachedOnDeviceAvailable: Boolean? = null
@@ -92,8 +94,7 @@ object HybridRoutineGenerator {
         val modelId: String,
         val displayName: String,
         val thinkingLevel: ThinkingLevel,
-        val maxOutputTokens: Int,
-        val timeoutMs: Long
+        val maxOutputTokens: Int
     )
 
     private val CLOUD_MODEL_CHAIN = listOf(
@@ -101,22 +102,19 @@ object HybridRoutineGenerator {
             modelId = PRIMARY_CLOUD_MODEL,
             displayName = "Gemini 3.8 Flash-Lite",
             thinkingLevel = ThinkingLevel.MINIMAL,
-            maxOutputTokens = 768,
-            timeoutMs = CLOUD_FAST_TIMEOUT_MS
+            maxOutputTokens = 768
         ),
         CloudModelCandidate(
             modelId = SECONDARY_CLOUD_MODEL,
             displayName = "Gemini 3.8 Flash",
             thinkingLevel = ThinkingLevel.LOW,
-            maxOutputTokens = 1024,
-            timeoutMs = CLOUD_FALLBACK_TIMEOUT_MS
+            maxOutputTokens = 1024
         ),
         CloudModelCandidate(
             modelId = LATEST_CLOUD_ALIAS,
             displayName = "Gemini Flash Latest",
             thinkingLevel = ThinkingLevel.LOW,
-            maxOutputTokens = 1024,
-            timeoutMs = CLOUD_FALLBACK_TIMEOUT_MS
+            maxOutputTokens = 1024
         )
     )
 
@@ -307,11 +305,11 @@ object HybridRoutineGenerator {
     }
 
     /**
-     * Generates a personalized routine using ONLY real AI models:
+     * Generates a personalized routine using a 3-Tier Hybrid pipeline with a strict 3-second AI deadline:
      * - Tier 1: On-Device NPU/TPU (Gemini Nano via Android AICore) when available on this device.
-     * - Tier 2: Fast Cloud Gemini fallback chain (`gemini-3.8-flash-lite` -> `gemini-3.8-flash` -> `gemini-flash-latest`)
-     *           using `ONLY_IN_CLOUD` (skips AICore probe overhead), JSON output mode, and low/minimal thinking latency.
-     * Throws a clear, actionable error if offline or if no AI model can be reached.
+     * - Tier 2: Fast Cloud Gemini fallback chain (`gemini-3.8-flash-lite` -> `gemini-3.8-flash` -> `gemini-flash-latest`).
+     * - Tier 3: Instant Offline Smart Flow Matcher (no LLM) — automatically kicks in if offline, on error,
+     *           or if no AI response arrives within 3 seconds.
      */
     @OptIn(PublicPreviewAPI::class)
     suspend fun generateRoutine(
@@ -346,79 +344,152 @@ object HybridRoutineGenerator {
         )
 
         val onDeviceReady = cachedOnDeviceAvailable ?: checkOnDeviceCapability().isAvailable
+        val isOnline = hasValidatedInternet(context)
 
-        // Tier 1: Try On-Device NPU/TPU (Gemini Nano) directly only when AICore reports AVAILABLE
-        if (onDeviceReady) {
-            val startedMs = System.currentTimeMillis()
-            val onDevicePlan = runCatching {
-                val model = createOnDeviceModel()
-                val response = withTimeout(ON_DEVICE_TIMEOUT_MS) {
-                    model.generateContent(llmPrompt)
+        var fallbackReason = "AI did not respond within 3s — switched to Instant Smart Flow"
+        val totalStartMs = System.currentTimeMillis()
+
+        if (!onDeviceReady && !isOnline) {
+            fallbackReason = "Offline — built instantly with Smart Flow"
+        } else {
+            val aiPlan = kotlinx.coroutines.withTimeoutOrNull(AI_TOTAL_DEADLINE_MS) {
+                // Tier 1: Try On-Device NPU/TPU (Gemini Nano) directly only when AICore reports AVAILABLE
+                if (onDeviceReady) {
+                    val startedMs = System.currentTimeMillis()
+                    val onDevicePlan = runCatching {
+                        val model = createOnDeviceModel()
+                        val response = model.generateContent(llmPrompt)
+                        val elapsedMs = (System.currentTimeMillis() - startedMs).coerceAtLeast(1L)
+                        parseModelResponseToPlan(
+                            rawText = response.text.orEmpty(),
+                            inferenceTier = InferenceTier.ON_DEVICE_NPU,
+                            targetMinutes = resolvedMinutes,
+                            allLibrary = allLibrary,
+                            context = context,
+                            hardwareAccelerator = hwName,
+                            modelName = "Gemini Nano",
+                            latencyMs = elapsedMs,
+                            candidateCount = candidates.size
+                        )
+                    }.onFailure { t ->
+                        Log.w(TAG, "On-device Gemini Nano failed: ${t.message}")
+                    }.getOrNull()
+
+                    if (onDevicePlan != null) return@withTimeoutOrNull onDevicePlan
                 }
-                val elapsedMs = (System.currentTimeMillis() - startedMs).coerceAtLeast(1L)
-                parseModelResponseToPlan(
-                    rawText = response.text.orEmpty(),
-                    inferenceTier = InferenceTier.ON_DEVICE_NPU,
-                    targetMinutes = resolvedMinutes,
-                    allLibrary = allLibrary,
-                    context = context,
-                    hardwareAccelerator = hwName,
-                    modelName = "Gemini Nano",
-                    latencyMs = elapsedMs,
-                    candidateCount = candidates.size
-                )
-            }.onFailure { t ->
-                Log.w(TAG, "On-device Gemini Nano failed, falling back to Cloud Gemini: ${t.message}")
-            }.getOrNull()
 
-            if (onDevicePlan != null) return@withContext onDevicePlan
+                // Tier 2: Fast multi-model Cloud Gemini fallback chain (ONLY_IN_CLOUD skips AICore probes)
+                if (isOnline) {
+                    for (candidate in CLOUD_MODEL_CHAIN) {
+                        val startedMs = System.currentTimeMillis()
+                        val cloudPlan = runCatching {
+                            val model = createCloudModel(candidate)
+                            val response = model.generateContent(llmPrompt)
+                            val elapsedMs = (System.currentTimeMillis() - startedMs).coerceAtLeast(1L)
+                            parseModelResponseToPlan(
+                                rawText = response.text.orEmpty(),
+                                inferenceTier = InferenceTier.CLOUD_GEMINI,
+                                targetMinutes = resolvedMinutes,
+                                allLibrary = allLibrary,
+                                context = context,
+                                hardwareAccelerator = hwName,
+                                modelName = candidate.displayName,
+                                latencyMs = elapsedMs,
+                                candidateCount = candidates.size
+                            )
+                        }.onFailure { t ->
+                            Log.w(TAG, "Cloud model ${candidate.modelId} failed (${t.javaClass.simpleName}: ${t.message})")
+                            fallbackReason = "Cloud AI unavailable — switched to Instant Smart Flow"
+                        }.getOrNull()
+
+                        if (cloudPlan != null) return@withTimeoutOrNull cloudPlan
+                    }
+                }
+                null
+            }
+
+            if (aiPlan != null) return@withContext aiPlan
         }
 
-        // Pre-flight internet check so offline devices fail instantly instead of waiting for a network timeout
-        if (!hasValidatedInternet(context)) {
-            throw IllegalStateException(
-                "No internet connection detected. Connect to Wi-Fi or mobile data to use Cloud Gemini on $hwName."
-            )
-        }
+        // Tier 3: Instant Offline Smart Flow Matcher (no LLM/chatbot, always succeeds)
+        val elapsedMs = (System.currentTimeMillis() - totalStartMs).coerceAtLeast(1L)
+        generateLocalSmartFlowRoutine(
+            prompt = cleanPrompt,
+            targetMinutes = resolvedMinutes,
+            posturePreference = resolvedPosture,
+            candidates = candidates,
+            allLibrary = allLibrary,
+            context = context,
+            hardwareAccelerator = hwName,
+            latencyMs = elapsedMs,
+            fallbackReason = fallbackReason
+        )
+    }
 
-        // Tier 2: Fast multi-model Cloud Gemini fallback chain (ONLY_IN_CLOUD avoids wasted AICore probes)
-        var lastError: Throwable? = null
-        for (candidate in CLOUD_MODEL_CHAIN) {
-            val startedMs = System.currentTimeMillis()
-            try {
-                val model = createCloudModel(candidate)
-                val response = withTimeout(candidate.timeoutMs) {
-                    model.generateContent(llmPrompt)
+    internal fun generateLocalSmartFlowRoutine(
+        prompt: String,
+        targetMinutes: Int,
+        posturePreference: PosturePreference,
+        candidates: List<LibraryStretch>,
+        allLibrary: List<LibraryStretch>,
+        context: Context?,
+        hardwareAccelerator: String = detectDeviceAcceleratorName(),
+        latencyMs: Long = 1L,
+        fallbackReason: String = "Instant Smart Flow (offline)"
+    ): GeneratedRoutinePlan {
+        val targetSeconds = targetMinutes * 60
+        val byId = allLibrary.associateBy { it.id }
+        val picked = mutableListOf<LibraryStretch>()
+        val seenIds = mutableSetOf<String>()
+        val seenPoseKeys = mutableSetOf<String>()
+        var accumulatedSec = 0
+
+        for (stretch in candidates) {
+            if (accumulatedSec >= targetSeconds && picked.size >= 4) break
+            val poseKey = poseDeduplicationKey(stretch)
+            if (stretch.id in seenIds || poseKey in seenPoseKeys) continue
+
+            picked.add(stretch)
+            seenIds.add(stretch.id)
+            seenPoseKeys.add(poseKey)
+            accumulatedSec += stretch.defaultPrepSeconds + stretch.defaultHoldSeconds
+
+            val partnerId = findBilateralPartnerId(stretch.id)
+            if (partnerId != null && partnerId !in seenIds) {
+                byId[partnerId]?.let { partner ->
+                    val partnerKey = poseDeduplicationKey(partner)
+                    if (seenPoseKeys.add(partnerKey)) {
+                        picked.add(partner)
+                        seenIds.add(partner.id)
+                        accumulatedSec += partner.defaultPrepSeconds + partner.defaultHoldSeconds
+                    }
                 }
-                val elapsedMs = (System.currentTimeMillis() - startedMs).coerceAtLeast(1L)
-                val plan = parseModelResponseToPlan(
-                    rawText = response.text.orEmpty(),
-                    inferenceTier = InferenceTier.CLOUD_GEMINI,
-                    targetMinutes = resolvedMinutes,
-                    allLibrary = allLibrary,
-                    context = context,
-                    hardwareAccelerator = hwName,
-                    modelName = candidate.displayName,
-                    latencyMs = elapsedMs,
-                    candidateCount = candidates.size
-                )
-                if (plan != null) {
-                    return@withContext plan
-                }
-                lastError = IllegalStateException("${candidate.modelId} returned unexpected JSON format")
-            } catch (t: Throwable) {
-                Log.w(TAG, "Cloud model ${candidate.modelId} failed (${t.javaClass.simpleName}: ${t.message})")
-                lastError = t
             }
         }
 
-        Log.e(TAG, "All Cloud AI models failed", lastError)
-        val detail = lastError?.message?.takeIf { it.isNotBlank() }
-            ?: lastError?.javaClass?.simpleName
-            ?: "Request timed out"
-        throw IllegalStateException(
-            "Cloud Gemini unavailable ($detail). Please check your internet connection and tap Build Routine to retry.",
-            lastError
+        val entities = buildSmartFlowEntities(picked, targetMinutes, context)
+        val name = buildFriendlyRoutineTitle(prompt, targetMinutes, posturePreference)
+        val description = "Personalized $targetMinutes-minute Smart Flow routine for \"$prompt\"."
+        val rationale = "Matched top stretches for your goal, balanced left & right sides, and ordered them smoothly by posture."
+
+        val thinkingSteps = listOf(
+            "Engine: Instant Smart Flow (no LLM, ${latencyMs}ms)",
+            fallbackReason,
+            "Scored ${allLibrary.size} unique stretches for \"$prompt\" (${posturePreference.label})",
+            "Paired left/right bilateral stretches and removed duplicate poses",
+            "Sequenced ${entities.size} stretches in Smart Flow posture order (~${targetMinutes} min)"
+        )
+
+        return GeneratedRoutinePlan(
+            name = name,
+            description = description,
+            stretches = entities,
+            inferenceTier = InferenceTier.LOCAL_SMART_FLOW,
+            rationale = rationale,
+            hardwareAccelerator = hardwareAccelerator,
+            modelName = "Instant Smart Flow",
+            latencyMs = latencyMs,
+            thinkingSteps = thinkingSteps
         )
     }
 
