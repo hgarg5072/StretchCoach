@@ -18,6 +18,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.filled.AutoStories
 import androidx.compose.material.icons.filled.ContentCopy
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Edit
 import androidx.compose.material.icons.filled.LibraryAdd
 import androidx.compose.material.icons.filled.PlayArrow
@@ -58,6 +59,7 @@ fun RoutineSummaryCard(
     onAddCustomStretch: () -> Unit,
     onDuplicateRoutine: () -> Unit,
     onEditRoutine: () -> Unit = {},
+    onDeleteRoutine: (() -> Unit)? = null,
     onOptimizeFlow: (() -> Unit)? = null,
     isFlowOptimized: Boolean = false,
     onShareToCommunity: (() -> Unit)? = null,
@@ -104,7 +106,8 @@ fun RoutineSummaryCard(
                                 fontWeight = FontWeight.Bold,
                                 letterSpacing = (-0.3).sp
                             ),
-                            color = MaterialTheme.colorScheme.onSurface
+                            color = MaterialTheme.colorScheme.onSurface,
+                            modifier = Modifier.weight(1f, fill = false)
                         )
                         if (routine?.isCustom == true) {
                             IconButton(
@@ -119,6 +122,21 @@ fun RoutineSummaryCard(
                                     tint = MaterialTheme.colorScheme.primary,
                                     modifier = Modifier.size(16.dp)
                                 )
+                            }
+                            if (onDeleteRoutine != null) {
+                                IconButton(
+                                    onClick = onDeleteRoutine,
+                                    modifier = Modifier
+                                        .size(26.dp)
+                                        .testTag("delete_routine_button")
+                                ) {
+                                    Icon(
+                                        imageVector = Icons.Default.Delete,
+                                        contentDescription = "Delete Routine",
+                                        tint = MaterialTheme.colorScheme.error,
+                                        modifier = Modifier.size(16.dp)
+                                    )
+                                }
                             }
                         }
                     }

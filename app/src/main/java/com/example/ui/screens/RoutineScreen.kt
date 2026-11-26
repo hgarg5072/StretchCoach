@@ -148,6 +148,9 @@ fun RoutineScreen(
                     onEditRoutine = {
                         activeRoutine?.let { routineToEdit = it }
                     },
+                    onDeleteRoutine = if (activeRoutine?.isCustom == true) {
+                        { routineToDelete = activeRoutine }
+                    } else null,
                     onOptimizeFlow = if (localStretches.size >= 2) {
                         { viewModel.optimizeCurrentRoutineFlow() }
                     } else null,
