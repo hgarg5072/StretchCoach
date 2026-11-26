@@ -38,11 +38,7 @@ enum class InferenceTier(val badgeLabel: String, val detailLabel: String) {
     ),
     CLOUD_GEMINI(
         badgeLabel = "Cloud Gemini",
-        detailLabel = "Generated via Firebase AI Logic (Gemini Flash)"
-    ),
-    LOCAL_SMART_FLOW(
-        badgeLabel = "Offline Smart Flow",
-        detailLabel = "Generated offline with Smart Flow posture sequencing"
+        detailLabel = "Generated via Firebase AI Logic (Gemini 2.5 Flash)"
     )
 }
 
@@ -51,7 +47,7 @@ data class OnDeviceCapability(
     val isDownloadable: Boolean = false,
     val modelName: String? = null,
     val hardwareAccelerator: String = HybridRoutineGenerator.detectDeviceAcceleratorName(),
-    val statusLabel: String = "Using ${HybridRoutineGenerator.detectDeviceAcceleratorName()} • Hybrid AI"
+    val statusLabel: String = "Cloud Gemini 2.5 Flash • ${HybridRoutineGenerator.detectDeviceAcceleratorName()}"
 )
 
 data class GeneratedRoutinePlan(
@@ -60,7 +56,10 @@ data class GeneratedRoutinePlan(
     val stretches: List<StretchEntity>,
     val inferenceTier: InferenceTier,
     val rationale: String = "",
-    val hardwareAccelerator: String = HybridRoutineGenerator.detectDeviceAcceleratorName()
+    val hardwareAccelerator: String = HybridRoutineGenerator.detectDeviceAcceleratorName(),
+    val modelName: String = "Gemini 2.5 Flash",
+    val latencyMs: Long = 0L,
+    val thinkingSteps: List<String> = emptyList()
 ) {
     val totalDurationSeconds: Int
         get() = stretches.sumOf { it.preparationSeconds + it.holdSeconds }
@@ -186,49 +185,56 @@ object HybridRoutineGenerator {
     suspend fun checkOnDeviceCapability(): OnDeviceCapability = withContext(Dispatchers.IO) {
         val hwName = detectDeviceAcceleratorName()
         try {
-            val model = createHybridModel()
-            val extension = model.onDeviceExtension
-            if (extension == null) {
-                return@withContext OnDeviceCapability(
-                    isAvailable = false,
-                    hardwareAccelerator = hwName,
-                    statusLabel = "Using $hwName • Hybrid AI"
-                )
-            }
-            val status = extension.checkStatus()
-            val modelName = runCatching { extension.getModelName() }.getOrNull()
-            when (status) {
-                OnDeviceModelStatus.AVAILABLE -> OnDeviceCapability(
-                    isAvailable = true,
-                    modelName = modelName,
-                    hardwareAccelerator = hwName,
-                    statusLabel = "Using $hwName (${modelName ?: "Gemini Nano"})"
-                )
-                OnDeviceModelStatus.DOWNLOADABLE, OnDeviceModelStatus.DOWNLOADING -> OnDeviceCapability(
+        val model = createHybridModel()
+        val extension = model.onDeviceExtension
+        if (extension == null) {
+            return@withContext OnDeviceCapability(
+                isAvailable = false,
+                hardwareAccelerator = hwName,
+                statusLabel = "Cloud Gemini 2.5 Flash (no AICore on $hwName)"
+            )
+        }
+        val status = extension.checkStatus()
+        val modelName = runCatching { extension.getModelName() }.getOrNull()
+        when (status) {
+            OnDeviceModelStatus.AVAILABLE -> OnDeviceCapability(
+                isAvailable = true,
+                modelName = modelName,
+                hardwareAccelerator = hwName,
+                statusLabel = "Using $hwName (${modelName ?: "Gemini Nano"})"
+            )
+            OnDeviceModelStatus.DOWNLOADABLE, OnDeviceModelStatus.DOWNLOADING -> {
+                // Kick off background AICore download so Pixel 9 / NPU devices become ready automatically
+                runCatching { extension.download() }
+                OnDeviceCapability(
                     isAvailable = false,
                     isDownloadable = true,
                     modelName = modelName,
                     hardwareAccelerator = hwName,
-                    statusLabel = "$hwName • Preparing Gemini Nano"
-                )
-                else -> OnDeviceCapability(
-                    isAvailable = false,
-                    hardwareAccelerator = hwName,
-                    statusLabel = "Using $hwName • Hybrid AI"
+                    statusLabel = "$hwName • Downloading Gemini Nano (Cloud ready)"
                 )
             }
-        } catch (t: Throwable) {
-            Log.d(TAG, "On-device AI check fell back cleanly: ${t.message}")
-            OnDeviceCapability(
+            else -> OnDeviceCapability(
                 isAvailable = false,
                 hardwareAccelerator = hwName,
-                statusLabel = "Using $hwName • Hybrid AI"
+                statusLabel = "Cloud Gemini 2.5 Flash • $hwName"
             )
         }
+    } catch (t: Throwable) {
+        Log.d(TAG, "On-device AI check fell back cleanly: ${t.message}")
+        OnDeviceCapability(
+            isAvailable = false,
+            hardwareAccelerator = hwName,
+            statusLabel = "Cloud Gemini 2.5 Flash • $hwName"
+        )
     }
+}
 
     /**
-     * Generates a personalized routine from a natural-language goal using the 3-tier hybrid pipeline.
+     * Generates a personalized routine using ONLY real AI models:
+     * - Tier 1: On-Device NPU/TPU (Gemini Nano via Android AICore)
+     * - Tier 2: Cloud Gemini 2.5 Flash via Firebase AI Logic
+     * Throws a clear, actionable error if neither AI model can be reached (no fake rule-based fallback).
      */
     @OptIn(PublicPreviewAPI::class)
     suspend fun generateRoutine(
@@ -240,11 +246,12 @@ object HybridRoutineGenerator {
         val cleanPrompt = userPrompt.trim().ifBlank { "Balanced full-body mobility and relaxation" }
         val resolvedMinutes = extractTargetMinutes(cleanPrompt, targetMinutes)
         val resolvedPosture = extractPosturePreference(cleanPrompt, posturePreference)
+        val hwName = detectDeviceAcceleratorName()
 
         val allLibrary = StretchLibrary.ALL_100_STRETCHES
         val hubById = buildHubMap(context, allLibrary)
 
-        // Pre-rank candidates so the prompt fits comfortably inside Gemini Nano's on-device context window
+        // Pre-rank top 34 relevant stretches (with benefits) so the prompt fits Gemini Nano's context window
         val candidates = selectCandidatePool(
             prompt = cleanPrompt,
             posturePreference = resolvedPosture,
@@ -253,43 +260,47 @@ object HybridRoutineGenerator {
             maxCandidates = 34
         )
 
-        val aiPlan = try {
-            val model = createHybridModel()
-            val llmPrompt = buildCompactPrompt(
-                userGoal = cleanPrompt,
-                targetMinutes = resolvedMinutes,
-                posturePreference = resolvedPosture,
-                candidates = candidates,
-                hubById = hubById
-            )
-            val response = withTimeout(AI_TIMEOUT_MS) {
-                model.generateContent(llmPrompt)
-            }
-            val rawText = response.text.orEmpty()
-            val tier = if (response.inferenceSource == InferenceSource.ON_DEVICE) {
-                InferenceTier.ON_DEVICE_NPU
-            } else {
-                InferenceTier.CLOUD_GEMINI
-            }
-            parseModelResponseToPlan(
-                rawText = rawText,
-                inferenceTier = tier,
-                targetMinutes = resolvedMinutes,
-                allLibrary = allLibrary,
-                context = context
-            )
-        } catch (t: Throwable) {
-            Log.i(TAG, "Hybrid AI unavailable or offline (${t.javaClass.simpleName}: ${t.message}); using Offline Smart Flow.")
-            null
-        }
-
-        aiPlan ?: buildLocalSmartFlowRoutine(
-            userPrompt = cleanPrompt,
+        val llmPrompt = buildCompactPrompt(
+            userGoal = cleanPrompt,
             targetMinutes = resolvedMinutes,
             posturePreference = resolvedPosture,
+            candidates = candidates,
+            hubById = hubById
+        )
+
+        val startedMs = System.currentTimeMillis()
+        val response = try {
+            val model = createHybridModel()
+            withTimeout(AI_TIMEOUT_MS) {
+                model.generateContent(llmPrompt)
+            }
+        } catch (t: Throwable) {
+            Log.e(TAG, "AI generation failed (${t.javaClass.simpleName}: ${t.message})", t)
+            throw IllegalStateException(
+                "AI model unavailable (${t.message ?: t.javaClass.simpleName}). " +
+                    "Please check your internet connection for Cloud Gemini or ensure AICore Gemini Nano is enabled on $hwName.",
+                t
+            )
+        }
+        val elapsedMs = (System.currentTimeMillis() - startedMs).coerceAtLeast(1L)
+
+        val rawText = response.text.orEmpty()
+        val isOnDevice = response.inferenceSource == InferenceSource.ON_DEVICE
+        val tier = if (isOnDevice) InferenceTier.ON_DEVICE_NPU else InferenceTier.CLOUD_GEMINI
+        val modelLabel = if (isOnDevice) "Gemini Nano" else "Gemini 2.5 Flash"
+
+        parseModelResponseToPlan(
+            rawText = rawText,
+            inferenceTier = tier,
+            targetMinutes = resolvedMinutes,
             allLibrary = allLibrary,
-            hubById = hubById,
-            context = context
+            context = context,
+            hardwareAccelerator = hwName,
+            modelName = modelLabel,
+            latencyMs = elapsedMs,
+            candidateCount = candidates.size
+        ) ?: throw IllegalStateException(
+            "AI returned an unexpected format. Please tap Generate Routine to try again."
         )
     }
 
@@ -441,7 +452,8 @@ object HybridRoutineGenerator {
         val catalogLines = candidates.joinToString("\n") { s ->
             val hub = hubById[s.id]?.name ?: "STANDING"
             val sec = s.defaultPrepSeconds + s.defaultHoldSeconds
-            "${s.id}|${s.name}|${s.category.title}|$hub|${sec}s"
+            val shortBenefit = s.benefits.trim().take(52)
+            "${s.id}|${s.name}|${s.category.title}|$hub|${sec}s|$shortBenefit"
         }
         return """
             You are Stretch Coach, an expert yoga & mobility coach.
@@ -451,9 +463,10 @@ object HybridRoutineGenerator {
             Rules:
             - Choose ONLY stretch IDs from the catalog below.
             - If you pick a Right-side stretch, also include its Left-side pair.
-            - Output ONLY valid compact JSON with keys: name, description, rationale, stretch_ids.
-            Example: {"name":"Evening Spine Unwind","description":"Gentle floor mobility for lower back relief","rationale":"Focuses on seated and supine decompression","stretch_ids":["child_pose_lat_reach","cat_cow_flow"]}
-            Catalog (id|name|category|hub|duration):
+            - Never pick two stretches that target the exact same pose.
+            - Output ONLY valid compact JSON with keys: name, description, rationale, thinking (array of 3 concise reasoning steps), stretch_ids.
+            Example: {"name":"Evening Spine Unwind","description":"Gentle floor mobility for lower back relief","rationale":"Focuses on seated and supine decompression","thinking":["Identified lower back tightness and evening wind-down goal","Selected gentle kneeling and supine decompression poses","Balanced left and right spinal twists for symmetry"],"stretch_ids":["cat_cow_spinal_flow","supta_matsyendrasana_twist_right","supta_matsyendrasana_twist_left"]}
+            Catalog (id|name|category|hub|duration|benefit):
             $catalogLines
         """.trimIndent()
     }
@@ -463,7 +476,11 @@ object HybridRoutineGenerator {
         inferenceTier: InferenceTier,
         targetMinutes: Int,
         allLibrary: List<LibraryStretch>,
-        context: Context?
+        context: Context?,
+        hardwareAccelerator: String = detectDeviceAcceleratorName(),
+        modelName: String = if (inferenceTier == InferenceTier.ON_DEVICE_NPU) "Gemini Nano" else "Gemini 2.5 Flash",
+        latencyMs: Long = 0L,
+        candidateCount: Int = 34
     ): GeneratedRoutinePlan? {
         val jsonStart = rawText.indexOf('{')
         val jsonEnd = rawText.lastIndexOf('}')
@@ -479,7 +496,7 @@ object HybridRoutineGenerator {
 
         for (i in 0 until idsArray.length()) {
             val id = idsArray.optString(i).trim()
-            val match = byId[id] ?: continue
+            val match = byId[id] ?: StretchLibrary.getById(id) ?: continue
             if (seenIds.add(match.id)) {
                 picked.add(match)
             }
@@ -497,87 +514,37 @@ object HybridRoutineGenerator {
             .take(240)
         val rationale = obj.optString("rationale").trim().take(200)
 
+        val modelThinking = mutableListOf<String>()
+        val engineSummary = if (inferenceTier == InferenceTier.ON_DEVICE_NPU) {
+            "Engine: $modelName on $hardwareAccelerator (${latencyMs}ms)"
+        } else {
+            "Engine: $modelName via Cloud (${latencyMs}ms)"
+        }
+        modelThinking.add(engineSummary)
+        modelThinking.add("Reviewed top $candidateCount of ${allLibrary.size} unique stretches (with benefits & posture hubs)")
+        val thinkingArr = obj.optJSONArray("thinking")
+        if (thinkingArr != null) {
+            for (i in 0 until thinkingArr.length()) {
+                val step = thinkingArr.optString(i).trim()
+                if (step.isNotBlank()) modelThinking.add(step)
+            }
+        } else if (rationale.isNotBlank()) {
+            modelThinking.add(rationale)
+        }
+
         val entities = buildSmartFlowEntities(picked, targetMinutes, context)
+        modelThinking.add("Sequenced ${entities.size} unique stretches in Smart Flow posture order (~${targetMinutes} min)")
+
         return GeneratedRoutinePlan(
             name = name,
             description = description,
             stretches = entities,
             inferenceTier = inferenceTier,
-            rationale = rationale
-        )
-    }
-
-    /**
-     * Tier 3: 100% offline deterministic Smart-Flow routine builder.
-     * Guarantees every Android device gets a balanced, bilateral, smoothly sequenced routine
-     * even with zero network and no AICore support.
-     */
-    internal fun buildLocalSmartFlowRoutine(
-        userPrompt: String,
-        targetMinutes: Int,
-        posturePreference: PosturePreference,
-        allLibrary: List<LibraryStretch>,
-        hubById: Map<String, PostureHub>,
-        context: Context?
-    ): GeneratedRoutinePlan {
-        val targetSeconds = targetMinutes * 60
-        val postureFiltered = allLibrary.filter { s ->
-            matchesPosture(hubById[s.id] ?: PostureHub.STANDING, posturePreference)
-        }.ifEmpty { allLibrary }
-
-        val ranked = postureFiltered
-            .map { it to scoreStretchForPrompt(it, userPrompt, hubById[it.id] ?: PostureHub.STANDING) }
-            .sortedByDescending { it.second }
-
-        val byId = allLibrary.associateBy { it.id }
-        val selected = mutableListOf<LibraryStretch>()
-        val seenIds = mutableSetOf<String>()
-        val seenPoseKeys = mutableSetOf<String>()
-        var accumulatedSec = 0
-
-        for ((stretch, _) in ranked) {
-            if (stretch.id in seenIds) continue
-            val poseKey = poseDeduplicationKey(stretch)
-            if (poseKey in seenPoseKeys) continue
-            val partner = findBilateralPartnerId(stretch.id)?.let { byId[it] }
-            val partnerKey = partner?.let { poseDeduplicationKey(it) }
-            val stepCost = (stretch.defaultPrepSeconds + stretch.defaultHoldSeconds) +
-                if (partner != null && partner.id !in seenIds && partnerKey !in seenPoseKeys) {
-                    partner.defaultPrepSeconds + partner.defaultHoldSeconds
-                } else 0
-
-            if (selected.isNotEmpty() && accumulatedSec + stepCost > targetSeconds + 35 && selected.size >= 4) {
-                continue
-            }
-
-            selected.add(stretch)
-            seenIds.add(stretch.id)
-            seenPoseKeys.add(poseKey)
-            accumulatedSec += stretch.defaultPrepSeconds + stretch.defaultHoldSeconds
-
-            if (partner != null && partner.id !in seenIds && partnerKey != null && partnerKey !in seenPoseKeys) {
-                selected.add(partner)
-                seenIds.add(partner.id)
-                seenPoseKeys.add(partnerKey)
-                accumulatedSec += partner.defaultPrepSeconds + partner.defaultHoldSeconds
-            }
-
-            if (accumulatedSec >= targetSeconds - 20 || selected.size >= 18) break
-        }
-
-        val finalSelected = selected.ifEmpty { postureFiltered.take(6) }
-        val entities = buildSmartFlowEntities(finalSelected, targetMinutes, context)
-
-        val title = buildFriendlyRoutineTitle(userPrompt, targetMinutes, posturePreference)
-        val desc = "Offline Smart Flow routine tailored for: ${userPrompt.trim().take(120)}"
-        val rationale = "Matched ${entities.size} stretches to your focus areas and ordered them by posture hub for smooth transitions."
-
-        return GeneratedRoutinePlan(
-            name = title,
-            description = desc,
-            stretches = entities,
-            inferenceTier = InferenceTier.LOCAL_SMART_FLOW,
-            rationale = rationale
+            rationale = rationale,
+            hardwareAccelerator = hardwareAccelerator,
+            modelName = modelName,
+            latencyMs = latencyMs,
+            thinkingSteps = modelThinking
         )
     }
 

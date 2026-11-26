@@ -94,53 +94,56 @@ class HybridRoutineGeneratorTest {
     }
 
     @Test
-    fun localSmartFlowRoutine_buildsDeskNeckRoutineWithBilateralPairs() {
-        val hubMap = HybridRoutineGenerator.buildHubMap(null, allLibrary)
-        val plan = HybridRoutineGenerator.buildLocalSmartFlowRoutine(
-            userPrompt = "Desk neck and shoulders tension relief",
-            targetMinutes = 8,
-            posturePreference = PosturePreference.ANY,
-            allLibrary = allLibrary,
-            hubById = hubMap,
-            context = null
-        )
-
-        assertEquals(InferenceTier.LOCAL_SMART_FLOW, plan.inferenceTier)
-        assertTrue("Should generate at least 4 stretches", plan.stretches.size >= 4)
-        assertTrue(
-            "Should prioritize neck/shoulder stretches",
-            plan.stretches.any { it.category.contains("Neck", ignoreCase = true) }
-        )
-
-        // Verify bilateral symmetry: every _right has its _left partner
-        val ids = plan.stretches.mapNotNull { it.libraryId }.toSet()
-        ids.filter { it.endsWith("_right") }.forEach { rightId ->
-            val leftId = rightId.removeSuffix("_right") + "_left"
-            if (allLibrary.any { it.id == leftId }) {
-                assertTrue("Expected $leftId partner for $rightId", leftId in ids)
+    fun parseModelResponseToPlan_parsesThinkingStepsAndDeduplicatesSamePose() {
+        val raw = """
+            {
+              "name": "Spine Reset",
+              "description": "Calming spinal mobility",
+              "rationale": "Combines flexion and extension",
+              "thinking": [
+                "Identified lower back tension goal",
+                "Selected cat-cow and child pose decompression",
+                "Balanced sequence for floor flow"
+              ],
+              "stretch_ids": ["cat_cow_spinal_flow", "balasana_childs_pose", "child_pose_full_body", "bhujangasana_cobra_pose"]
             }
-        }
+        """.trimIndent()
+
+        val plan = HybridRoutineGenerator.parseModelResponseToPlan(
+            rawText = raw,
+            inferenceTier = InferenceTier.ON_DEVICE_NPU,
+            targetMinutes = 8,
+            allLibrary = allLibrary,
+            context = null,
+            hardwareAccelerator = "Google Tensor G4 TPU",
+            modelName = "Gemini Nano",
+            latencyMs = 1420L,
+            candidateCount = 34
+        )
+
+        assertNotNull(plan)
+        plan!!
+        assertEquals("Google Tensor G4 TPU", plan.hardwareAccelerator)
+        assertEquals(1420L, plan.latencyMs)
+        assertTrue("Should capture model thinking steps", plan.thinkingSteps.any { "Identified lower back tension" in it })
+        // balasana_childs_pose and legacy child_pose_full_body must deduplicate to 1 child's pose
+        val childCount = plan.stretches.count { it.libraryId == "balasana_childs_pose" }
+        assertEquals("Duplicate child's pose should be merged to 1", 1, childCount)
     }
 
     @Test
-    fun localSmartFlowRoutine_respectsFloorOnlyFilter() {
+    fun buildCompactPrompt_includesStretchBenefitsAndThinkingInstruction() {
         val hubMap = HybridRoutineGenerator.buildHubMap(null, allLibrary)
-        val plan = HybridRoutineGenerator.buildLocalSmartFlowRoutine(
-            userPrompt = "Bedtime lower back and hip unwind",
-            targetMinutes = 10,
-            posturePreference = PosturePreference.FLOOR_ONLY,
-            allLibrary = allLibrary,
-            hubById = hubMap,
-            context = null
+        val candidates = allLibrary.take(5)
+        val prompt = HybridRoutineGenerator.buildCompactPrompt(
+            userGoal = "Desk neck relief",
+            targetMinutes = 8,
+            posturePreference = PosturePreference.ANY,
+            candidates = candidates,
+            hubById = hubMap
         )
-
-        assertTrue(plan.stretches.isNotEmpty())
-        plan.stretches.forEach { entity ->
-            val hub = hubMap[entity.libraryId] ?: PostureHub.STANDING
-            assertTrue(
-                "Expected floor-only posture for ${entity.name}, got $hub",
-                hub != PostureHub.STANDING
-            )
-        }
+        assertTrue("Prompt should include benefit column", "benefit" in prompt)
+        assertTrue("Prompt should request thinking steps", "thinking" in prompt)
+        assertTrue("Prompt should include actual stretch benefit text", candidates.first().benefits.take(20) in prompt)
     }
 }

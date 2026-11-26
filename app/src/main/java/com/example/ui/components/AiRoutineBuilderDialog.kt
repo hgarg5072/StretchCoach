@@ -1,6 +1,8 @@
 package com.example.ui.components
 
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.BorderStroke
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -149,9 +151,9 @@ fun AiRoutineBuilderDialog(
                         )
                         Text(
                             text = if (capability.isAvailable) {
-                                "Running Gemini Nano on ${capability.hardwareAccelerator}..."
+                                "Thinking with Gemini Nano on ${capability.hardwareAccelerator}..."
                             } else {
-                                "Crafting your routine on ${capability.hardwareAccelerator}..."
+                                "Thinking with Cloud Gemini 2.5 Flash..."
                             },
                             style = MaterialTheme.typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                             color = MaterialTheme.colorScheme.onSurface
@@ -162,6 +164,7 @@ fun AiRoutineBuilderDialog(
                 is AiRoutineBuilderState.Preview -> {
                     val plan = state.plan
                     val totalMin = (plan.totalDurationSeconds / 60).coerceAtLeast(1)
+                    var showThinking by remember(plan) { mutableStateOf(false) }
                     Column(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -207,12 +210,57 @@ fun AiRoutineBuilderDialog(
                                     color = MaterialTheme.colorScheme.primary
                                 )
 
-                                if (plan.rationale.isNotBlank()) {
-                                    Text(
-                                        text = plan.rationale,
-                                        style = MaterialTheme.typography.bodySmall,
-                                        color = MaterialTheme.colorScheme.onSurfaceVariant
-                                    )
+                                if (plan.thinkingSteps.isNotEmpty()) {
+                                    Surface(
+                                        shape = RoundedCornerShape(10.dp),
+                                        color = MaterialTheme.colorScheme.surface.copy(alpha = 0.85f),
+                                        border = BorderStroke(1.dp, MaterialTheme.colorScheme.outlineVariant.copy(alpha = 0.5f)),
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .clickable { showThinking = !showThinking }
+                                            .testTag("ai_thinking_toggle")
+                                    ) {
+                                        Column(
+                                            modifier = Modifier.padding(horizontal = 10.dp, vertical = 7.dp),
+                                            verticalArrangement = Arrangement.spacedBy(5.dp)
+                                        ) {
+                                            Row(
+                                                modifier = Modifier.fillMaxWidth(),
+                                                horizontalArrangement = Arrangement.SpaceBetween,
+                                                verticalAlignment = Alignment.CenterVertically
+                                            ) {
+                                                Text(
+                                                    text = if (showThinking) "Thinking ▾" else "Thinking ▸",
+                                                    style = MaterialTheme.typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                                                    color = MaterialTheme.colorScheme.primary
+                                                )
+                                                if (plan.latencyMs > 0L) {
+                                                    val secLabel = if (plan.latencyMs >= 1000L) {
+                                                        String.format("%.1fs", plan.latencyMs / 1000.0)
+                                                    } else "${plan.latencyMs}ms"
+                                                    Text(
+                                                        text = "${plan.modelName} • $secLabel",
+                                                        style = MaterialTheme.typography.labelSmall,
+                                                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                    )
+                                                }
+                                            }
+                                            AnimatedVisibility(visible = showThinking) {
+                                                Column(
+                                                    modifier = Modifier.padding(top = 4.dp),
+                                                    verticalArrangement = Arrangement.spacedBy(4.dp)
+                                                ) {
+                                                    plan.thinkingSteps.forEachIndexed { idx, step ->
+                                                        Text(
+                                                            text = "${idx + 1}. $step",
+                                                            style = MaterialTheme.typography.bodySmall,
+                                                            color = MaterialTheme.colorScheme.onSurfaceVariant
+                                                        )
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
                                 }
                             }
                         }
@@ -437,12 +485,10 @@ private fun InferenceTierBadge(tier: InferenceTier, hardwareName: String = "") {
     val icon = when (tier) {
         InferenceTier.ON_DEVICE_NPU -> Icons.Default.Memory
         InferenceTier.CLOUD_GEMINI -> Icons.Default.Cloud
-        InferenceTier.LOCAL_SMART_FLOW -> Icons.Default.OfflineBolt
     }
     val label = when (tier) {
         InferenceTier.ON_DEVICE_NPU -> if (hardwareName.isNotBlank()) "Using $hardwareName" else tier.badgeLabel
         InferenceTier.CLOUD_GEMINI -> tier.badgeLabel
-        InferenceTier.LOCAL_SMART_FLOW -> if (hardwareName.isNotBlank()) "On-Device • $hardwareName" else tier.badgeLabel
     }
     Surface(
         shape = RoundedCornerShape(999.dp),

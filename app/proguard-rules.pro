@@ -30,10 +30,22 @@
 }
 -keep @com.squareup.moshi.JsonClass class * { *; }
 
-# Suppress harmless optional warnings from Retrofit / OkHttp / Coroutines
+# Keep Firebase AI Logic, On-Device Gemini Nano (AICore / MLKit GenAI), and Kotlinx Serialization
+-keep class com.google.firebase.ai.** { *; }
+-keep class com.google.mlkit.genai.** { *; }
+-keep class com.google.android.aicore.** { *; }
+-keepattributes *Annotation*, InnerClasses, Signature, EnclosingMethod
+-keep,includedescriptorclasses class com.google.firebase.ai.**$$serializer { *; }
+-keepclassmembers class * {
+    @kotlinx.serialization.Serializable <fields>;
+}
+
+# Suppress harmless optional warnings from Retrofit / OkHttp / Coroutines / AICore
 -dontwarn okhttp3.**
 -dontwarn okio.**
 -dontwarn retrofit2.**
 -dontwarn org.conscrypt.**
 -dontwarn org.bouncycastle.**
 -dontwarn org.openjsse.**
+-dontwarn com.google.android.aicore.**
+-dontwarn com.google.mlkit.genai.**
