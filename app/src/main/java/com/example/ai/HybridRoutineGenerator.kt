@@ -532,13 +532,19 @@ object HybridRoutineGenerator {
         val byId = allLibrary.associateBy { it.id }
         val selected = mutableListOf<LibraryStretch>()
         val seenIds = mutableSetOf<String>()
+        val seenPoseKeys = mutableSetOf<String>()
         var accumulatedSec = 0
 
         for ((stretch, _) in ranked) {
             if (stretch.id in seenIds) continue
+            val poseKey = poseDeduplicationKey(stretch)
+            if (poseKey in seenPoseKeys) continue
             val partner = findBilateralPartnerId(stretch.id)?.let { byId[it] }
+            val partnerKey = partner?.let { poseDeduplicationKey(it) }
             val stepCost = (stretch.defaultPrepSeconds + stretch.defaultHoldSeconds) +
-                if (partner != null && partner.id !in seenIds) (partner.defaultPrepSeconds + partner.defaultHoldSeconds) else 0
+                if (partner != null && partner.id !in seenIds && partnerKey !in seenPoseKeys) {
+                    partner.defaultPrepSeconds + partner.defaultHoldSeconds
+                } else 0
 
             if (selected.isNotEmpty() && accumulatedSec + stepCost > targetSeconds + 35 && selected.size >= 4) {
                 continue
@@ -546,11 +552,13 @@ object HybridRoutineGenerator {
 
             selected.add(stretch)
             seenIds.add(stretch.id)
+            seenPoseKeys.add(poseKey)
             accumulatedSec += stretch.defaultPrepSeconds + stretch.defaultHoldSeconds
 
-            if (partner != null && partner.id !in seenIds) {
+            if (partner != null && partner.id !in seenIds && partnerKey != null && partnerKey !in seenPoseKeys) {
                 selected.add(partner)
                 seenIds.add(partner.id)
+                seenPoseKeys.add(partnerKey)
                 accumulatedSec += partner.defaultPrepSeconds + partner.defaultHoldSeconds
             }
 
@@ -573,16 +581,33 @@ object HybridRoutineGenerator {
         )
     }
 
+    /**
+     * Canonical pose deduplication key (visual drawable + side) so AI routines never include
+     * two stretches representing the same physical pose on the same side (e.g. English + Sanskrit variants).
+     */
+    internal fun poseDeduplicationKey(stretch: LibraryStretch): String {
+        val drawableRes = com.example.data.ArtworkMapper.getDrawableForStretch(stretch.name, stretch.category.title)
+        val lower = "${stretch.id} ${stretch.name}".lowercase()
+        val side = when {
+            Regex("\\bleft\\b").containsMatchIn(lower) || stretch.id.endsWith("_left") -> "left"
+            Regex("\\bright\\b").containsMatchIn(lower) || stretch.id.endsWith("_right") -> "right"
+            else -> "center"
+        }
+        return if (drawableRes != null) "res_${drawableRes}_$side" else "id_${stretch.id}"
+    }
+
     private fun buildSmartFlowEntities(
         selected: List<LibraryStretch>,
         targetMinutes: Int,
         context: Context?
     ): List<StretchEntity> {
-        val rawTotal = selected.sumOf { it.defaultPrepSeconds + it.defaultHoldSeconds }.coerceAtLeast(1)
+        val seenKeys = mutableSetOf<String>()
+        val uniqueSelected = selected.filter { seenKeys.add(poseDeduplicationKey(it)) }
+        val rawTotal = uniqueSelected.sumOf { it.defaultPrepSeconds + it.defaultHoldSeconds }.coerceAtLeast(1)
         val targetSec = targetMinutes * 60
         val holdScale = (targetSec.toFloat() / rawTotal.toFloat()).coerceIn(0.75f, 1.35f)
 
-        val rawEntities = selected.mapIndexed { idx, lib ->
+        val rawEntities = uniqueSelected.mapIndexed { idx, lib ->
             val scaledHold = ((lib.defaultHoldSeconds * holdScale) / 5f).roundToInt() * 5
             StretchEntity(
                 routineId = 0L,

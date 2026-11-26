@@ -59,24 +59,24 @@ class ArtworkE2ETest {
         val allStretches = StretchLibrary.ALL_100_STRETCHES
         val extra50 = ExtraYogaAsanas.EXTRA_50_ASANAS
 
-        assertEquals("Combined catalog must contain exactly 150 stretches", 150, allStretches.size)
+        assertEquals("Combined catalog must contain exactly 135 unique stretches", 135, allStretches.size)
         assertEquals("ExtraYogaAsanas must contain exactly 50 asanas", 50, extra50.size)
 
-        val first100 = allStretches.take(100)
-        val first100Ids = first100.map { it.id }.toSet()
+        val baseStretches = allStretches.take(85)
+        val baseIds = baseStretches.map { it.id }.toSet()
         val extra50Ids = extra50.map { it.id }.toSet()
-        assertEquals("First 100 IDs must be unique", 100, first100Ids.size)
+        assertEquals("Base 85 IDs must be unique", 85, baseIds.size)
         assertEquals("Extra 50 IDs must be unique", 50, extra50Ids.size)
         assertTrue(
-            "First 100 IDs and Extra 50 IDs must be completely disjoint",
-            first100Ids.intersect(extra50Ids).isEmpty()
+            "Base 85 IDs and Extra 50 IDs must be completely disjoint",
+            baseIds.intersect(extra50Ids).isEmpty()
         )
 
         val allIds = allStretches.map { it.id }.toSet()
-        assertEquals("All 150 stretch IDs must be unique", 150, allIds.size)
+        assertEquals("All 135 stretch IDs must be unique", 135, allIds.size)
 
         val allTrimmedNames = allStretches.map { it.name.trim() }.toSet()
-        assertEquals("All 150 trimmed stretch names must be unique", 150, allTrimmedNames.size)
+        assertEquals("All 135 trimmed stretch names must be unique", 135, allTrimmedNames.size)
 
         allStretches.forEach { stretch ->
             assertTrue("id must not be blank", stretch.id.isNotBlank())
@@ -402,7 +402,7 @@ class ArtworkE2ETest {
     // =========================================================================
 
     @Test
-    fun tier4_repositorySeedingResolves150StretchesAnd101DevanagariNames() = runBlocking {
+    fun tier4_repositorySeedingResolves135UniqueStretchesAnd100DevanagariNames() = runBlocking {
         val db = Room.inMemoryDatabaseBuilder(context, AppDatabase::class.java)
             .allowMainThreadQueries()
             .build()
@@ -412,10 +412,10 @@ class ArtworkE2ETest {
             repo.checkAndSeedDefaults()
 
             val seededLibrary = dao.getAllLibraryStretchesSync()
-            assertEquals("Room must seed all 150 LibraryStretchEntity rows", 150, seededLibrary.size)
+            assertEquals("Room must seed all 135 unique LibraryStretchEntity rows", 135, seededLibrary.size)
 
             val seededById = seededLibrary.associateBy { it.id }
-            assertEquals("Seeded library IDs must be unique", 150, seededById.size)
+            assertEquals("Seeded library IDs must be unique", 135, seededById.size)
 
             // All 50 ExtraYogaAsanas must match their explicit Devanagari indianName
             ExtraYogaAsanas.EXTRA_50_ASANAS.forEach { expected ->
@@ -428,10 +428,9 @@ class ArtworkE2ETest {
                 )
             }
 
-            // #35 (seated_single_leg_fold) + #51-#100 (51 items total) resolve runtime Devanagari
-            val expectedRuntimeIds = (listOf(StretchLibrary.ALL_100_STRETCHES[34]) +
-                StretchLibrary.ALL_100_STRETCHES.subList(50, 100)).map { it.id }.toSet()
-            assertEquals("Expected 51 runtime-resolved Devanagari stretches", 51, expectedRuntimeIds.size)
+            // 50 base Yoga Asanas (indices 35..84) resolve runtime Devanagari
+            val expectedRuntimeIds = StretchLibrary.ALL_100_STRETCHES.subList(35, 85).map { it.id }.toSet()
+            assertEquals("Expected 50 runtime-resolved Devanagari stretches", 50, expectedRuntimeIds.size)
 
             expectedRuntimeIds.forEach { id ->
                 val row = seededById[id]
@@ -443,11 +442,11 @@ class ArtworkE2ETest {
                 )
             }
 
-            // Remaining 49 items (#1-#34 and #36-#50) must have null indianName
+            // Remaining 35 English mobility stretches have null indianName
             val nonNullCount = seededLibrary.count { !it.indianName.isNullOrBlank() }
             val nullCount = seededLibrary.count { it.indianName == null }
-            assertEquals("Exactly 101 stretches must have Devanagari indianName", 101, nonNullCount)
-            assertEquals("Exactly 49 stretches must have null indianName", 49, nullCount)
+            assertEquals("Exactly 100 stretches must have Devanagari indianName", 100, nonNullCount)
+            assertEquals("Exactly 35 stretches must have null indianName", 35, nullCount)
 
             // Verify all 7 default routines seed cleanly and ArtworkMapper never throws or returns legacy drawables
             val routines = dao.getAllRoutinesSync()

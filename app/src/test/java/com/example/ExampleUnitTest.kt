@@ -15,7 +15,7 @@ class ExampleUnitTest {
     @Test
     fun testStretchLibrarySizeAndCategories() {
         val stretches = StretchLibrary.ALL_100_STRETCHES
-        assertEquals("Stretch library should have 150 stretches & asanas", 150, stretches.size)
+        assertEquals("Stretch library should have 135 unique stretches & asanas", 135, stretches.size)
 
         // Verify each category is represented
         StretchCategory.values().forEach { category ->
@@ -25,7 +25,7 @@ class ExampleUnitTest {
 
         // Verify all IDs are unique
         val ids = stretches.map { it.id }.toSet()
-        assertEquals("All 150 stretch IDs should be unique", 150, ids.size)
+        assertEquals("All 135 stretch IDs should be unique", 135, ids.size)
 
         // Verify all stretches have valid cues
         stretches.forEach { stretch ->
@@ -258,13 +258,13 @@ class ExampleUnitTest {
             ArtworkMapper.getDrawableForStretch("Surya Namaskar (Sun Salutation Flow)", "Yoga Asanas")
         )
 
-        // 4. Full 150-item catalog safety & name/id agreement check
+        // 4. Full 135-item deduplicated catalog safety & name/id agreement check
         val mappedStretches = StretchLibrary.ALL_100_STRETCHES.filter { stretch ->
             val byName = ArtworkMapper.getDrawableForStretch(stretch.name, stretch.category.title)
             val byId = ArtworkMapper.getDrawableForStretch(stretch.id, stretch.category.title)
             assertEquals("Name and ID mappings must agree for ${stretch.id}", byName, byId)
             byName != null
         }
-        assertEquals("Catalog must map all 150 visually-verified stretches", 150, mappedStretches.size)
+        assertEquals("Catalog must map all 135 visually-verified unique stretches", 135, mappedStretches.size)
     }
 }

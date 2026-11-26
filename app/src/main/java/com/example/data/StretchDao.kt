@@ -126,4 +126,7 @@ interface StretchDao {
 
     @Query("DELETE FROM library_stretches WHERE id = :id")
     suspend fun deleteLibraryStretchById(id: String)
+
+    @Query("DELETE FROM library_stretches WHERE id IN (:ids)")
+    suspend fun deleteNonCustomLibraryStretchesByIds(ids: List<String>)
 }

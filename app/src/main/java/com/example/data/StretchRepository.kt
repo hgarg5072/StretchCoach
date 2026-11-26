@@ -28,7 +28,8 @@ class StretchRepository(
     }
 
     suspend fun checkAndSeedDefaults() = withContext(Dispatchers.IO) {
-        // 1. Seed and sync Library Stretches (all 150 items, preserving user-created custom items)
+        // 1. Seed and sync Library Stretches (all 135 unique items, removing merged duplicates & preserving custom items)
+        stretchDao.deleteNonCustomLibraryStretchesByIds(StretchLibrary.LEGACY_DUPLICATE_ID_ALIASES.keys.toList())
         val existingLibrary = stretchDao.getAllLibraryStretchesSync()
         val existingCustomIds = existingLibrary.filter { it.isCustom }.map { it.id }.toSet()
         val existingNonCustomCount = existingLibrary.count { !it.isCustom }

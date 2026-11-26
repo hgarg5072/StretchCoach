@@ -191,16 +191,6 @@ object StretchLibrary {
 
         // --- 3. LOWER BACK & CORE (17-23) ---
         LibraryStretch(
-            id = "supine_knees_to_chest",
-            name = "Supine Double Knee Hug",
-            category = StretchCategory.LOWER_BACK_CORE,
-            defaultPrepSeconds = 8,
-            defaultHoldSeconds = 35,
-            prepCue = "Lie on your back, bend knees, and wrap arms around shins.",
-            holdCue = "Gently draw knees toward chest. Keep head and neck relaxed and let lower back flatten.",
-            benefits = "Decompresses the lumbar vertebrae and relieves lower back fatigue."
-        ),
-        LibraryStretch(
             id = "single_knee_to_chest",
             name = "Single Knee-to-Chest Decompression",
             category = StretchCategory.LOWER_BACK_CORE,
@@ -209,36 +199,6 @@ object StretchLibrary {
             prepCue = "Lie flat, hug your right knee into your chest while extending your left leg straight.",
             holdCue = "Keep left thigh grounded. Feel the gentle hip flexion and lumbar release.",
             benefits = "Isolates unilateral lower back tension and calms sacroiliac joint discomfort."
-        ),
-        LibraryStretch(
-            id = "reclining_spinal_twist_right",
-            name = "Reclining Spinal Twist (Right)",
-            category = StretchCategory.LOWER_BACK_CORE,
-            defaultPrepSeconds = 10,
-            defaultHoldSeconds = 40,
-            prepCue = "Lie on your back, draw knees up, and let them fall to the right while gazing left.",
-            holdCue = "Keep both shoulder blades pinned to the floor. Let gravity rinse out spinal tension.",
-            benefits = "Rotational release for lower back, glutes, and obliques."
-        ),
-        LibraryStretch(
-            id = "reclining_spinal_twist_left",
-            name = "Reclining Spinal Twist (Left)",
-            category = StretchCategory.LOWER_BACK_CORE,
-            defaultPrepSeconds = 8,
-            defaultHoldSeconds = 40,
-            prepCue = "Guide both knees softly over to the left side while extending your right arm out.",
-            holdCue = "Breathe deeply into your right lower back and belly. Surrender weight into the mat.",
-            benefits = "Soothes the sciatic nerve path and relaxes spinal extensors."
-        ),
-        LibraryStretch(
-            id = "seated_spinal_twist",
-            name = "Seated Torso Spinal Twist",
-            category = StretchCategory.LOWER_BACK_CORE,
-            defaultPrepSeconds = 10,
-            defaultHoldSeconds = 35,
-            prepCue = "Sit tall with legs crossed or extended, place right hand behind you and rotate gently.",
-            holdCue = "Inhale to lengthen your crown upward; exhale to deepen the rotation from your core.",
-            benefits = "Improves spinal disc hydration and digestive comfort."
         ),
         LibraryStretch(
             id = "sphinx_pose_extension",
@@ -250,38 +210,8 @@ object StretchLibrary {
             holdCue = "Gently draw your chest forward between your arms. Keep glutes and lower back relaxed.",
             benefits = "Restores natural lumbar lordosis and combats sitting-induced disc pressure."
         ),
-        LibraryStretch(
-            id = "cobra_stretch_gentle",
-            name = "Gentle Cobra Pose",
-            category = StretchCategory.LOWER_BACK_CORE,
-            defaultPrepSeconds = 8,
-            defaultHoldSeconds = 30,
-            prepCue = "Place palms beneath shoulders, press lightly into hands to lift head and chest.",
-            holdCue = "Keep shoulders rolled back and down. Only lift as high as comfortable without pinching.",
-            benefits = "Strengthens posterior chain while opening anterior abdominal wall."
-        ),
 
         // --- 4. HIPS & GLUTES (24-32) ---
-        LibraryStretch(
-            id = "hip_flexor_lunge_right",
-            name = "Low Lunge Hip Flexor (Right Forward)",
-            category = StretchCategory.HIPS_GLUTES,
-            defaultPrepSeconds = 12,
-            defaultHoldSeconds = 40,
-            prepCue = "Step right foot forward into a low lunge, lowering your left knee onto the mat.",
-            holdCue = "Tuck your tailbone slightly and sink hips gently forward. Feel the front left hip open.",
-            benefits = "Releases shortened psoas and iliacus muscles from prolonged sitting."
-        ),
-        LibraryStretch(
-            id = "hip_flexor_lunge_left",
-            name = "Low Lunge Hip Flexor (Left Forward)",
-            category = StretchCategory.HIPS_GLUTES,
-            defaultPrepSeconds = 8,
-            defaultHoldSeconds = 40,
-            prepCue = "Step left foot forward and lower right knee down. Keep torso upright and proud.",
-            holdCue = "Squeeze your right glute slightly to deepen the front hip opening. Breathe steadily.",
-            benefits = "Restores pelvic balance and alleviates anterior pelvic tilt."
-        ),
         LibraryStretch(
             id = "figure_four_glute_right",
             name = "Reclining Figure-4 Glute (Right)",
@@ -301,36 +231,6 @@ object StretchLibrary {
             prepCue = "Cross left ankle over right knee, grasp behind right thigh, and draw legs toward chest.",
             holdCue = "Keep head and shoulders flat on mat. Maintain deep rhythmic breaths into left hip.",
             benefits = "Releases gluteus medius and deep lateral hip rotators."
-        ),
-        LibraryStretch(
-            id = "seated_butterfly",
-            name = "Seated Butterfly Adductor Stretch",
-            category = StretchCategory.HIPS_GLUTES,
-            defaultPrepSeconds = 10,
-            defaultHoldSeconds = 40,
-            prepCue = "Sit tall, bring soles of feet together, and let knees drop comfortably out to the sides.",
-            holdCue = "Hold ankles, lengthen spine, and hinge forward from hips. Allow inner thighs to soften.",
-            benefits = "Increases groin flexibility and pelvic floor relaxation."
-        ),
-        LibraryStretch(
-            id = "pigeon_pose_right",
-            name = "Pigeon Pose (Right Shin Forward)",
-            category = StretchCategory.HIPS_GLUTES,
-            defaultPrepSeconds = 12,
-            defaultHoldSeconds = 45,
-            prepCue = "Bring right knee behind right wrist, slide left leg straight back behind you.",
-            holdCue = "Square your hips toward the mat. Lower to forearms if comfortable, breathing into right hip.",
-            benefits = "Deep fascial release for hips, IT band, and outer hip rotators."
-        ),
-        LibraryStretch(
-            id = "pigeon_pose_left",
-            name = "Pigeon Pose (Left Shin Forward)",
-            category = StretchCategory.HIPS_GLUTES,
-            defaultPrepSeconds = 10,
-            defaultHoldSeconds = 45,
-            prepCue = "Bring left knee forward, extend right leg straight back, keeping hips level.",
-            holdCue = "Fold forward softly over your front leg. Let each exhale dissolve deep hip tension.",
-            benefits = "Crucial mobility for athletes, runners, and sedentary professionals."
         ),
         LibraryStretch(
             id = "lizard_lunge_hip",
@@ -355,16 +255,6 @@ object StretchLibrary {
 
         // --- 5. HAMSTRINGS & QUADS (33-40) ---
         LibraryStretch(
-            id = "standing_hamstring_fold",
-            name = "Standing Forward Hamstring Fold",
-            category = StretchCategory.HAMSTRINGS_QUADS,
-            defaultPrepSeconds = 10,
-            defaultHoldSeconds = 35,
-            prepCue = "Stand with feet hip-width, soften knees, and hinge at hips letting torso hang.",
-            holdCue = "Let head and arms hang heavy. Feel hamstrings and calves lengthen with steady breathing.",
-            benefits = "Decompresses spine while lengthening entire posterior chain."
-        ),
-        LibraryStretch(
             id = "single_leg_hamstring_heel",
             name = "Single-Leg Heel Hamstring Stretch",
             category = StretchCategory.HAMSTRINGS_QUADS,
@@ -373,16 +263,6 @@ object StretchLibrary {
             prepCue = "Place one heel forward with toes pointed up, bend back knee and hinge hips back.",
             holdCue = "Keep spine straight and reach hands toward front toes. Feel focused hamstring stretch.",
             benefits = "Isolates hamstring bellies without putting strain on lumbar discs."
-        ),
-        LibraryStretch(
-            id = "seated_single_leg_fold",
-            name = "Seated Single-Leg Fold (Janu Sirsasana)",
-            category = StretchCategory.HAMSTRINGS_QUADS,
-            defaultPrepSeconds = 10,
-            defaultHoldSeconds = 35,
-            prepCue = "Extend one leg long, tuck opposite foot into inner thigh, and reach torso toward extended foot.",
-            holdCue = "Lead with your sternum rather than rounding shoulders. Breathe deeply into the back of leg.",
-            benefits = "Lengthens hamstrings while providing gentle lower back traction."
         ),
         LibraryStretch(
             id = "standing_quad_right",
@@ -413,26 +293,6 @@ object StretchLibrary {
             prepCue = "Lie on your side, hold top ankle, and gently draw your knee back in line with torso.",
             holdCue = "Engage top glute slightly to intensify front thigh stretch while keeping lower back neutral.",
             benefits = "Zero-gravity quad stretch ideal for sensitive knees or poor balance."
-        ),
-        LibraryStretch(
-            id = "wide_legged_straddle_fold",
-            name = "Wide-Legged Straddle Forward Fold",
-            category = StretchCategory.HAMSTRINGS_QUADS,
-            defaultPrepSeconds = 10,
-            defaultHoldSeconds = 40,
-            prepCue = "Step feet 3 to 4 feet apart with toes facing forward, hinge at hips and lower hands to mat.",
-            holdCue = "Shift weight slightly toward balls of feet. Relax head and neck completely.",
-            benefits = "Simultaneously stretches inner adductors, hamstrings, and calves."
-        ),
-        LibraryStretch(
-            id = "pyramid_pose_stretch",
-            name = "Pyramid Pose Alignment Stretch",
-            category = StretchCategory.HAMSTRINGS_QUADS,
-            defaultPrepSeconds = 10,
-            defaultHoldSeconds = 35,
-            prepCue = "Step one foot forward and one foot back, square hips forward, and fold over front thigh.",
-            holdCue = "Keep front leg straight with a micro-bend. Feel the deep upper hamstring release.",
-            benefits = "Builds hip squareness while increasing hamstring flexibility."
         ),
 
         // --- 6. CALVES & FEET (41-45) ---
@@ -527,16 +387,6 @@ object StretchLibrary {
             prepCue = "Clasp your hands overhead, turn palms to ceiling, and lean gently to one side.",
             holdCue = "Press up through palms while grounding through feet. Breathe into lateral ribs.",
             benefits = "Decompresses thoracic spine and opens tight shoulder girdles."
-        ),
-        LibraryStretch(
-            id = "child_pose_full_body",
-            name = "Restorative Child's Pose",
-            category = StretchCategory.ARMS_WRISTS,
-            defaultPrepSeconds = 8,
-            defaultHoldSeconds = 45,
-            prepCue = "Kneel wide, sink hips all the way back onto heels, and extend arms long in front.",
-            holdCue = "Rest forehead on mat. Let your entire body, breath, and mind settle into deep relaxation.",
-            benefits = "Full body grounding, nervous system calming, and spine decompression."
         ),
 
         // --- 8. AUTHENTIC YOGA ASANAS & RESTORATIVE PRACTICES (51-100) ---
@@ -1042,11 +892,33 @@ object StretchLibrary {
         )
     ) + ExtraYogaAsanas.EXTRA_50_ASANAS
 
+    // Legacy English IDs merged into canonical bilingual Sanskrit+English entries
+    val LEGACY_DUPLICATE_ID_ALIASES: Map<String, String> = mapOf(
+        "supine_knees_to_chest" to "pavanamuktasana_wind_relieving",
+        "reclining_spinal_twist_right" to "supta_matsyendrasana_twist_right",
+        "reclining_spinal_twist_left" to "supta_matsyendrasana_twist_left",
+        "seated_spinal_twist" to "ardha_matsyendrasana_right",
+        "cobra_stretch_gentle" to "bhujangasana_cobra_pose",
+        "hip_flexor_lunge_right" to "anjaneyasana_low_lunge_right",
+        "hip_flexor_lunge_left" to "anjaneyasana_low_lunge_left",
+        "seated_butterfly" to "baddha_konasana_butterfly",
+        "pigeon_pose_right" to "eka_pada_rajakapotasana_pigeon_right",
+        "pigeon_pose_left" to "eka_pada_rajakapotasana_pigeon_left",
+        "standing_hamstring_fold" to "uttanasana_forward_fold",
+        "seated_single_leg_fold" to "janu_sirsasana_right",
+        "wide_legged_straddle_fold" to "prasarita_padottanasana_wide_fold",
+        "pyramid_pose_stretch" to "parsvottanasana_pyramid_right",
+        "child_pose_full_body" to "balasana_childs_pose"
+    )
+
     // Backwards compatibility aliases
     val ALL_STRETCHES: List<LibraryStretch> = ALL_100_STRETCHES
     val ALL_50_STRETCHES: List<LibraryStretch> = ALL_100_STRETCHES
 
-    fun getById(id: String): LibraryStretch? = ALL_100_STRETCHES.find { it.id == id }
+    fun getById(id: String): LibraryStretch? {
+        val canonicalId = LEGACY_DUPLICATE_ID_ALIASES[id] ?: id
+        return ALL_100_STRETCHES.find { it.id == canonicalId }
+    }
 
     fun search(query: String, category: StretchCategory? = null): List<LibraryStretch> {
         val q = query.trim().lowercase()

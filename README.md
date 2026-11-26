@@ -10,7 +10,7 @@ An offline-first Android yoga & mobility coaching app built with **Kotlin**, **J
 
 ## Key Features
 
-- **150-Stretch Bilingual Library & 8 Built-In Routines:** Includes English + Devanagari (`हिन्दी / संस्कृत`) names, prep/hold cues, and 8 preloaded routines — including the **52-step *Subah Subah*** morning mobility routine and the timer-free **Surya Namaskar (सूर्य नमस्कार)** continuous flow routine with adjustable Rounds (`1–24`) and playback speed (`0.5x`–`1.25x`).
+- **135+ Unique Bilingual Stretches & 7 Built-In Routines:** Deduplicated English + Devanagari (`हिन्दी / संस्कृत`) catalog with prep/hold cues and 7 preloaded routines — including **Nisha's Custom Stretch** (52-step morning mobility routine) and the timer-free **Surya Namaskar (सूर्य नमस्कार)** continuous flow routine with adjustable Rounds (`1–24`) and playback speed (`0.5x`–`1.25x`).
 - **112 Canonical Looping Pose Videos & 12 Hub Transitions:** Smooth posture-hub transitions (`STANDING ↔ KNEELING ↔ SEATED ↔ PRONE ↔ SUPINE`), automatic left-side mirroring (and dedicated `_left.mp4` / `_right.mp4` clips where needed), and Smart Flow sorting.
 - **Living Studio Atmosphere (OpenGL ES 2.0):**
   - Localized Monstera plant breeze shader (`GlBreezeVideoRenderer`) running directly on the pose video texture.
