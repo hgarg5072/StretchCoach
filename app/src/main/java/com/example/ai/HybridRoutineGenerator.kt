@@ -1,6 +1,8 @@
 package com.example.ai
 
 import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
 import android.os.Build
 import android.util.Log
 import com.example.data.LibraryStretch
@@ -11,13 +13,14 @@ import com.example.data.StretchEntity
 import com.example.data.StretchLibrary
 import com.google.firebase.Firebase
 import com.google.firebase.ai.InferenceMode
-import com.google.firebase.ai.InferenceSource
 import com.google.firebase.ai.OnDeviceConfig
 import com.google.firebase.ai.OnDeviceModelStatus
 import com.google.firebase.ai.ai
 import com.google.firebase.ai.type.GenerativeBackend
 import com.google.firebase.ai.type.PublicPreviewAPI
+import com.google.firebase.ai.type.ThinkingLevel
 import com.google.firebase.ai.type.generationConfig
+import com.google.firebase.ai.type.thinkingConfig
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import kotlinx.coroutines.withTimeout
@@ -75,24 +78,88 @@ data class GeneratedRoutinePlan(
 object HybridRoutineGenerator {
 
     private const val TAG = "HybridRoutineGenerator"
-    private const val CLOUD_FALLBACK_MODEL = "gemini-3.8-flash"
-    private const val AI_TIMEOUT_MS = 18_000L
+    private const val PRIMARY_CLOUD_MODEL = "gemini-3.8-flash-lite"
+    private const val SECONDARY_CLOUD_MODEL = "gemini-3.8-flash"
+    private const val LATEST_CLOUD_ALIAS = "gemini-flash-latest"
+    private const val ON_DEVICE_TIMEOUT_MS = 15_000L
+    private const val CLOUD_FAST_TIMEOUT_MS = 20_000L
+    private const val CLOUD_FALLBACK_TIMEOUT_MS = 25_000L
+
+    @Volatile
+    private var cachedOnDeviceAvailable: Boolean? = null
+
+    private data class CloudModelCandidate(
+        val modelId: String,
+        val displayName: String,
+        val thinkingLevel: ThinkingLevel,
+        val maxOutputTokens: Int,
+        val timeoutMs: Long
+    )
+
+    private val CLOUD_MODEL_CHAIN = listOf(
+        CloudModelCandidate(
+            modelId = PRIMARY_CLOUD_MODEL,
+            displayName = "Gemini 3.8 Flash-Lite",
+            thinkingLevel = ThinkingLevel.MINIMAL,
+            maxOutputTokens = 768,
+            timeoutMs = CLOUD_FAST_TIMEOUT_MS
+        ),
+        CloudModelCandidate(
+            modelId = SECONDARY_CLOUD_MODEL,
+            displayName = "Gemini 3.8 Flash",
+            thinkingLevel = ThinkingLevel.LOW,
+            maxOutputTokens = 1024,
+            timeoutMs = CLOUD_FALLBACK_TIMEOUT_MS
+        ),
+        CloudModelCandidate(
+            modelId = LATEST_CLOUD_ALIAS,
+            displayName = "Gemini Flash Latest",
+            thinkingLevel = ThinkingLevel.LOW,
+            maxOutputTokens = 1024,
+            timeoutMs = CLOUD_FALLBACK_TIMEOUT_MS
+        )
+    )
 
     @OptIn(PublicPreviewAPI::class)
-    private fun createHybridModel() = Firebase.ai(
+    private fun createOnDeviceModel() = Firebase.ai(
         backend = GenerativeBackend.googleAI()
     ).generativeModel(
-        modelName = CLOUD_FALLBACK_MODEL,
-        generationConfig = generationConfig {
-            temperature = 0.35f
-            maxOutputTokens = 400
-        },
+        modelName = SECONDARY_CLOUD_MODEL,
         onDeviceConfig = OnDeviceConfig(
-            mode = InferenceMode.PREFER_ON_DEVICE,
+            mode = InferenceMode.ONLY_ON_DEVICE,
             maxOutputTokens = 384,
             temperature = 0.35f
         )
     )
+
+    @OptIn(PublicPreviewAPI::class)
+    private fun createCloudModel(candidate: CloudModelCandidate) = Firebase.ai(
+        backend = GenerativeBackend.googleAI()
+    ).generativeModel(
+        modelName = candidate.modelId,
+        generationConfig = generationConfig {
+            temperature = 0.35f
+            maxOutputTokens = candidate.maxOutputTokens
+            responseMimeType = "application/json"
+            thinkingConfig = thinkingConfig {
+                thinkingLevel = candidate.thinkingLevel
+            }
+        },
+        onDeviceConfig = OnDeviceConfig(
+            mode = InferenceMode.ONLY_IN_CLOUD
+        )
+    )
+
+    private fun hasValidatedInternet(context: Context): Boolean {
+        return runCatching {
+            val cm = context.getSystemService(Context.CONNECTIVITY_SERVICE) as? ConnectivityManager
+                ?: return true
+            val network = cm.activeNetwork ?: return false
+            val caps = cm.getNetworkCapabilities(network) ?: return false
+            caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_INTERNET) &&
+                caps.hasCapability(NetworkCapabilities.NET_CAPABILITY_VALIDATED)
+        }.getOrDefault(true)
+    }
 
     /**
      * Detects the actual Android device NPU / TPU / SoC hardware name (e.g. "Google Tensor G4 TPU",
@@ -185,56 +252,66 @@ object HybridRoutineGenerator {
     suspend fun checkOnDeviceCapability(): OnDeviceCapability = withContext(Dispatchers.IO) {
         val hwName = detectDeviceAcceleratorName()
         try {
-        val model = createHybridModel()
-        val extension = model.onDeviceExtension
-        if (extension == null) {
-            return@withContext OnDeviceCapability(
-                isAvailable = false,
-                hardwareAccelerator = hwName,
-                statusLabel = "Cloud Gemini 3.8 Flash (no AICore on $hwName)"
-            )
-        }
-        val status = extension.checkStatus()
-        val modelName = runCatching { extension.getModelName() }.getOrNull()
-        when (status) {
-            OnDeviceModelStatus.AVAILABLE -> OnDeviceCapability(
-                isAvailable = true,
-                modelName = modelName,
-                hardwareAccelerator = hwName,
-                statusLabel = "Using $hwName (${modelName ?: "Gemini Nano"})"
-            )
-            OnDeviceModelStatus.DOWNLOADABLE, OnDeviceModelStatus.DOWNLOADING -> {
-                // Kick off background AICore download so Pixel 9 / NPU devices become ready automatically
-                runCatching { extension.download() }
-                OnDeviceCapability(
+            val model = createOnDeviceModel()
+            val extension = model.onDeviceExtension
+            if (extension == null) {
+                cachedOnDeviceAvailable = false
+                return@withContext OnDeviceCapability(
                     isAvailable = false,
-                    isDownloadable = true,
-                    modelName = modelName,
                     hardwareAccelerator = hwName,
-                    statusLabel = "$hwName • Downloading Gemini Nano (Cloud ready)"
+                    statusLabel = "Cloud Gemini 3.8 Flash • $hwName"
                 )
             }
-            else -> OnDeviceCapability(
+            val status = extension.checkStatus()
+            val modelName = runCatching { extension.getModelName() }.getOrNull()
+            when (status) {
+                OnDeviceModelStatus.AVAILABLE -> {
+                    cachedOnDeviceAvailable = true
+                    OnDeviceCapability(
+                        isAvailable = true,
+                        modelName = modelName,
+                        hardwareAccelerator = hwName,
+                        statusLabel = "Using $hwName (${modelName ?: "Gemini Nano"})"
+                    )
+                }
+                OnDeviceModelStatus.DOWNLOADABLE, OnDeviceModelStatus.DOWNLOADING -> {
+                    cachedOnDeviceAvailable = false
+                    // Kick off background AICore download so Pixel 9 / NPU devices become ready automatically
+                    runCatching { extension.download() }
+                    OnDeviceCapability(
+                        isAvailable = false,
+                        isDownloadable = true,
+                        modelName = modelName,
+                        hardwareAccelerator = hwName,
+                        statusLabel = "$hwName • Downloading Gemini Nano (Cloud ready)"
+                    )
+                }
+                else -> {
+                    cachedOnDeviceAvailable = false
+                    OnDeviceCapability(
+                        isAvailable = false,
+                        hardwareAccelerator = hwName,
+                        statusLabel = "Cloud Gemini 3.8 Flash • $hwName"
+                    )
+                }
+            }
+        } catch (t: Throwable) {
+            cachedOnDeviceAvailable = false
+            Log.d(TAG, "On-device AI check fell back cleanly: ${t.message}")
+            OnDeviceCapability(
                 isAvailable = false,
                 hardwareAccelerator = hwName,
                 statusLabel = "Cloud Gemini 3.8 Flash • $hwName"
             )
         }
-    } catch (t: Throwable) {
-        Log.d(TAG, "On-device AI check fell back cleanly: ${t.message}")
-        OnDeviceCapability(
-            isAvailable = false,
-            hardwareAccelerator = hwName,
-            statusLabel = "Cloud Gemini 3.8 Flash • $hwName"
-        )
     }
-}
 
     /**
      * Generates a personalized routine using ONLY real AI models:
-     * - Tier 1: On-Device NPU/TPU (Gemini Nano via Android AICore)
-     * - Tier 2: Cloud Gemini 2.5 Flash via Firebase AI Logic
-     * Throws a clear, actionable error if neither AI model can be reached (no fake rule-based fallback).
+     * - Tier 1: On-Device NPU/TPU (Gemini Nano via Android AICore) when available on this device.
+     * - Tier 2: Fast Cloud Gemini fallback chain (`gemini-3.8-flash-lite` -> `gemini-3.8-flash` -> `gemini-flash-latest`)
+     *           using `ONLY_IN_CLOUD` (skips AICore probe overhead), JSON output mode, and low/minimal thinking latency.
+     * Throws a clear, actionable error if offline or if no AI model can be reached.
      */
     @OptIn(PublicPreviewAPI::class)
     suspend fun generateRoutine(
@@ -251,13 +328,13 @@ object HybridRoutineGenerator {
         val allLibrary = StretchLibrary.ALL_100_STRETCHES
         val hubById = buildHubMap(context, allLibrary)
 
-        // Pre-rank top 34 relevant stretches (with benefits) so the prompt fits Gemini Nano's context window
+        // Pre-rank top 28 relevant stretches (with benefits) to keep prompt fast & within Gemini Nano's window
         val candidates = selectCandidatePool(
             prompt = cleanPrompt,
             posturePreference = resolvedPosture,
             allLibrary = allLibrary,
             hubById = hubById,
-            maxCandidates = 34
+            maxCandidates = 28
         )
 
         val llmPrompt = buildCompactPrompt(
@@ -268,39 +345,80 @@ object HybridRoutineGenerator {
             hubById = hubById
         )
 
-        val startedMs = System.currentTimeMillis()
-        val response = try {
-            val model = createHybridModel()
-            withTimeout(AI_TIMEOUT_MS) {
-                model.generateContent(llmPrompt)
-            }
-        } catch (t: Throwable) {
-            Log.e(TAG, "AI generation failed (${t.javaClass.simpleName}: ${t.message})", t)
+        val onDeviceReady = cachedOnDeviceAvailable ?: checkOnDeviceCapability().isAvailable
+
+        // Tier 1: Try On-Device NPU/TPU (Gemini Nano) directly only when AICore reports AVAILABLE
+        if (onDeviceReady) {
+            val startedMs = System.currentTimeMillis()
+            val onDevicePlan = runCatching {
+                val model = createOnDeviceModel()
+                val response = withTimeout(ON_DEVICE_TIMEOUT_MS) {
+                    model.generateContent(llmPrompt)
+                }
+                val elapsedMs = (System.currentTimeMillis() - startedMs).coerceAtLeast(1L)
+                parseModelResponseToPlan(
+                    rawText = response.text.orEmpty(),
+                    inferenceTier = InferenceTier.ON_DEVICE_NPU,
+                    targetMinutes = resolvedMinutes,
+                    allLibrary = allLibrary,
+                    context = context,
+                    hardwareAccelerator = hwName,
+                    modelName = "Gemini Nano",
+                    latencyMs = elapsedMs,
+                    candidateCount = candidates.size
+                )
+            }.onFailure { t ->
+                Log.w(TAG, "On-device Gemini Nano failed, falling back to Cloud Gemini: ${t.message}")
+            }.getOrNull()
+
+            if (onDevicePlan != null) return@withContext onDevicePlan
+        }
+
+        // Pre-flight internet check so offline devices fail instantly instead of waiting for a network timeout
+        if (!hasValidatedInternet(context)) {
             throw IllegalStateException(
-                "AI model unavailable (${t.message ?: t.javaClass.simpleName}). " +
-                    "Please check your internet connection for Cloud Gemini or ensure AICore Gemini Nano is enabled on $hwName.",
-                t
+                "No internet connection detected. Connect to Wi-Fi or mobile data to use Cloud Gemini on $hwName."
             )
         }
-        val elapsedMs = (System.currentTimeMillis() - startedMs).coerceAtLeast(1L)
 
-        val rawText = response.text.orEmpty()
-        val isOnDevice = response.inferenceSource == InferenceSource.ON_DEVICE
-        val tier = if (isOnDevice) InferenceTier.ON_DEVICE_NPU else InferenceTier.CLOUD_GEMINI
-        val modelLabel = if (isOnDevice) "Gemini Nano" else "Gemini 3.8 Flash"
+        // Tier 2: Fast multi-model Cloud Gemini fallback chain (ONLY_IN_CLOUD avoids wasted AICore probes)
+        var lastError: Throwable? = null
+        for (candidate in CLOUD_MODEL_CHAIN) {
+            val startedMs = System.currentTimeMillis()
+            try {
+                val model = createCloudModel(candidate)
+                val response = withTimeout(candidate.timeoutMs) {
+                    model.generateContent(llmPrompt)
+                }
+                val elapsedMs = (System.currentTimeMillis() - startedMs).coerceAtLeast(1L)
+                val plan = parseModelResponseToPlan(
+                    rawText = response.text.orEmpty(),
+                    inferenceTier = InferenceTier.CLOUD_GEMINI,
+                    targetMinutes = resolvedMinutes,
+                    allLibrary = allLibrary,
+                    context = context,
+                    hardwareAccelerator = hwName,
+                    modelName = candidate.displayName,
+                    latencyMs = elapsedMs,
+                    candidateCount = candidates.size
+                )
+                if (plan != null) {
+                    return@withContext plan
+                }
+                lastError = IllegalStateException("${candidate.modelId} returned unexpected JSON format")
+            } catch (t: Throwable) {
+                Log.w(TAG, "Cloud model ${candidate.modelId} failed (${t.javaClass.simpleName}: ${t.message})")
+                lastError = t
+            }
+        }
 
-        parseModelResponseToPlan(
-            rawText = rawText,
-            inferenceTier = tier,
-            targetMinutes = resolvedMinutes,
-            allLibrary = allLibrary,
-            context = context,
-            hardwareAccelerator = hwName,
-            modelName = modelLabel,
-            latencyMs = elapsedMs,
-            candidateCount = candidates.size
-        ) ?: throw IllegalStateException(
-            "AI returned an unexpected format. Please tap Generate Routine to try again."
+        Log.e(TAG, "All Cloud AI models failed", lastError)
+        val detail = lastError?.message?.takeIf { it.isNotBlank() }
+            ?: lastError?.javaClass?.simpleName
+            ?: "Request timed out"
+        throw IllegalStateException(
+            "Cloud Gemini unavailable ($detail). Please check your internet connection and tap Build Routine to retry.",
+            lastError
         )
     }
 
