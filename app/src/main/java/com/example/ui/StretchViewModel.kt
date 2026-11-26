@@ -282,7 +282,12 @@ class StretchViewModel(application: Application) : AndroidViewModel(application)
             refreshDownloadedTracks()
         }
         viewModelScope.launch {
-            _onDeviceAiCapability.value = com.example.ai.HybridRoutineGenerator.checkOnDeviceCapability()
+            com.example.ai.HybridRoutineGenerator.capabilityFlow.collect { capability ->
+                _onDeviceAiCapability.value = capability
+            }
+        }
+        viewModelScope.launch {
+            com.example.ai.HybridRoutineGenerator.checkOnDeviceCapability()
         }
         viewModelScope.launch {
             userSettings.collect { settings ->

@@ -12,6 +12,7 @@ import com.example.data.StretchCategory
 import com.example.data.StretchEntity
 import com.example.data.StretchLibrary
 import com.google.firebase.Firebase
+import com.google.firebase.ai.DownloadStatus
 import com.google.firebase.ai.InferenceMode
 import com.google.firebase.ai.OnDeviceConfig
 import com.google.firebase.ai.OnDeviceModelStatus
@@ -21,10 +22,18 @@ import com.google.firebase.ai.type.PublicPreviewAPI
 import com.google.firebase.ai.type.ThinkingLevel
 import com.google.firebase.ai.type.generationConfig
 import com.google.firebase.ai.type.thinkingConfig
+import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.async
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
-import kotlinx.coroutines.withTimeout
+import kotlinx.coroutines.withTimeoutOrNull
 import org.json.JSONObject
+import java.util.concurrent.atomic.AtomicBoolean
 import kotlin.math.roundToInt
 
 enum class PosturePreference(val label: String) {
@@ -85,7 +94,14 @@ object HybridRoutineGenerator {
     private const val PRIMARY_CLOUD_MODEL = "gemini-3.8-flash-lite"
     private const val SECONDARY_CLOUD_MODEL = "gemini-3.8-flash"
     private const val LATEST_CLOUD_ALIAS = "gemini-flash-latest"
-    private const val AI_TOTAL_DEADLINE_MS = 3_000L
+    private const val CLOUD_AI_DEADLINE_MS = 3_000L
+    private const val ON_DEVICE_AI_DEADLINE_MS = 8_000L
+
+    private val backgroundScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
+    private val isDownloadingOnDevice = AtomicBoolean(false)
+
+    private val _capabilityFlow = MutableStateFlow(OnDeviceCapability())
+    val capabilityFlow: StateFlow<OnDeviceCapability> = _capabilityFlow.asStateFlow()
 
     @Volatile
     private var cachedOnDeviceAvailable: Boolean? = null
@@ -244,53 +260,55 @@ object HybridRoutineGenerator {
 
     /**
      * Checks whether the current device supports AICore / Gemini Nano on its NPU/TPU.
-     * Never throws — returns a graceful fallback status on unsupported devices or unit tests.
+     * When status is DOWNLOADABLE/DOWNLOADING, actually collects `extension.download()` in a
+     * background coroutine (required because `download()` returns a cold Flow) and emits live
+     * progress updates to [capabilityFlow].
      */
     @OptIn(PublicPreviewAPI::class)
     suspend fun checkOnDeviceCapability(): OnDeviceCapability = withContext(Dispatchers.IO) {
         val hwName = detectDeviceAcceleratorName()
-        try {
+        val capability = try {
             val model = createOnDeviceModel()
             val extension = model.onDeviceExtension
             if (extension == null) {
                 cachedOnDeviceAvailable = false
-                return@withContext OnDeviceCapability(
+                OnDeviceCapability(
                     isAvailable = false,
                     hardwareAccelerator = hwName,
-                    statusLabel = "Cloud Gemini 3.8 Flash • $hwName"
+                    statusLabel = "Cloud Gemini / Smart Flow • $hwName"
                 )
-            }
-            val status = extension.checkStatus()
-            val modelName = runCatching { extension.getModelName() }.getOrNull()
-            when (status) {
-                OnDeviceModelStatus.AVAILABLE -> {
-                    cachedOnDeviceAvailable = true
-                    OnDeviceCapability(
-                        isAvailable = true,
-                        modelName = modelName,
-                        hardwareAccelerator = hwName,
-                        statusLabel = "Using $hwName (${modelName ?: "Gemini Nano"})"
-                    )
-                }
-                OnDeviceModelStatus.DOWNLOADABLE, OnDeviceModelStatus.DOWNLOADING -> {
-                    cachedOnDeviceAvailable = false
-                    // Kick off background AICore download so Pixel 9 / NPU devices become ready automatically
-                    runCatching { extension.download() }
-                    OnDeviceCapability(
-                        isAvailable = false,
-                        isDownloadable = true,
-                        modelName = modelName,
-                        hardwareAccelerator = hwName,
-                        statusLabel = "$hwName • Downloading Gemini Nano (Cloud ready)"
-                    )
-                }
-                else -> {
-                    cachedOnDeviceAvailable = false
-                    OnDeviceCapability(
-                        isAvailable = false,
-                        hardwareAccelerator = hwName,
-                        statusLabel = "Cloud Gemini 3.8 Flash • $hwName"
-                    )
+            } else {
+                val status = extension.checkStatus()
+                val modelName = runCatching { extension.getModelName() }.getOrNull()
+                when (status) {
+                    OnDeviceModelStatus.AVAILABLE -> {
+                        cachedOnDeviceAvailable = true
+                        OnDeviceCapability(
+                            isAvailable = true,
+                            modelName = modelName,
+                            hardwareAccelerator = hwName,
+                            statusLabel = "Using $hwName (${modelName ?: "Gemini Nano"})"
+                        )
+                    }
+                    OnDeviceModelStatus.DOWNLOADABLE, OnDeviceModelStatus.DOWNLOADING -> {
+                        cachedOnDeviceAvailable = false
+                        startOnDeviceDownloadIfNeeded(extension, hwName, modelName)
+                        OnDeviceCapability(
+                            isAvailable = false,
+                            isDownloadable = true,
+                            modelName = modelName,
+                            hardwareAccelerator = hwName,
+                            statusLabel = "$hwName • Downloading Gemini Nano…"
+                        )
+                    }
+                    else -> {
+                        cachedOnDeviceAvailable = false
+                        OnDeviceCapability(
+                            isAvailable = false,
+                            hardwareAccelerator = hwName,
+                            statusLabel = "Cloud Gemini / Smart Flow • $hwName"
+                        )
+                    }
                 }
             }
         } catch (t: Throwable) {
@@ -299,17 +317,90 @@ object HybridRoutineGenerator {
             OnDeviceCapability(
                 isAvailable = false,
                 hardwareAccelerator = hwName,
-                statusLabel = "Cloud Gemini 3.8 Flash • $hwName"
+                statusLabel = "Cloud Gemini / Smart Flow • $hwName"
             )
+        }
+        _capabilityFlow.value = capability
+        capability
+    }
+
+    @OptIn(PublicPreviewAPI::class)
+    private fun startOnDeviceDownloadIfNeeded(
+        extension: com.google.firebase.ai.OnDeviceExtension,
+        hwName: String,
+        initialModelName: String?
+    ) {
+        if (!isDownloadingOnDevice.compareAndSet(false, true)) return
+        backgroundScope.launch {
+            var totalBytes = 0L
+            try {
+                extension.download().collect { status ->
+                    when (status) {
+                        is DownloadStatus.DownloadStarted -> {
+                            totalBytes = status.bytesToDownload
+                            val totalMb = if (totalBytes > 0) " (${totalBytes / (1024 * 1024)} MB)" else ""
+                            _capabilityFlow.value = OnDeviceCapability(
+                                isAvailable = false,
+                                isDownloadable = true,
+                                modelName = initialModelName,
+                                hardwareAccelerator = hwName,
+                                statusLabel = "$hwName • Downloading Gemini Nano$totalMb…"
+                            )
+                        }
+                        is DownloadStatus.DownloadInProgress -> {
+                            val progressText = if (totalBytes > 0) {
+                                val pct = ((status.totalBytesDownloaded * 100L) / totalBytes).coerceIn(0, 99)
+                                "$pct%"
+                            } else {
+                                "${status.totalBytesDownloaded / (1024 * 1024)} MB"
+                            }
+                            _capabilityFlow.value = OnDeviceCapability(
+                                isAvailable = false,
+                                isDownloadable = true,
+                                modelName = initialModelName,
+                                hardwareAccelerator = hwName,
+                                statusLabel = "$hwName • Downloading Gemini Nano ($progressText)"
+                            )
+                        }
+                        is DownloadStatus.DownloadCompleted -> {
+                            cachedOnDeviceAvailable = true
+                            val resolvedName = runCatching { extension.getModelName() }.getOrNull() ?: initialModelName
+                            runCatching { extension.warmUp() }
+                            _capabilityFlow.value = OnDeviceCapability(
+                                isAvailable = true,
+                                isDownloadable = false,
+                                modelName = resolvedName,
+                                hardwareAccelerator = hwName,
+                                statusLabel = "Using $hwName (${resolvedName ?: "Gemini Nano"})"
+                            )
+                        }
+                        is DownloadStatus.DownloadFailed -> {
+                            cachedOnDeviceAvailable = false
+                            Log.w(TAG, "Gemini Nano download failed: ${status.exception.message}")
+                            _capabilityFlow.value = OnDeviceCapability(
+                                isAvailable = false,
+                                isDownloadable = true,
+                                modelName = initialModelName,
+                                hardwareAccelerator = hwName,
+                                statusLabel = "Cloud Gemini / Smart Flow • $hwName"
+                            )
+                        }
+                    }
+                }
+            } catch (t: Throwable) {
+                Log.w(TAG, "Gemini Nano download stream error: ${t.message}")
+            } finally {
+                isDownloadingOnDevice.set(false)
+            }
         }
     }
 
     /**
-     * Generates a personalized routine using a 3-Tier Hybrid pipeline with a strict 3-second AI deadline:
-     * - Tier 1: On-Device NPU/TPU (Gemini Nano via Android AICore) when available on this device.
-     * - Tier 2: Fast Cloud Gemini fallback chain (`gemini-3.8-flash-lite` -> `gemini-3.8-flash` -> `gemini-flash-latest`).
+     * Generates a personalized routine using a 3-Tier Hybrid pipeline with a hard non-blocking deadline:
+     * - Tier 1: On-Device NPU/TPU (Gemini Nano via Android AICore) — up to 8s when available on device.
+     * - Tier 2: Fast Cloud Gemini fallback chain — hard 3-second deadline (detached async so UI never blocks).
      * - Tier 3: Instant Offline Smart Flow Matcher (no LLM) — automatically kicks in if offline, on error,
-     *           or if no AI response arrives within 3 seconds.
+     *           or if no AI response arrives within the deadline.
      */
     @OptIn(PublicPreviewAPI::class)
     suspend fun generateRoutine(
@@ -343,75 +434,78 @@ object HybridRoutineGenerator {
             hubById = hubById
         )
 
-        val onDeviceReady = cachedOnDeviceAvailable ?: checkOnDeviceCapability().isAvailable
+        // Never block on AICore check if we already know the capability (or if download is in progress)
+        val onDeviceReady = cachedOnDeviceAvailable ?: false
         val isOnline = hasValidatedInternet(context)
 
         var fallbackReason = "AI did not respond within 3s — switched to Instant Smart Flow"
         val totalStartMs = System.currentTimeMillis()
 
-        if (!onDeviceReady && !isOnline) {
+        // Tier 1: On-Device Gemini Nano (only when already downloaded & AVAILABLE)
+        if (onDeviceReady) {
+            val startedMs = System.currentTimeMillis()
+            val deferred = backgroundScope.async {
+                runCatching {
+                    val model = createOnDeviceModel()
+                    val response = model.generateContent(llmPrompt)
+                    val elapsedMs = (System.currentTimeMillis() - startedMs).coerceAtLeast(1L)
+                    parseModelResponseToPlan(
+                        rawText = response.text.orEmpty(),
+                        inferenceTier = InferenceTier.ON_DEVICE_NPU,
+                        targetMinutes = resolvedMinutes,
+                        allLibrary = allLibrary,
+                        context = context,
+                        hardwareAccelerator = hwName,
+                        modelName = "Gemini Nano",
+                        latencyMs = elapsedMs,
+                        candidateCount = candidates.size
+                    )
+                }.onFailure { t ->
+                    Log.w(TAG, "On-device Gemini Nano failed: ${t.message}")
+                }.getOrNull()
+            }
+            val onDevicePlan = withTimeoutOrNull(ON_DEVICE_AI_DEADLINE_MS) { deferred.await() }
+            if (onDevicePlan != null) return@withContext onDevicePlan
+            deferred.cancel()
+        }
+
+        // Tier 2: Cloud Gemini with strict non-blocking 3-second deadline
+        if (!isOnline) {
             fallbackReason = "Offline — built instantly with Smart Flow"
         } else {
-            val aiPlan = kotlinx.coroutines.withTimeoutOrNull(AI_TOTAL_DEADLINE_MS) {
-                // Tier 1: Try On-Device NPU/TPU (Gemini Nano) directly only when AICore reports AVAILABLE
-                if (onDeviceReady) {
+            val deferred = backgroundScope.async {
+                for (candidate in CLOUD_MODEL_CHAIN) {
                     val startedMs = System.currentTimeMillis()
-                    val onDevicePlan = runCatching {
-                        val model = createOnDeviceModel()
+                    val cloudPlan = runCatching {
+                        val model = createCloudModel(candidate)
                         val response = model.generateContent(llmPrompt)
                         val elapsedMs = (System.currentTimeMillis() - startedMs).coerceAtLeast(1L)
                         parseModelResponseToPlan(
                             rawText = response.text.orEmpty(),
-                            inferenceTier = InferenceTier.ON_DEVICE_NPU,
+                            inferenceTier = InferenceTier.CLOUD_GEMINI,
                             targetMinutes = resolvedMinutes,
                             allLibrary = allLibrary,
                             context = context,
                             hardwareAccelerator = hwName,
-                            modelName = "Gemini Nano",
+                            modelName = candidate.displayName,
                             latencyMs = elapsedMs,
                             candidateCount = candidates.size
                         )
                     }.onFailure { t ->
-                        Log.w(TAG, "On-device Gemini Nano failed: ${t.message}")
+                        Log.w(TAG, "Cloud model ${candidate.modelId} failed (${t.javaClass.simpleName}: ${t.message})")
+                        fallbackReason = "Cloud AI unavailable — switched to Instant Smart Flow"
                     }.getOrNull()
 
-                    if (onDevicePlan != null) return@withTimeoutOrNull onDevicePlan
-                }
-
-                // Tier 2: Fast multi-model Cloud Gemini fallback chain (ONLY_IN_CLOUD skips AICore probes)
-                if (isOnline) {
-                    for (candidate in CLOUD_MODEL_CHAIN) {
-                        val startedMs = System.currentTimeMillis()
-                        val cloudPlan = runCatching {
-                            val model = createCloudModel(candidate)
-                            val response = model.generateContent(llmPrompt)
-                            val elapsedMs = (System.currentTimeMillis() - startedMs).coerceAtLeast(1L)
-                            parseModelResponseToPlan(
-                                rawText = response.text.orEmpty(),
-                                inferenceTier = InferenceTier.CLOUD_GEMINI,
-                                targetMinutes = resolvedMinutes,
-                                allLibrary = allLibrary,
-                                context = context,
-                                hardwareAccelerator = hwName,
-                                modelName = candidate.displayName,
-                                latencyMs = elapsedMs,
-                                candidateCount = candidates.size
-                            )
-                        }.onFailure { t ->
-                            Log.w(TAG, "Cloud model ${candidate.modelId} failed (${t.javaClass.simpleName}: ${t.message})")
-                            fallbackReason = "Cloud AI unavailable — switched to Instant Smart Flow"
-                        }.getOrNull()
-
-                        if (cloudPlan != null) return@withTimeoutOrNull cloudPlan
-                    }
+                    if (cloudPlan != null) return@async cloudPlan
                 }
                 null
             }
-
-            if (aiPlan != null) return@withContext aiPlan
+            val cloudPlan = withTimeoutOrNull(CLOUD_AI_DEADLINE_MS) { deferred.await() }
+            if (cloudPlan != null) return@withContext cloudPlan
+            deferred.cancel()
         }
 
-        // Tier 3: Instant Offline Smart Flow Matcher (no LLM/chatbot, always succeeds)
+        // Tier 3: Instant Offline Smart Flow Matcher (no LLM/chatbot, always succeeds within 3s)
         val elapsedMs = (System.currentTimeMillis() - totalStartMs).coerceAtLeast(1L)
         generateLocalSmartFlowRoutine(
             prompt = cleanPrompt,
