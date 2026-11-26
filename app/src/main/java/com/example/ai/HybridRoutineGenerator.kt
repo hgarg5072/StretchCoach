@@ -63,7 +63,7 @@ data class OnDeviceCapability(
     val isDownloadable: Boolean = false,
     val modelName: String? = null,
     val hardwareAccelerator: String = HybridRoutineGenerator.detectDeviceAcceleratorName(),
-    val statusLabel: String = "Cloud Gemini 3.8 Flash • ${HybridRoutineGenerator.detectDeviceAcceleratorName()}"
+    val statusLabel: String = "Cloud Gemini 3.5 Flash-Lite • ${HybridRoutineGenerator.detectDeviceAcceleratorName()}"
 )
 
 data class GeneratedRoutinePlan(
@@ -73,7 +73,7 @@ data class GeneratedRoutinePlan(
     val inferenceTier: InferenceTier,
     val rationale: String = "",
     val hardwareAccelerator: String = HybridRoutineGenerator.detectDeviceAcceleratorName(),
-    val modelName: String = "Gemini 3.8 Flash",
+    val modelName: String = "Gemini 3.5 Flash-Lite",
     val latencyMs: Long = 0L,
     val thinkingSteps: List<String> = emptyList()
 ) {
@@ -91,10 +91,10 @@ data class GeneratedRoutinePlan(
 object HybridRoutineGenerator {
 
     private const val TAG = "HybridRoutineGenerator"
-    private const val PRIMARY_CLOUD_MODEL = "gemini-3.8-flash-lite"
+    private const val PRIMARY_CLOUD_MODEL = "gemini-3.5-flash-lite"
     private const val SECONDARY_CLOUD_MODEL = "gemini-3.8-flash"
-    private const val LATEST_CLOUD_ALIAS = "gemini-flash-latest"
-    private const val CLOUD_AI_DEADLINE_MS = 3_000L
+    private const val TERTIARY_CLOUD_MODEL = "gemini-flash-latest"
+    private const val CLOUD_AI_DEADLINE_MS = 12_000L
     private const val ON_DEVICE_AI_DEADLINE_MS = 8_000L
 
     private val backgroundScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -116,7 +116,7 @@ object HybridRoutineGenerator {
     private val CLOUD_MODEL_CHAIN = listOf(
         CloudModelCandidate(
             modelId = PRIMARY_CLOUD_MODEL,
-            displayName = "Gemini 3.8 Flash-Lite",
+            displayName = "Gemini 3.5 Flash-Lite",
             thinkingLevel = ThinkingLevel.MINIMAL,
             maxOutputTokens = 768
         ),
@@ -127,7 +127,7 @@ object HybridRoutineGenerator {
             maxOutputTokens = 1024
         ),
         CloudModelCandidate(
-            modelId = LATEST_CLOUD_ALIAS,
+            modelId = TERTIARY_CLOUD_MODEL,
             displayName = "Gemini Flash Latest",
             thinkingLevel = ThinkingLevel.LOW,
             maxOutputTokens = 1024
@@ -138,7 +138,7 @@ object HybridRoutineGenerator {
     private fun createOnDeviceModel() = Firebase.ai(
         backend = GenerativeBackend.googleAI()
     ).generativeModel(
-        modelName = SECONDARY_CLOUD_MODEL,
+        modelName = PRIMARY_CLOUD_MODEL,
         onDeviceConfig = OnDeviceConfig(
             mode = InferenceMode.ONLY_ON_DEVICE,
             maxOutputTokens = 384,
@@ -438,7 +438,7 @@ object HybridRoutineGenerator {
         val onDeviceReady = cachedOnDeviceAvailable ?: false
         val isOnline = hasValidatedInternet(context)
 
-        var fallbackReason = "AI did not respond within 3s — switched to Instant Smart Flow"
+        var fallbackReason = "AI did not respond within 12s — switched to Instant Smart Flow"
         val totalStartMs = System.currentTimeMillis()
 
         // Tier 1: On-Device Gemini Nano (only when already downloaded & AVAILABLE)
@@ -496,7 +496,10 @@ object HybridRoutineGenerator {
                         fallbackReason = "Cloud AI unavailable — switched to Instant Smart Flow"
                     }.getOrNull()
 
-                    if (cloudPlan != null) return@async cloudPlan
+                    if (cloudPlan != null) {
+                        Log.i(TAG, "Cloud model ${candidate.modelId} succeeded in ${cloudPlan.latencyMs}ms (${cloudPlan.stretches.size} stretches)")
+                        return@async cloudPlan
+                    }
                 }
                 null
             }
